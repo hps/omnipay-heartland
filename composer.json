@@ -1,0 +1,30 @@
+{
+    "name": "hps/omnipay-heartland",
+    "type": "library",
+    "description": "Heartland driver for the Omnipay payment processing library",
+    "keywords": [
+        "gateway",
+        "merchant",
+        "omnipay",
+        "pay",
+        "payment",
+        "heartland"
+    ],
+    "homepage": "https://github.com/hps/omnipay-heartland",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Heartland Developer Portal",
+            "email": "EntApp_DevPortal@e-hps.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Omnipay\\Heartland\\" : "src/" }
+    },
+    "require": {
+        "omnipay/common": "~2.0"
+    },
+    "require-dev": {
+        "omnipay/tests": "~2.0"
+    }
+}

@@ -373,4 +373,64 @@ class Gateway extends AbstractGateway
         return $this->createRequest('\Omnipay\Heartland\Message\PurchaseRequest', $parameters);
     }
 
+    /**
+     * Refund Request.
+     *
+     * When you create a new refund, you must specify a
+     * charge to create it on.
+     *
+     * Creating a new refund will refund a charge that has
+     * previously been created but not yet refunded. Funds will
+     * be refunded to the credit or debit card that was originally
+     * charged. The fees you were originally charged are also
+     * refunded.
+     *
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\RefundRequest
+     */
+    public function refund(array $parameters = array()) {
+        return $this->createRequest('\Omnipay\Heartland\Message\RefundRequest', $parameters);
+    }
+
+    /**
+     * Void Request.
+     *
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\VoidRequest
+     */
+    public function void(array $parameters = array()) {
+        return $this->createRequest('\Omnipay\Heartland\Message\VoidRequest', $parameters);
+    }
+
+    /**
+     * Reversal Request.
+     *
+     * When you create a new refund, you must specify a
+     * charge to create it on.
+     *
+     * Creating a new refund will refund a charge that has
+     * previously been created but not yet refunded. Funds will
+     * be refunded to the credit or debit card that was originally
+     * charged. The fees you were originally charged are also
+     * refunded.
+     *
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\RefundRequest
+     */
+    public function reverse(array $parameters = array()) {
+        return $this->createRequest('\Omnipay\Heartland\Message\ReverseRequest', $parameters);
+    }
+    
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Stripe\Message\FetchTransactionRequest
+     */
+    public function fetchTransaction(array $parameters = array()) {
+        return $this->createRequest('\Omnipay\Heartland\Message\FetchTransactionRequest', $parameters);
+    }
+
 }

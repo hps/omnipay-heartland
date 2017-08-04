@@ -240,7 +240,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $this->validate('secretApiKey');
         }      
         
-        $cardNotRequired = array('CreditAddToBatch');
+        $cardNotRequired = array('CreditAddToBatch', 'CreditVoid', 'CreditReturn');
         if (in_array($this->getTransactionType(), $cardNotRequired) === false) {            
             //check the token value in card reference
             if ($this->getToken() == null && $this->getCardReference() != null) {

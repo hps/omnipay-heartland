@@ -40,7 +40,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertSame('10.00', $request->getAmount());
     }
 
-    /*
+    
     public function testRefund()
     {
         $request = $this->gateway->refund(array('amount' => '10.00'));
@@ -62,7 +62,7 @@ class GatewayTest extends GatewayTestCase
 
         $this->assertInstanceOf('Omnipay\Heartland\Message\FetchTransactionRequest', $request);
     }
-
+/*
     public function testFetchBalanceTransaction()
     {
         $request = $this->gateway->fetchBalanceTransaction(array());

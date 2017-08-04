@@ -229,6 +229,40 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     // endregion
     // region Parameters
+    
+    /**
+     * Get the card data.
+     *
+     * Because the heartland gateway uses a common format for passing
+     * card data to the API, this function can be called to get the
+     * data from the associated card object in the format that the
+     * API requires.
+     *
+     * @return array
+     */
+    protected function getCardData() {
+        $card = $this->getCard();
+        $card->validate();
+
+        $data = array();
+        $data['object'] = 'card';
+        $data['number'] = $card->getNumber();
+        $data['exp_month'] = $card->getExpiryMonth();
+        $data['exp_year'] = $card->getExpiryYear();
+        if ($card->getCvv()) {
+            $data['cvc'] = $card->getCvv();
+        }
+        $data['name'] = $card->getName();
+        $data['address_line1'] = $card->getAddress1();
+        $data['address_line2'] = $card->getAddress2();
+        $data['address_city'] = $card->getCity();
+        $data['address_zip'] = $card->getPostcode();
+        $data['address_state'] = $card->getState();
+        $data['address_country'] = $card->getCountry();
+        $data['email'] = $card->getEmail();
+
+        return $data;
+    }
 
     // region Heartland Soap Building
     public function getData() 

@@ -14,115 +14,170 @@ class AuthorizeRequestTest extends TestCase
                 'amount' => '12.00',
                 'currency' => 'USD',
                 'card' => $this->getValidCard(),
-                'description' => 'Order #42',
-                'metadata' => array(
-                    'foo' => 'bar',
-                ),
-                'applicationFee' => '1.00'
+                'description' => 'Order #42'
             )
         );
-    }
-
-    public function testGetData()
-    {
-        $data = $this->request->getData();
-
-        $this->assertSame(1200, $data['amount']);
-        $this->assertSame('usd', $data['currency']);
-        $this->assertSame('Order #42', $data['description']);
-        $this->assertSame('false', $data['capture']);
-        $this->assertSame(array('foo' => 'bar'), $data['metadata']);
-        $this->assertSame(100, $data['application_fee']);
+        $this->request->setSecretApiKey('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ');
     }
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     * @expectedExceptionMessage The source parameter is required
+     * @expectedExceptionMessage The siteId parameter is required
+     */
+    public function testSiteIdRequired()
+    {
+        $this->request->setSecretApiKey(null);
+        $this->request->getData();
+    }
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The deviceId parameter is required
+     */
+    public function testDeviceIdRequired()
+    {
+        $this->request->setSecretApiKey(null);
+        $this->request->setSiteId('20518');
+        $this->request->getData();
+    }
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The licenseId parameter is required
+     */
+    public function testLicenseIdRequired()
+    {
+        $this->request->setSecretApiKey(null);
+        $this->request->setSiteId('20518');
+        $this->request->setDeviceId('90911395');        
+        $this->request->getData();
+    }
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The username parameter is required
+     */
+    public function testUsernameRequired()
+    {
+        $this->request->setSecretApiKey(null);
+        $this->request->setSiteId('20518');
+        $this->request->setDeviceId('90911395');  
+        $this->request->setLicenseId('20527');  
+        $this->request->getData();
+    }
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The password parameter is required
+     */
+    public function testPasswordRequired()
+    {
+        $this->request->setSecretApiKey(null);
+        $this->request->setSiteId('20518');
+        $this->request->setDeviceId('90911395');  
+        $this->request->setLicenseId('20527'); 
+        $this->request->setUsername('30360021'); 
+        $this->request->getData();
+    }
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The soapServiceUri parameter is required
+     */
+    public function testSoapServiceUriRequired()
+    {
+        $this->request->setSecretApiKey(null);
+        $this->request->setSiteId('20518');
+        $this->request->setDeviceId('90911395');  
+        $this->request->setLicenseId('20527'); 
+        $this->request->setUsername('30360021'); 
+        $this->request->setPassword('$Test1234'); 
+        $this->request->getData();        
+    }    
+     
+    public function testDOMElementCreated()
+    {
+        $this->request->setSecretApiKey(null);
+        $this->request->setSiteId('20518');
+        $this->request->setDeviceId('90911395');  
+        $this->request->setLicenseId('20527'); 
+        $this->request->setUsername('30360021'); 
+        $this->request->setPassword('$Test1234'); 
+        $this->request->setSoapServiceUri("https://api-uat.heartlandportico.com/paymentserver.v1/PosGatewayService.asmx"); 
+        $data = $this->request->getData();  
+        $this->assertInstanceOf('DOMElement', $data);
+    }
+    
+    public function testSecretApikey()
+    {
+        $data = $this->request->getData(); 
+        $this->assertSame('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ', $this->request->getSecretApiKey());
+        $this->assertInstanceOf('DOMElement', $data);
+    }
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The card parameter is required
      */
     public function testCardRequired()
     {
         $this->request->setCard(null);
         $this->request->getData();
     }
-
-    public function testDataWithCustomerReference()
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The card parameter is required
+     */
+    public function testTokenNull()
     {
         $this->request->setCard(null);
-        $this->request->setCustomerReference('abc');
-        $data = $this->request->getData();
-
-        $this->assertSame('abc', $data['customer']);
+        $this->request->setToken(null);
+        $this->request->getData();
     }
-
-    public function testDataWithCardReference()
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The card parameter is required
+     */
+    public function testCardReferenceNull()
     {
-        $this->request->setCustomerReference('abc');
-        $this->request->setCardReference('xyz');
-        $data = $this->request->getData();
-
-        $this->assertSame('abc', $data['customer']);
-        $this->assertSame('xyz', $data['source']);
+        $this->request->setCard(null);
+        $this->request->setToken(null);
+        $this->request->setCardReference(null);
+        $this->request->getData();
     }
-
-    public function testDataWithStatementDescriptor()
-    {
-        $this->request->setStatementDescriptor('OMNIPAY');
-        $data = $this->request->getData();
-
-        $this->assertSame('OMNIPAY', $data['statement_descriptor']);
-    }
-
-    public function testDataWithSourceAndDestination()
-    {
-        $this->request->setSource('abc');
-        $this->request->setDestination('xyz');
-        $data = $this->request->getData();
-
-        $this->assertSame('abc', $data['source']);
-        $this->assertSame('xyz', $data['destination']);
-    }
-
-    public function testDataWithToken()
-    {
-        $this->request->setCustomerReference('abc');
-        $this->request->setToken('xyz');
-        $data = $this->request->getData();
-
-        $this->assertSame('abc', $data['customer']);
-        $this->assertSame('xyz', $data['source']);
-    }
-
+    
     public function testDataWithCard()
     {
         $card = $this->getValidCard();
         $this->request->setCard($card);
         $data = $this->request->getData();
 
-        $this->assertSame($card['number'], $data['source']['number']);
+        $this->assertInstanceOf('DOMElement', $data);
     }
-
-    public function testSendSuccess()
+        
+    
+    public function testDataWithToken()
     {
-        $this->setMockHttpResponse('PurchaseSuccess.txt');
-        $response = $this->request->send();
+        $this->request->setToken('supt_ca67zN30E7YEE1etcQabwo4g');
+        $data = $this->request->getData();
 
-        $this->assertTrue($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertSame('ch_1IU9gcUiNASROd', $response->getTransactionReference());
-        $this->assertSame('card_16n3EU2baUhq7QENSrstkoN0', $response->getCardReference());
-        $this->assertSame('req_8PDHeZazN2LwML', $response->getRequestId());
-        $this->assertNull($response->getMessage());
+        $this->assertSame('supt_ca67zN30E7YEE1etcQabwo4g', $this->request->getToken());
+        $this->assertInstanceOf('DOMElement', $data);
     }
-
-    public function testSendError()
+    
+    public function testDataWithCardReference()
     {
-        $this->setMockHttpResponse('PurchaseFailure.txt');
-        $response = $this->request->send();
+        $this->request->setCardReference('supt_ca67zN30E7YEE1etcQabwo4g');
+        $data = $this->request->getData();
 
-        $this->assertFalse($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertSame('ch_1IUAZQWFYrPooM', $response->getTransactionReference());
-        $this->assertNull($response->getCardReference());
-        $this->assertSame('Your card was declined', $response->getMessage());
+        $this->assertSame('supt_ca67zN30E7YEE1etcQabwo4g', $this->request->getToken());
+        $this->assertSame('supt_ca67zN30E7YEE1etcQabwo4g', $this->request->getCardReference());
+        $this->assertInstanceOf('DOMElement', $data);
     }
+    
+    
+    
+    
 }

@@ -9,23 +9,8 @@ class CaptureRequestTest extends TestCase
     public function setUp()
     {
         $this->request = new CaptureRequest($this->getHttpClient(), $this->getHttpRequest());
-        $this->request->setTransactionReference('foo');
-    }
-
-    public function testEndpoint()
-    {
-        $this->assertSame('https://api.heartland.com/v1/charges/foo/capture', $this->request->getEndpoint());
-    }
-
-    public function testAmount()
-    {
-        // default is no amount
-        $this->assertArrayNotHasKey('amount', $this->request->getData());
-
-        $this->request->setAmount('10.00');
-
-        $data = $this->request->getData();
-        $this->assertSame(1000, $data['amount']);
+        $this->request->setSecretApiKey('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ');        
+        $this->request->setTransactionReference('1023533094');
     }
 
     public function testSendSuccess()
@@ -35,11 +20,13 @@ class CaptureRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('ch_1lvgjcQgrNWUuZ', $response->getTransactionReference());
-        $this->assertNull($response->getCardReference());
-        $this->assertNull($response->getMessage());
+        $this->assertSame('1023533095', (string) $response->getTransactionReference());
     }
 
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
+     * @expectedExceptionMessage Transaction rejected because the referenced original transaction is invalid. Subject '1023533094'.  Original transaction is already part of a batch
+     */
     public function testSendError()
     {
         $this->setMockHttpResponse('CaptureFailure.txt');
@@ -47,8 +34,5 @@ class CaptureRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
-        $this->assertNull($response->getCardReference());
-        $this->assertSame('Charge ch_1lvgjcQgrNWUuZ has already been captured.', $response->getMessage());
     }
 }

@@ -222,7 +222,6 @@ class AuthorizeRequestTest extends TestCase
     {
         $this->setMockHttpResponse('AuthorizeFailureCurlError.txt');
         $response = $this->request->send();
-    }
-    
+    }  
     
 }

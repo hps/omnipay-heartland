@@ -413,18 +413,18 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 }
             );
 
-            $httpResponse = $this->httpClient->post($url, $headers, $data)->send();
+            $httpResponse = $this->httpClient->post($url, $headers, $data)->send(); 
 
             $response = new \stdClass();
             $response->response = (string) $httpResponse->getBody();
-            $response->info = $httpResponse->getInfo();
-            $response->error = $httpResponse->getStatusCode();
+            $response->status = $httpResponse->getStatusCode();
             
-            if ($response->error == 28) { //CURLE_OPERATION_TIMEOUTED
+            
+            if ($response->status == 28) { //CURLE_OPERATION_TIMEOUTED
                 throw new InvalidResponseException("gateway_time-out");
             }
 
-            if ($response->error == 35) { //CURLE_SSL_CONNECT_ERROR
+            if ($response->status == 35) { //CURLE_SSL_CONNECT_ERROR
                 $err_msg = 'PHP-SDK cURL TLS 1.2 handshake failed. If you have any questions, please contact Specialty Products Team at 866.802.9753.';
                 if (extension_loaded('openssl') && OPENSSL_VERSION_NUMBER < self::MIN_OPENSSL_VER) { // then you don't have openSSL 1.0.1c or greater
                     $err_msg .= 'Your current version of OpenSSL is ' . OPENSSL_VERSION_TEXT . 'You do not have the minimum version of OpenSSL 1.0.1c which is required for curl to use TLS 1.2 handshake.';

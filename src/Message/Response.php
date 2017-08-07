@@ -67,25 +67,25 @@ class Response extends AbstractResponse
    
 
     private function goThroughResponse() 
-    { 
-        switch ($this->response->info['http_code']) {
-        case '200':
-            $responseObject = $this->_XML2Array($this->response->response);
-            $ver = "Ver1.0";
-            $this->responseData = $responseObject->$ver;                
-            $this->statusOK = true;
-            $this->_processChargeGatewayResponse();
-            $this->_processChargeIssuerResponse();                
-            break;
-        case '500':
-            $faultString = $this->_XMLFault2String($this->response->response);
-            $this->statusOK = false;
-            $this->heartlandResponseMessage = $this->response->Header->GatewayRspMsg;
-            $this->heartlandResponseReasonCode = $this->response->Header->GatewayRspCode;
-            throw new InvalidResponseException($faultString);
+    {         
+        switch ($this->response->status) {
+            case '200':
+                $responseObject = $this->_XML2Array($this->response->response);
+                $ver = "Ver1.0";
+                $this->responseData = $responseObject->$ver;
+                $this->statusOK = true;
+                $this->_processChargeGatewayResponse();
+                $this->_processChargeIssuerResponse();
                 break;
-        default:
-            throw new InvalidResponseException('Unexpected response');
+            case '500':
+                $faultString = $this->_XMLFault2String($this->response->response);
+                $this->statusOK = false;
+                $this->heartlandResponseMessage = $this->response->Header->GatewayRspMsg;
+                $this->heartlandResponseReasonCode = $this->response->Header->GatewayRspCode;
+                throw new InvalidResponseException($faultString);
+                break;
+            default:
+                throw new InvalidResponseException('Unexpected response');
                 break;
         }
     }
@@ -98,7 +98,7 @@ class Response extends AbstractResponse
     
     public function getCode()
     {
-        return $this->response->info['http_code'];
+        return $this->response->status;
     }
 
     private function _processChargeGatewayResponse() 
@@ -106,7 +106,7 @@ class Response extends AbstractResponse
         $this->heartlandTransactionId = (isset($this->responseData->Header->GatewayTxnId) ? $this->responseData->Header->GatewayTxnId : null);
         $this->heartlandResponseReasonCode = (isset($this->responseData->Header->GatewayRspCode) ? $this->responseData->Header->GatewayRspCode : null);
         $this->heartlandResponseMessage = (isset($this->responseData->Header->GatewayRspMsg) ? $this->responseData->Header->GatewayRspMsg : null);
-
+        
         if ($this->heartlandResponseReasonCode == '0') {
             return;
         }

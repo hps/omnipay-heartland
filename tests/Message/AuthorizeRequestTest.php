@@ -177,21 +177,20 @@ class AuthorizeRequestTest extends TestCase
         $this->assertInstanceOf('DOMElement', $data);
     }
     
-    /*
+    
     public function testSendSuccess()
     {
-        $this->setMockHttpResponse('PurchaseSuccess.txt');
+        $this->setMockHttpResponse('AuthorizeSuccess.txt');
         $response = $this->request->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertSame('ch_1IU9gcUiNASROd', $response->getTransactionReference());
-        $this->assertSame('card_16n3EU2baUhq7QENSrstkoN0', $response->getCardReference());
-        $this->assertSame('req_8PDHeZazN2LwML', $response->getRequestId());
-        $this->assertNull($response->getMessage());
+        $this->assertFalse($response->isRedirect());        
+        $this->assertSame('1023514041', (string) $response->getTransactionReference());
+        $this->assertSame('Success', (string) $response->getMessage());
+        $this->assertSame('200', (string) $response->getCode());
     }
 
-    
+    /*
     public function testSendError()
     {
         $this->setMockHttpResponse('PurchaseFailure.txt');

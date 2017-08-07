@@ -11,7 +11,7 @@ class RefundRequestTest extends TestCase
         $this->request = new RefundRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->setSecretApiKey('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ');               
         $this->request->setTransactionReference('1023522834')
-            ->setAmount('5.00');
+            ->setAmount('10.00');
     }
 
     public function testSendSuccess()
@@ -25,15 +25,16 @@ class RefundRequestTest extends TestCase
         $this->assertSame('Success', (string) $response->getMessage());
     }
 
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
+     * @expectedExceptionMessage Transaction rejected because amount to be returned exceeds the original settlement amount or the return amount is zero
+     */
     public function testSendError()
     {
         $this->setMockHttpResponse('RefundFailure.txt');
         $response = $this->request->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
-        $this->assertNull($response->getCardReference());
-        $this->assertSame('Charge ch_12RgN9L7XhO9mI has already been refunded.', $response->getMessage());
+        $this->assertFalse($response->isRedirect());        
     }
 }

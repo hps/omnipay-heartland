@@ -67,16 +67,30 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), 'Purchase should succeed');
         $transactionRef = $response->getTransactionReference();       
         
-        
-        //fetch the transaction
-        
-
         $request = $this->gateway->refund(array(
             'transactionReference' => $transactionRef,
             'amount' => 10.00
         ));
         $response = $request->send();
         $this->assertTrue($response->isSuccessful(), 'Refund should fail since the transaction has not been settled');
+    }
+    
+    public function testFetchTransaction() {
+        // Authorize
+        $request = $this->gateway->authorize(array(
+            'amount' => '42.42',
+            'card' => $this->getValidCard()
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Authorize should succeed');
+        $transactionRef = $response->getTransactionReference();
+
+        //fetch the transaction
+        $request = $this->gateway->fetchTransaction(array(
+            'transactionReference' => $transactionRef
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Fetch transaction details failed');        
     }
 
 }

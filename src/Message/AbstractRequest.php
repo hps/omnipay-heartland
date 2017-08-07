@@ -413,12 +413,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 }
             );
 
-            $httpResponse = $this->httpClient->post($url, $headers, $data)->send(); 
+            $httpResponse = $this->httpClient->post($url, $headers, $data)->send();             
 
             $response = new \stdClass();
             $response->response = (string) $httpResponse->getBody();
-            $response->status = $httpResponse->getStatusCode();
-            
+            $response->status = $httpResponse->getStatusCode();            
             
             if ($response->status == 28) { //CURLE_OPERATION_TIMEOUTED
                 throw new InvalidResponseException("gateway_time-out");

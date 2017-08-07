@@ -190,18 +190,19 @@ class AuthorizeRequestTest extends TestCase
         $this->assertSame('200', (string) $response->getCode());
     }
 
-    /*
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
+     * @expectedExceptionMessage Transaction rejected because the lookup on the supplied token failed.
+     */
     public function testSendError()
     {
-        $this->setMockHttpResponse('PurchaseFailure.txt');
+        $this->setMockHttpResponse('AuthorizeFailure.txt');
         $response = $this->request->send();
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('ch_1IUAZQWFYrPooM', $response->getTransactionReference());
-        $this->assertNull($response->getCardReference());
-        $this->assertSame('Your card was declined', $response->getMessage());
-    }*/
+        $this->assertSame('1023522465', (string) $response->getTransactionReference());
+    }
     
     
     

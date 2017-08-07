@@ -13,15 +13,11 @@ class PurchaseRequestTest extends TestCase
             array(
                 'amount' => '10.00',
                 'currency' => 'USD',
-                'card' => $this->getValidCard(),
+                'cardReference' => 'supt_5h1EiJ324I5U6hIvCEsc0rGI'
             )
         );
-    }
+        $this->request->setSecretApiKey('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ');        
 
-    public function testCaptureIsTrue()
-    {
-        $data = $this->request->getData();
-        $this->assertSame('true', $data['capture']);
     }
 
     public function testSendSuccess()
@@ -31,32 +27,22 @@ class PurchaseRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('ch_1IU9gcUiNASROd', $response->getTransactionReference());
-        $this->assertSame('card_16n3EU2baUhq7QENSrstkoN0', $response->getCardReference());
-        $this->assertNull($response->getMessage());
+        $this->assertSame('1023524629', (string) $response->getTransactionReference());
+        $this->assertSame('Success', (string) $response->getMessage());
     }
 
-    public function testSendWithSourceSuccess()
-    {
-        $this->setMockHttpResponse('PurchaseWithSourceSuccess.txt');
-        $response = $this->request->send();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertSame('ch_1IU9gcUiNASROd', $response->getTransactionReference());
-        $this->assertSame('card_15WgqxIobxWFFmzdk5V9z3g9', $response->getCardReference());
-        $this->assertNull($response->getMessage());
-    }
-
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
+     * @expectedExceptionMessage Invalid card data
+     */
     public function testSendError()
     {
         $this->setMockHttpResponse('PurchaseFailure.txt');
         $response = $this->request->send();
-
-        $this->assertFalse($response->isSuccessful());
+        
+        $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('ch_1IUAZQWFYrPooM', $response->getTransactionReference());
-        $this->assertNull($response->getCardReference());
-        $this->assertSame('Your card was declined', $response->getMessage());
+        $this->assertSame('1023529555', (string) $response->getTransactionReference());
+        $this->assertSame('Success', (string) $response->getMessage());
     }
 }

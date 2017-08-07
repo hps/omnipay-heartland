@@ -76,7 +76,7 @@ class ReverseRequest extends AbstractRequest {
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
         $hpsBlock1->appendChild($xml->createElement('hps:AllowDup', 'Y'));
-        $hpsBlock1->appendChild($xml->createElement('hps:Amt', $this->getAmountInteger()));
+        $hpsBlock1->appendChild($xml->createElement('hps:Amt', $this->getAmount()));
         
         if ($authAmount !== null){
             $hpsBlock1->appendChild($xml->createElement('hps:AuthAmt', HpsInputValidation::checkAmount($authAmount)));

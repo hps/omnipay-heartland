@@ -274,7 +274,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $this->validate('secretApiKey');
         }      
         
-        $cardNotRequired = array('CreditAddToBatch', 'CreditVoid', 'CreditReturn');
+        $cardNotRequired = array('CreditAddToBatch', 'CreditVoid', 'CreditReturn', 'CreditReversal');
         if (in_array($this->getTransactionType(), $cardNotRequired) === false) {            
             //check the token value in card reference
             if ($this->getToken() == null && $this->getCardReference() != null) {
@@ -377,8 +377,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             return $this->_config->soapServiceUri;
         }
     }
-
-    /**
+    
+/**
      * @param        $url
      * @param null $data     
      *
@@ -394,6 +394,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'SOAPAction' => '""',
             'Content-Length' => '' . strlen($data),
         );
+        
         try {
             $config = $this->httpClient->getConfig();
             $curlOptions = $config->get('curl.options');
@@ -412,8 +413,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                     }
                 }
             );
-
+            
             $httpResponse = $this->httpClient->post($url, $headers, $data)->send();     
+            
+            //get complete response string            
+            //echo (string) $httpResponse;
 
             $response = new \stdClass();
             $response->response = (string) $httpResponse->getBody();

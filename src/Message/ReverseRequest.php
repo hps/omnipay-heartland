@@ -68,18 +68,19 @@ class ReverseRequest extends AbstractRequest {
 
     public function getData() {
         parent::getData();
-        $this->validate('transactionReference');
+        $this->validate('transactionReference', 'amount');
+        
+        $authAmount = null;
 
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');
         $hpsCreditReturn = $xml->createElement('hps:' . $this->getTransactionType());
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
-        $hpsBlock1->appendChild($xml->createElement('hps:AllowDup', 'Y'));
         $hpsBlock1->appendChild($xml->createElement('hps:Amt', $this->getAmount()));
         
         if ($authAmount !== null){
-            $hpsBlock1->appendChild($xml->createElement('hps:AuthAmt', HpsInputValidation::checkAmount($authAmount)));
+            //$hpsBlock1->appendChild($xml->createElement('hps:AuthAmt', HpsInputValidation::checkAmount($authAmount)));
         }
 
         if ($this->getTransactionReference()) {

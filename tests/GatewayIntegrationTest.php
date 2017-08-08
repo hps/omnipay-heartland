@@ -100,5 +100,24 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
         $this->assertTrue($response->isSuccessful(), 'Fetch transaction details failed');        
     }
+    
+    public function testAuthReversal() {       
+        // Authorize
+        $request = $this->gateway->authorize(array(
+            'amount' => '42.42',
+            'card' => $this->getValidCard()
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
+        $transactionRef = $response->getTransactionReference();        
+
+        // reverse
+        $request = $this->gateway->reverse(array(
+            'amount' => '42.42',
+            'transactionReference' => $transactionRef
+        ));
+        $response = $request->send();        
+        $this->assertTrue($response->isSuccessful(), 'Reversal should succeed');        
+    }
 
 }

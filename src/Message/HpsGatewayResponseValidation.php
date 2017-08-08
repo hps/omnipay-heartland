@@ -2,9 +2,6 @@
 
 namespace Omnipay\Heartland\Message;
 
-use Omnipay\Common\Exception\InvalidRequestException;
-use Omnipay\Common\Exception\InvalidResponseException;
-
 /**
  * Class HpsGatewayResponseValidation
  */
@@ -26,12 +23,10 @@ class HpsGatewayResponseValidation
         $e = HpsGatewayResponseValidation::getException($rspCode, $rspText, $response);
 
         if ($e != null) {
-            throw $e;
+            return $e;
         }
         if (!isset($response->Transaction) || !isset($response->Transaction->$expectedType)) {
-            throw new InvalidResponseException(
-                'Unexpected response from HPS gateway', HpsExceptionCodes::UNEXPECTED_GATEWAY_ERROR
-            );
+            return 'Unexpected response from HPS gateway: '. HpsExceptionCodes::UNEXPECTED_GATEWAY_ERROR;
         }
     }
 
@@ -50,22 +45,22 @@ class HpsGatewayResponseValidation
         case '0':
             break;
         case '-2':
-            $e = new InvalidResponseException(
+            $e = self::formResponseException(
                 'Authentication Error. Please double check your service configuration', HpsExceptionCodes::AUTHENTICATION_ERROR
             );
             break;
         case '3':
-            $e = new InvalidResponseException(
+            $e = self::formResponseException(
                 $responseText, HpsExceptionCodes::INVALID_ORIGINAL_TRANSACTION
             );
             break;
         case '5':
-            $e = new InvalidResponseException(
+            $e = self::formResponseException(
                 $responseText, HpsExceptionCodes::NO_OPEN_BATCH
             );
             break;
         case '12':
-            $e = new InvalidResponseException(
+            $e = self::formResponseException(
                 'Invalid CPC data', HpsExceptionCodes::INVALID_CPC_DATA
             );
             break;
@@ -73,28 +68,33 @@ class HpsGatewayResponseValidation
         case '34':
         case '26':
         case '13':
-            $e = new InvalidResponseException(
+            $e = self::formResponseException(
                 'Invalid card data', HpsExceptionCodes::INVALID_CARD_DATA
             );
             break;
         case '14':
-            $e = new InvalidResponseException(
+            $e = self::formResponseException(
                 'The card number is not valid', HpsExceptionCodes::INVALID_NUMBER
             );
             break;
         case '30':
-            $e = new InvalidResponseException(
+            $e = self::formResponseException(
                 'Gateway timed out', HpsExceptionCodes::GATEWAY_ERROR
             );
             break;
         case '1':
         default:
-            $e = new InvalidResponseException(
+            $e = self::formResponseException(
                 $responseText, HpsExceptionCodes::UNKNOWN_GATEWAY_ERROR
             );
         }
 
         return $e;
+    }
+    
+    public static function formResponseException($responseException, $exceptionCode = '')
+    {
+        return $responseException;
     }
 
 }

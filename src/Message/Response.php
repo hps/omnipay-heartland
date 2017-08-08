@@ -26,6 +26,7 @@ class Response extends AbstractResponse
     private $heartlandTransactionId = "";
     private $heartlandTransactionType = "";
     private $responseData = null;
+    private $responseExceptions = null;
 
     public function __construct($request, $response, $txnType) 
     {
@@ -58,11 +59,7 @@ class Response extends AbstractResponse
      */
     public function getTransactionReference()
     {
-        if ($this->isSuccessful() && isset($this->heartlandTransactionId)) {
-            return $this->heartlandTransactionId;
-        }
-
-        return null;
+        return $this->heartlandTransactionId;
     }
    
 
@@ -73,21 +70,19 @@ class Response extends AbstractResponse
                 $responseObject = $this->_XML2Array($this->response->response);
                 $ver = "Ver1.0";
                 $this->responseData = $responseObject->$ver;
-                $this->statusOK = true;
                 $this->_processChargeGatewayResponse();
                 $this->_processChargeIssuerResponse();
                 break;
             case '500':
                 $faultString = $this->_XMLFault2String($this->response->response);
                 $this->statusOK = false;
-                $this->heartlandResponseMessage = $this->response->Header->GatewayRspMsg;
+                $this->heartlandResponseMessage = $faultString;
                 $this->heartlandResponseReasonCode = $this->response->Header->GatewayRspCode;
-                throw new InvalidResponseException($faultString);
                 break;
             default:
-                throw new InvalidResponseException('Unexpected response');
+                $this->heartlandResponseMessage = 'Unexpected response';                
                 break;
-        }
+        }        
     }
     
     public function getData() {        
@@ -107,6 +102,8 @@ class Response extends AbstractResponse
         $this->heartlandResponseReasonCode = (isset($this->responseData->Header->GatewayRspCode) ? $this->responseData->Header->GatewayRspCode : null);
         $this->heartlandResponseMessage = (isset($this->responseData->Header->GatewayRspMsg) ? $this->responseData->Header->GatewayRspMsg : null);
         
+        $this->statusOK = ($this->heartlandResponseReasonCode == 0) ? true : false;
+        
         if ($this->heartlandResponseReasonCode == '0') {
             return;
         }
@@ -115,12 +112,11 @@ class Response extends AbstractResponse
             try {
                 //$this->reverse($transactionId, $this->_amount, $this->_currency);
             } catch (Exception $e) {
-                throw new InvalidResponseException(
-                    'Error occurred while reversing a charge due to HPS gateway timeout', HpsExceptionCodes::GATEWAY_TIMEOUT_REVERSAL_ERROR
-                );
+                $this->heartlandResponseMessage = 'Error occurred while reversing a charge due to HPS gateway timeout: ' . HpsExceptionCodes::GATEWAY_TIMEOUT_REVERSAL_ERROR;
+                return;
             }
         }
-        HpsGatewayResponseValidation::checkResponse($this->responseData, $this->heartlandTransactionType);
+        $this->heartlandResponseMessage = HpsGatewayResponseValidation::checkResponse($this->responseData, $this->heartlandTransactionType);
     }
 
     /**
@@ -152,18 +148,14 @@ class Response extends AbstractResponse
                           }
 
                          */
-                        throw new InvalidResponseException(
-                            'Error occurred while reversing a charge due to HPS issuer timeout', 
-                            HpsExceptionCodes::ISSUER_TIMEOUT_REVERSAL_ERROR
-                        );
+                        $this->heartlandResponseMessage = 'Error occurred while reversing a charge due to HPS issuer timeout: ' . HpsExceptionCodes::ISSUER_TIMEOUT_REVERSAL_ERROR;
+                        return;
                     } catch (HpsException $e) {
-                        throw new InvalidResponseException(
-                            'Error occurred while reversing a charge due to HPS issuer timeout', 
-                            HpsExceptionCodes::ISSUER_TIMEOUT_REVERSAL_ERROR
-                        );
+                        $this->heartlandResponseMessage = 'Error occurred while reversing a charge due to HPS issuer timeout: ' . HpsExceptionCodes::ISSUER_TIMEOUT_REVERSAL_ERROR;
+                        return;
                     }
                 }
-                HpsIssuerResponseValidation::checkResponse($transactionId, $responseCode, $responseText);
+                $this->heartlandResponseMessage = HpsIssuerResponseValidation::checkResponse($transactionId, $responseCode, $responseText);
             }
         }
     }

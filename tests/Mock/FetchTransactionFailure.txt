@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Cache-Control: private, max-age=0
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/7.5
+X-dynaTrace: PT=1026554;PA=1420874144;SP=Gateway Cert;PS=1926692524
+dynaTrace: PT=1026554;PA=1420874144;SP=Gateway Cert;PS=1926692524
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Date: Tue, 08 Aug 2017 14:57:51 GMT
+Content-Length: 707
+
+<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><PosResponse rootUrl="https://posgateway.cert.secureexchange.net/Hps.Exchange.PosGateway" xmlns="http://Hps.Exchange.PosGateway"><Ver1.0><Header><LicenseId>95878</LicenseId><SiteId>95881</SiteId><DeviceId>2409000</DeviceId><GatewayTxnId>1023559054</GatewayTxnId><GatewayRspCode>10</GatewayRspCode><GatewayRspMsg>Report criteria did not produce any results.</GatewayRspMsg><RspDT>2017-08-08T09:57:51.9439123</RspDT></Header><Transaction /></Ver1.0></PosResponse></soap:Body></soap:Envelope>

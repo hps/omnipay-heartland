@@ -73,7 +73,7 @@ class GatewayIntegrationTest extends TestCase {
         ));
 
         $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Refund should fail since the transaction has not been settled');
+        $this->assertTrue($response->isSuccessful(), 'Refund should succeed');
         
         $request = $this->gateway->refund(array(
             'transactionReference' => $transactionRef,

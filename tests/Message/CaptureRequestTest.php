@@ -22,11 +22,7 @@ class CaptureRequestTest extends TestCase
         $this->assertFalse($response->isRedirect());
         $this->assertSame('1023533095', (string) $response->getTransactionReference());
     }
-
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
-     * @expectedExceptionMessage Transaction rejected because the referenced original transaction is invalid. Subject '1023533094'.  Original transaction is already part of a batch
-     */
+   
     public function testSendError()
     {
         $this->setMockHttpResponse('CaptureFailure.txt');
@@ -34,5 +30,6 @@ class CaptureRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
+        $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \'1023533094\'.  Original transaction is already part of a batch.', (string) $response->getMessage());       
     }
 }

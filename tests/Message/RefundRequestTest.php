@@ -24,17 +24,14 @@ class RefundRequestTest extends TestCase
         $this->assertSame('1023522835', (string) $response->getTransactionReference());
         $this->assertSame('Success', (string) $response->getMessage());
     }
-
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
-     * @expectedExceptionMessage Transaction rejected because amount to be returned exceeds the original settlement amount or the return amount is zero
-     */
+    
     public function testSendError()
     {
         $this->setMockHttpResponse('RefundFailure.txt');
         $response = $this->request->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());        
+        $this->assertFalse($response->isRedirect());     
+        $this->assertSame('Transaction rejected because amount to be returned exceeds the original settlement amount or the return amount is zero.', (string) $response->getMessage());       
     }
 }

@@ -31,18 +31,14 @@ class PurchaseRequestTest extends TestCase
         $this->assertSame('Success', (string) $response->getMessage());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
-     * @expectedExceptionMessage Invalid card data
-     */
     public function testSendError()
     {
         $this->setMockHttpResponse('PurchaseFailure.txt');
         $response = $this->request->send();
         
-        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('1023529555', (string) $response->getTransactionReference());
-        $this->assertSame('Success', (string) $response->getMessage());
+        $this->assertSame('Invalid card data', (string) $response->getMessage());              
     }
 }

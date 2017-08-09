@@ -139,7 +139,7 @@ class HpsIssuerResponseValidation
         }
 
         if ($code == null) {
-            return self::formResponseException(
+            return static::formResponseException(
                 self::$_creditExceptionCodeToMessage[HpsExceptionCodes::UNKNOWN_CREDIT_ERROR],
                 HpsExceptionCodes::UNKNOWN_CREDIT_ERROR
             );
@@ -152,7 +152,7 @@ class HpsIssuerResponseValidation
             $message = 'Unknown issuer error';
         }
 
-        return self::formResponseException($message, $code);
+        return static::formResponseException($message, $code);
     }
     
     public static function formResponseException($responseException, $exceptionCode = '')

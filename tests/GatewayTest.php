@@ -55,6 +55,13 @@ class GatewayTest extends GatewayTestCase
 
         $this->assertInstanceOf('Omnipay\Heartland\Message\VoidRequest', $request);
     }
+    
+    public function testReversal()
+    {
+        $request = $this->gateway->reverse();
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\ReverseRequest', $request);
+    }
 
     public function testFetchTransaction()
     {

@@ -7,8 +7,11 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false"
+         stopOnFailure="true"
          syntaxCheck="false">
+    <php>
+        <ini name="memory_limit" value="-1" />
+    </php>
     <testsuites>
         <testsuite name="Omnipay Test Suite">
             <directory>./tests/</directory>

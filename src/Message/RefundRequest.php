@@ -57,7 +57,7 @@ use DOMDocument;
  * @see \Omnipay\Heartland\Gateway
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditReturn.html
  */
-class RefundRequest extends AbstractRequest {
+class RefundRequest extends AbstractPorticoRequest {
 
     /**
      * @return string

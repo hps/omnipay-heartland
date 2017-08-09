@@ -130,7 +130,7 @@ class HpsIssuerResponseValidation
         }
 
         if (in_array($responseCode, $acceptedCodes)) {
-            return 'Success';
+            return null;
         }
 
         $code = null;
@@ -154,7 +154,7 @@ class HpsIssuerResponseValidation
 
         return static::formResponseException($message, $code);
     }
-    
+
     public static function formResponseException($responseException, $exceptionCode = '')
     {
         $exception = new \stdClass();

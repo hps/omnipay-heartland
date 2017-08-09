@@ -37,7 +37,7 @@ use DOMDocument;
  * @see  CaptureRequest
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAddToBatch.html
  */
-class CaptureRequest extends AbstractRequest
+class CaptureRequest extends AbstractPorticoRequest
 {
 
     /**

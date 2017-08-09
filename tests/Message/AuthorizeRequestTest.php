@@ -39,8 +39,9 @@ class AuthorizeRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023522465', $response->getTransactionReference());
+        $this->assertSame('1023522465', $response->getTransactionReference()); 
         $this->assertSame('Transaction rejected because the lookup on the supplied token failed.', $response->getMessage());
+        $this->assertSame('6', $response->getReasonCode());
     }
     
     /**

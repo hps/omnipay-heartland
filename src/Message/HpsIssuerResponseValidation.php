@@ -157,6 +157,9 @@ class HpsIssuerResponseValidation
     
     public static function formResponseException($responseException, $exceptionCode = '')
     {
-        return $responseException;
+        $exception = new \stdClass();
+        $exception->message = $responseException;
+        $exception->code = $exceptionCode;
+        return $exception;
     }
 }

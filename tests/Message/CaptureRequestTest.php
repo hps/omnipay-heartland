@@ -31,5 +31,6 @@ class CaptureRequestTest extends TestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \'1023533094\'.  Original transaction is already part of a batch.', $response->getMessage());       
+        $this->assertSame('7', $response->getReasonCode());
     }
 }

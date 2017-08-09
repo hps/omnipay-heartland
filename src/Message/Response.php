@@ -50,6 +50,7 @@ class Response extends AbstractResponse
     {
         return (string) $this->heartlandResponseReasonCode;
     }
+      
     
     /**
      * Get the transfer reference from the response of CreateTransferRequest,
@@ -77,7 +78,6 @@ class Response extends AbstractResponse
                 $faultString = $this->_XMLFault2String($this->response->response);
                 $this->statusOK = false;
                 $this->heartlandResponseMessage = $faultString;
-                $this->heartlandResponseReasonCode = $this->response->Header->GatewayRspCode;
                 break;
             default:
                 $this->heartlandResponseMessage = 'Unexpected response';                
@@ -99,27 +99,30 @@ class Response extends AbstractResponse
     private function _processChargeGatewayResponse() 
     {
         $this->heartlandTransactionId = (isset($this->responseData->Header->GatewayTxnId) ? $this->responseData->Header->GatewayTxnId : null);
-        $this->heartlandResponseReasonCode = (isset($this->responseData->Header->GatewayRspCode) ? $this->responseData->Header->GatewayRspCode : null);
+        $gatewayRspCode = (isset($this->responseData->Header->GatewayRspCode) ? $this->responseData->Header->GatewayRspCode : null);
         $this->heartlandResponseMessage = (isset($this->responseData->Header->GatewayRspMsg) ? $this->responseData->Header->GatewayRspMsg : null);
         
-        $this->statusOK = ($this->heartlandResponseReasonCode == 0) ? true : false;
+        $this->statusOK = ($gatewayRspCode == 0) ? true : false;
         
-        if ($this->heartlandResponseReasonCode == '0') {
+        if ($gatewayRspCode == '0') {
             return;
         }
 
-        if ($this->heartlandResponseReasonCode == '30') {
+        if ($gatewayRspCode == '30') {
             $this->reversalRequired = true;
             try {
                 $reverseRequest = new ReverseRequest($this->request->httpClient, $this->request->httpRequest);
                 $reverseRequest->initialize($this->request->getParameters());
                 $reverseResponse = $reverseRequest->send();
             } catch (Exception $e) {
-                $this->heartlandResponseMessage = 'Error occurred while reversing a charge due to HPS gateway timeout: ' . HpsExceptionCodes::GATEWAY_TIMEOUT_REVERSAL_ERROR;
+                $this->heartlandResponseMessage = 'Error occurred while reversing a charge due to HPS gateway timeout';
+                $this->heartlandResponseReasonCode = HpsExceptionCodes::GATEWAY_TIMEOUT_REVERSAL_ERROR;
                 return;
             }
         }
-        $this->heartlandResponseMessage = HpsGatewayResponseValidation::checkResponse($this->responseData, $this->heartlandTransactionType);
+        $gatewayException = HpsGatewayResponseValidation::checkResponse($this->responseData, $this->heartlandTransactionType);
+        $this->heartlandResponseMessage = $gatewayException->message;
+        $this->heartlandResponseReasonCode = $gatewayException->code;
     }
 
     /**
@@ -143,7 +146,10 @@ class Response extends AbstractResponse
                 if ($responseCode == '91') {
                     $this->reversalRequired = true;                    
                 }
-                $this->heartlandResponseMessage = HpsIssuerResponseValidation::checkResponse($transactionId, $responseCode, $responseText);
+                //concat earlier messages
+                $gatewayException = HpsIssuerResponseValidation::checkResponse($transactionId, $responseCode, $responseText);
+                $this->heartlandResponseMessage .= $gatewayException->message;
+                $this->heartlandResponseReasonCode .= $gatewayException->code;
             }
         }
     }

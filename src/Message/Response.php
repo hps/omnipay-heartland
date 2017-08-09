@@ -48,7 +48,7 @@ class Response extends AbstractResponse
 
     public function getReasonCode() 
     {
-        return $this->heartlandResponseReasonCode;
+        return (string) $this->heartlandResponseReasonCode;
     }
     
     /**
@@ -59,7 +59,7 @@ class Response extends AbstractResponse
      */
     public function getTransactionReference()
     {
-        return $this->heartlandTransactionId;
+        return (string) $this->heartlandTransactionId;
     }
    
 
@@ -93,7 +93,7 @@ class Response extends AbstractResponse
     
     public function getCode()
     {
-        return $this->response->status;
+        return (string) $this->response->status;
     }
 
     private function _processChargeGatewayResponse() 

@@ -83,24 +83,6 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
     }
     
-    public function testFetchTransaction() {
-        // Authorize
-        $request = $this->gateway->authorize(array(
-            'amount' => '42.42',
-            'card' => $this->getValidCard()
-        ));
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Authorize should succeed');
-        $transactionRef = $response->getTransactionReference();
-
-        //fetch the transaction
-        $request = $this->gateway->fetchTransaction(array(
-            'transactionReference' => $transactionRef
-        ));
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Fetch transaction details failed');        
-    }
-    
     public function testAuthReversal() {       
         // Authorize
         $request = $this->gateway->authorize(array(
@@ -118,6 +100,35 @@ class GatewayIntegrationTest extends TestCase {
         ));
         $response = $request->send();        
         $this->assertTrue($response->isSuccessful(), 'Reversal should succeed');        
+    }
+    
+    public function testPurchaseWithInvalidToken() {
+        // Purchase
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'cardReference' => '123456'
+        ));
+        $response = $request->send();
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Invalid card data', $response->getMessage());    
+    }
+    
+    public function testFetchTransaction() {
+        // Authorize
+        $request = $this->gateway->authorize(array(
+            'amount' => '42.42',
+            'card' => $this->getValidCard()
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Authorize should succeed');
+        $transactionRef = $response->getTransactionReference();
+
+        //fetch the transaction
+        $request = $this->gateway->fetchTransaction(array(
+            'transactionReference' => $transactionRef
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Fetch transaction details failed');        
     }
 
 }

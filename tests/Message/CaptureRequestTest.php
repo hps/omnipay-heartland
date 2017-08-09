@@ -20,7 +20,7 @@ class CaptureRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023533095', (string) $response->getTransactionReference());
+        $this->assertSame('1023533095', $response->getTransactionReference());
     }
    
     public function testSendError()
@@ -30,6 +30,6 @@ class CaptureRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \'1023533094\'.  Original transaction is already part of a batch.', (string) $response->getMessage());       
+        $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \'1023533094\'.  Original transaction is already part of a batch.', $response->getMessage());       
     }
 }

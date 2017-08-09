@@ -21,8 +21,8 @@ class VoidRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023548675', (string) $response->getTransactionReference());
-        $this->assertSame('Success', (string) $response->getMessage());
+        $this->assertSame('1023548675', $response->getTransactionReference());
+        $this->assertSame('Success', $response->getMessage());
     }
 
     public function testSendError()
@@ -32,6 +32,6 @@ class VoidRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());     
-        $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \'1023548675\'.  Original transaction not found.', (string) $response->getMessage());       
+        $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \'1023548675\'.  Original transaction not found.', $response->getMessage());       
     }
 }

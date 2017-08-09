@@ -20,7 +20,7 @@ class FetchTransactionRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023554648', (string) $response->getTransactionReference());
+        $this->assertSame('1023554648', $response->getTransactionReference());
     }
 
     public function testSendError()

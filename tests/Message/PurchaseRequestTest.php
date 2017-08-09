@@ -27,8 +27,8 @@ class PurchaseRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023524629', (string) $response->getTransactionReference());
-        $this->assertSame('Success', (string) $response->getMessage());
+        $this->assertSame('1023524629', $response->getTransactionReference());
+        $this->assertSame('Success', $response->getMessage());
     }
 
     public function testSendError()
@@ -38,7 +38,20 @@ class PurchaseRequestTest extends TestCase
         
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023529555', (string) $response->getTransactionReference());
-        $this->assertSame('Invalid card data', (string) $response->getMessage());              
+        $this->assertSame('1023529555', $response->getTransactionReference());
+        $this->assertSame('Invalid card data', $response->getMessage());              
+    }
+    
+    public function testSendSuccessWithCard()
+    {
+        $this->setMockHttpResponse('PurchaseSuccess.txt');
+        $this->request->setCardReference(null);
+        $this->request->setCard($this->getValidCard());
+        $response = $this->request->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('1023524629', $response->getTransactionReference());
+        $this->assertSame('Success', $response->getMessage());
     }
 }

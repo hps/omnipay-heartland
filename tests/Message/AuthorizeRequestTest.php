@@ -27,9 +27,9 @@ class AuthorizeRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());        
-        $this->assertSame('1023514041', (string) $response->getTransactionReference());
-        $this->assertSame('Success', (string) $response->getMessage());
-        $this->assertSame('200', (string) $response->getCode());
+        $this->assertSame('1023514041', $response->getTransactionReference());
+        $this->assertSame('Success', $response->getMessage());
+        $this->assertSame('200', $response->getCode());
     }
 
     public function testSendError()
@@ -39,8 +39,8 @@ class AuthorizeRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023522465', (string) $response->getTransactionReference());
-        $this->assertSame('Transaction rejected because the lookup on the supplied token failed.', (string) $response->getMessage());
+        $this->assertSame('1023522465', $response->getTransactionReference());
+        $this->assertSame('Transaction rejected because the lookup on the supplied token failed.', $response->getMessage());
     }
     
     /**

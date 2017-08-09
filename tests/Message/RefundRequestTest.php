@@ -21,8 +21,8 @@ class RefundRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023522835', (string) $response->getTransactionReference());
-        $this->assertSame('Success', (string) $response->getMessage());
+        $this->assertSame('1023522835', $response->getTransactionReference());
+        $this->assertSame('Success', $response->getMessage());
     }
     
     public function testSendError()
@@ -32,6 +32,6 @@ class RefundRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());     
-        $this->assertSame('Transaction rejected because amount to be returned exceeds the original settlement amount or the return amount is zero.', (string) $response->getMessage());       
+        $this->assertSame('Transaction rejected because amount to be returned exceeds the original settlement amount or the return amount is zero.', $response->getMessage());       
     }
 }

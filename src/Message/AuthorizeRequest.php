@@ -88,7 +88,7 @@ use DOMDocument;
  * @see  \Omnipay\Heartland\Gateway
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAuth.html
  */
-class AuthorizeRequest extends AbstractRequest
+class AuthorizeRequest extends AbstractPorticoRequest
 {
 
     /**

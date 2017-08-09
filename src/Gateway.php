@@ -17,14 +17,14 @@ use Omnipay\Common\AbstractGateway;
  *   // Create a gateway for the Heartland Gateway
  *   // (routes to GatewayFactory::create)
  *   $gateway = Omnipay::create('Heartland');
- * 
- *   //Using api key and token 
+ *
+ *   //Using api key and token
  *   // Initialise the gateway
  *   $gateway->initialize(array(
  *       'secretApiKey' => 'MySecretApiKey'
  *       'developerId' => 'MyDeveloperId',
  *       'versionNumber' => 'MyVersionNumber',
- *       'siteTrace' => 'MySiteTrace'  
+ *       'siteTrace' => 'MySiteTrace'
  *   ));
  *
  *   // Do a purchase transaction on the gateway. Either token / cardReference can be used to pass the token
@@ -38,10 +38,10 @@ use Omnipay\Common\AbstractGateway;
  *   //Using api key and credit card details
  *   // Initialise the gateway
  *   $gateway->initialize(array(
- *       'secretApiKey' => 'MySecretApiKey',       
+ *       'secretApiKey' => 'MySecretApiKey',
  *       'developerId' => 'MyDeveloperId',
  *       'versionNumber' => 'MyVersionNumber',
- *       'siteTrace' => 'MySiteTrace'  
+ *       'siteTrace' => 'MySiteTrace'
  *   ));
  *
  *   // Create a credit card object
@@ -68,7 +68,7 @@ use Omnipay\Common\AbstractGateway;
  *       'card'                     => $card,
  *   ));
  *   $response = $transaction->send();
- * 
+ *
  *   //With out api key and credit card details
  *   // Initialise the gateway
  *   $gateway->initialize(array(
@@ -80,7 +80,7 @@ use Omnipay\Common\AbstractGateway;
  *       'soapServiceUri' => 'MySoapServiceUri',
  *       'developerId' => 'MyDeveloperId',
  *       'versionNumber' => 'MyVersionNumber',
- *       'siteTrace' => 'MySiteTrace'  
+ *       'siteTrace' => 'MySiteTrace'
  *   ));
  *
  *   // Create a credit card object
@@ -107,7 +107,7 @@ use Omnipay\Common\AbstractGateway;
  *       'card'                     => $card,
  *   ));
  *   $response = $transaction->send();
- * 
+ *
  *   if ($response->isSuccessful()) {
  *       echo "Purchase transaction was successful!\n";
  *       $sale_id = $response->getTransactionReference();
@@ -123,14 +123,14 @@ use Omnipay\Common\AbstractGateway;
  * Heartland accounts have test-mode Secret API keys as well as live-mode API keys. Data
  * created with test-mode credentials will never hit the credit
  * card networks and will never cost anyone money.
- * 
+ *
  *
  * Setting the testMode flag on this gateway has no effect.  To
  * use test mode just use your test mode Secret API key.
- * 
+ *
  * You can generate your Secret API key in heardland website https://developer.heartlandpaymentsystems.com/Account/KeysandCredentials
- * 
- * If you don't have a Secret API key, You can use your SiteId, DeviceId, licenseId, username and password details 
+ *
+ * If you don't have a Secret API key, You can use your SiteId, DeviceId, licenseId, username and password details
  *
  * You can use any of the cards listed at https://github.com/hps/heartland-php
  * for testing.
@@ -141,12 +141,12 @@ use Omnipay\Common\AbstractGateway;
  * the apiKey parameter when creating the gateway object.
  *
  * @see \Omnipay\Common\AbstractGateway
- * @see \Omnipay\Heartland\Message\AbstractRequest
+ * @see \Omnipay\Heartland\Message\AbstractPorticoRequest
  */
 class Gateway extends AbstractGateway
 {
 
-    public function getName() 
+    public function getName()
     {
         return 'Heartland';
     }
@@ -156,7 +156,7 @@ class Gateway extends AbstractGateway
      *
      * @return array
      */
-    public function getDefaultParameters() 
+    public function getDefaultParameters()
     {
         return array(
             'secretApiKey' => '',
@@ -165,10 +165,10 @@ class Gateway extends AbstractGateway
             'licenseId' => '',
             'username' => '',
             'password' => '',
-            'soapServiceUri' => '',
+            'serviceUri' => '',
             'developerId' => '',
             'versionNumber' => '',
-            'siteTrace' => ''            
+            'siteTrace' => ''
         );
     }
 
@@ -180,7 +180,7 @@ class Gateway extends AbstractGateway
      *
      * @return string
      */
-    public function getSecretApiKey() 
+    public function getSecretApiKey()
     {
         return $this->getParameter('secretApiKey');
     }
@@ -202,7 +202,7 @@ class Gateway extends AbstractGateway
      *
      * Setting the testMode flag on this gateway has no effect.  To
      * use test mode just use your test mode API key.
-     * 
+     *
      * You can get your secret API key in heartland payments developer site
      *
      * @link https://developer.heartlandpaymentsystems.com/Account/KeysandCredentials
@@ -211,113 +211,113 @@ class Gateway extends AbstractGateway
      *
      * @return Gateway provides a fluent interface.
      */
-    public function setSecretApiKey($value) 
+    public function setSecretApiKey($value)
     {
         return $this->setParameter('secretApiKey', $value);
     }
-    
+
     /**
      * Get the gateway Site Id.
      *
      * Authentication is by means of a single secret API key set as
      * the secretApiKey parameter when creating the gateway object.
-     * 
+     *
      * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
      * User name and Password details
      *
      * @return string
      */
-    public function getSiteId() 
+    public function getSiteId()
     {
         return $this->getParameter('siteId');
     }
-    
-    public function setSiteId($value) 
+
+    public function setSiteId($value)
     {
         return $this->setParameter('siteId', $value);
     }
-    
-    public function getDeviceId() 
+
+    public function getDeviceId()
     {
         return $this->getParameter('deviceId');
     }
-    
-    public function setDeviceId($value) 
+
+    public function setDeviceId($value)
     {
         return $this->setParameter('deviceId', $value);
     }
-    
-    public function getLicenseId() 
+
+    public function getLicenseId()
     {
         return $this->getParameter('licenseId');
     }
-    
-    public function setLicenseId($value) 
+
+    public function setLicenseId($value)
     {
         return $this->setParameter('licenseId', $value);
     }
-    
-    public function getUsername() 
+
+    public function getUsername()
     {
         return $this->getParameter('username');
     }
-    
-    public function setUsername($value) 
+
+    public function setUsername($value)
     {
         return $this->setParameter('username', $value);
     }
-    
-    public function getPassword() 
+
+    public function getPassword()
     {
         return $this->getParameter('password');
     }
-    
-    public function setPassword($value) 
+
+    public function setPassword($value)
     {
         return $this->setParameter('password', $value);
     }
-    
-    public function getDeveloperId() 
+
+    public function getDeveloperId()
     {
         return $this->getParameter('developerId');
     }
-    
-    public function setDeveloperId($value) 
+
+    public function setDeveloperId($value)
     {
         return $this->setParameter('developerId', $value);
     }
-    
-    public function getVersionNumber() 
+
+    public function getVersionNumber()
     {
         return $this->getParameter('versionNumber');
     }
-    
-    public function setVersionNumber($value) 
+
+    public function setVersionNumber($value)
     {
         return $this->setParameter('versionNumber', $value);
     }
-    
-    public function getSiteTrace() 
+
+    public function getSiteTrace()
     {
         return $this->getParameter('siteTrace');
     }
-    
-    public function setSiteTrace($value) 
+
+    public function setSiteTrace($value)
     {
         return $this->setParameter('siteTrace', $value);
     }
-    
-    public function getSoapServiceUri() 
+
+    public function getServiceUri()
     {
-        return $this->getParameter('soapServiceUri');
+        return $this->getParameter('serviceUri');
     }
-    
-    public function setSoapServiceUri($value) 
+
+    public function setServiceUri($value)
     {
-        return $this->setParameter('soapServiceUri', $value);
+        return $this->setParameter('serviceUri', $value);
     }
-    
-    
+
+
     /**
      * Authorize Request.
      *
@@ -327,14 +327,14 @@ class Gateway extends AbstractGateway
      * in order to effect payment. Uncaptured charges expire in 7 days.
      *
      * Either a payment token or a card is required.  Token is like the ones returned by
-     * securesubmit.js, or a dictionary containing a user's credit card details. 
+     * securesubmit.js, or a dictionary containing a user's credit card details.
      * Either token / cardReference parameters can be used to pass the token
      *
      * @param array $parameters
      *
      * @return \Omnipay\Heartland\Message\AuthorizeRequest
      */
-    public function authorize(array $parameters = array()) 
+    public function authorize(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Heartland\Message\AuthorizeRequest', $parameters);
     }
@@ -348,9 +348,9 @@ class Gateway extends AbstractGateway
      *
      * @return \Omnipay\Heartland\Message\CaptureRequest
      */
-    public function capture(array $parameters = array()) 
+    public function capture(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Heartland\Message\CaptureRequest', $parameters);        
+        return $this->createRequest('\Omnipay\Heartland\Message\CaptureRequest', $parameters);
     }
 
     /**
@@ -368,7 +368,7 @@ class Gateway extends AbstractGateway
      *
      * @return \Omnipay\Heartland\Message\PurchaseRequest
      */
-    public function purchase(array $parameters = array()) 
+    public function purchase(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Heartland\Message\PurchaseRequest', $parameters);
     }
@@ -423,7 +423,7 @@ class Gateway extends AbstractGateway
     public function reverse(array $parameters = array()) {
         return $this->createRequest('\Omnipay\Heartland\Message\ReverseRequest', $parameters);
     }
-    
+
     /**
      * @param array $parameters
      *

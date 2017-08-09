@@ -393,8 +393,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'Accept' => 'text/xml',
             'SOAPAction' => '""',
             'Content-Length' => '' . strlen($data),
-        );
-        
+        );        
+
         try {
             $config = $this->httpClient->getConfig();
             $curlOptions = $config->get('curl.options');
@@ -435,7 +435,23 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 throw new InvalidResponseException($err_msg);
             }
             //process the response
-            return new Response($this, $response, $this->getTransactionType());
+            $gatewayResponse = new Response($this, $response, $this->getTransactionType());           
+            
+            //perform reversal incase of gateway error
+            if ($gatewayResponse->getTransactionReference() != null && $gatewayResponse->reversalRequired === true) {
+                try {                     
+                    $reverseRequest = new ReverseRequest($this->httpClient, $this->httpRequest); 
+                    $reverseRequest->initialize($this->getParameters());
+                    $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
+                    $reverseResponse = $reverseRequest->send();
+                } catch (Exception $e) {
+                    throw new InvalidResponseException('Error occurred while reversing a charge due to HPS issuer timeout. '.$e->getMessage());
+                    return;
+                }
+            }
+            
+            return $gatewayResponse;
+            
         } catch (Exception $e) {
             throw new InvalidRequestException($e->getMessage());
         }
@@ -544,6 +560,37 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         return $directMktDataElement;
     }
+    
+    
+    
+    private function curlreq($url, $headers, $data, $httpVerb){
+
+        $request = curl_init();
+        curl_setopt($request, CURLOPT_URL, $url);
+        curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 100);
+        curl_setopt($request, CURLOPT_TIMEOUT, 100);
+        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($request, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($request, CURLOPT_SSL_VERIFYHOST, false);
+        if ($data != null) {
+        curl_setopt($request, CURLOPT_CUSTOMREQUEST, $httpVerb);
+        curl_setopt($request, CURLOPT_POSTFIELDS, $data);
+        }
+        curl_setopt($request, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($request, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
+
+
+
+        $curlResponse = curl_exec($request);
+        $curlInfo = curl_getinfo($request);
+        $curlError = curl_errno($request);
+        
+        echo '<pre>';
+        print_r($curlResponse);
+        print_r($curlInfo);
+        print_r($curlError);
+        echo '</pre>';
+}
 
     // endregion
 }

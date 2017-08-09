@@ -94,10 +94,7 @@ class ReverseRequest extends AbstractRequest {
             }
             $hpsBlock1->appendChild($cardData);
         }
-
-        if ($this->getCard()) {
-            $hpsBlock1->appendChild($this->hydrateCardHolderData($xml));
-        }
+        
         if ($this->getTransactionId()) {
             $hpsBlock1->appendChild($this->hydrateAdditionalTxnFields($xml));
         }

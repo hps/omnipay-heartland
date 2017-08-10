@@ -119,7 +119,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 if (extension_loaded('openssl') && OPENSSL_VERSION_NUMBER < static::MIN_OPENSSL_VER) {
                     // then you don't have openSSL 1.0.1c or greater
                     $err_msg .= 'Your current version of OpenSSL is ' . OPENSSL_VERSION_TEXT . 'You do not '
-                        . 'have the minimum version of OpenSSL 1.0.1c which is required for curl to use TLS 1.2 handshake.';
+                        . 'have the minimum version of OpenSSL 1.0.1c which is required for curl to use TLS '
+                        . '1.2 handshake.';
                 }
                 throw new InvalidResponseException($err_msg);
             }
@@ -134,7 +135,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                     $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
                     $reverseResponse = $reverseRequest->send();
                 } catch (Exception $e) {
-                    throw new InvalidResponseException('Error occurred while reversing a charge due to HPS issuer timeout. '.$e->getMessage());
+                    throw new InvalidResponseException(
+                        'Error occurred while reversing a charge due to HPS issuer timeout. '
+                        . $e->getMessage()
+                    );
                     return;
                 }
             }

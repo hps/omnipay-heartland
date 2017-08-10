@@ -17,7 +17,7 @@ use DOMDocument;
  * in order to effect payment. Uncaptured charges expire in 7 days.
  *
  * Either a payment token or a card is required.  Token is like the ones returned by
- * securesubmit.js, or a dictionary containing a user's credit card details. 
+ * securesubmit.js, or a dictionary containing a user's credit card details.
  * Either token / cardReference parameters can be used to pass the token
  *
  * Example:
@@ -37,12 +37,12 @@ use DOMDocument;
  *       'password' => 'MyPassword',
  *       'developerId' => 'developerId',
  *       'versionNumber' => 'versionNumber',
- *       'siteTrace' => 'siteTrace'  
- * 
+ *       'siteTrace' => 'siteTrace'
+ *
  *   ));
  *
  *   // By using card details
- * 
+ *
  *   // Create a credit card object
  *   // This card can be used for testing.
  *   $card = new CreditCard(array(
@@ -59,7 +59,7 @@ use DOMDocument;
  *      'billingPostcode'       => '4999',
  *      'billingState'          => 'QLD',
  *   ));
- *      
+ *
  *   // Do an authorize transaction on the gateway
  *   $transaction = $gateway->authorize(array(
  *       'amount'                   => '10.00',
@@ -67,16 +67,16 @@ use DOMDocument;
  *       'description'              => 'This is a test authorize transaction.',
  *       'card'                     => $card,
  *   ));
- * 
+ *
  *   //By using token details
  *   $transaction = $gateway->authorize(array(
  *       'amount'                   => '10.00',
  *       'currency'                 => 'USD',
  *       'description'              => 'This is a test authorize transaction.'
  *   ));
- * 
+ *
  *   $transaction->setToken('abc-123');
- * 
+ *
  *   $response = $transaction->send();
  *   if ($response->isSuccessful()) {
  *       echo "Authorize transaction was successful!\n";
@@ -86,22 +86,23 @@ use DOMDocument;
  * </code>
  *
  * @see  \Omnipay\Heartland\Gateway
+ * @codingStandardsIgnoreStart
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAuth.html
+ * @codingStandardsIgnoreEnd
  */
 class AuthorizeRequest extends AbstractPorticoRequest
 {
-
     /**
      * @return string
      */
-    public function getTransactionType() 
+    public function getTransactionType()
     {
         return 'CreditAuth';
     }
 
-    public function getData() 
+    public function getData()
     {
-        parent::getData();        
+        parent::getData();
 
         $amount = $this->getAmount();
         $xml = new DOMDocument();
@@ -137,5 +138,4 @@ class AuthorizeRequest extends AbstractPorticoRequest
 
         return $hpsTransaction;
     }
-
 }

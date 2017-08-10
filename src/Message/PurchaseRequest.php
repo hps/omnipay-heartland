@@ -37,12 +37,12 @@ namespace Omnipay\Heartland\Message;
  *       'password' => 'MyPassword',
  *       'developerId' => 'developerId',
  *       'versionNumber' => 'versionNumber',
- *       'siteTrace' => 'siteTrace' 
- * 
+ *       'siteTrace' => 'siteTrace'
+ *
  *   ));
  *
  *   // By using card details
- * 
+ *
  *   // Create a credit card object
  *   // This card can be used for testing.
  *   $card = new CreditCard(array(
@@ -67,16 +67,16 @@ namespace Omnipay\Heartland\Message;
  *       'description'              => 'This is a test purchase transaction.',
  *       'card'                     => $card,
  *   ));
- * 
+ *
  *   //By using token details
  *   $transaction = $gateway->authorize(array(
  *       'amount'                   => '10.00',
  *       'currency'                 => 'USD',
  *       'description'              => 'This is a test authorize transaction.'
  *   ));
- * 
+ *
  *   $transaction->setToken('abc-123');
- * 
+ *
  *   $response = $transaction->send();
  *   if ($response->isSuccessful()) {
  *       echo "Purchase transaction was successful!\n";
@@ -90,12 +90,13 @@ namespace Omnipay\Heartland\Message;
  * class and over-rides the getData method setting capture = true.
  *
  * @see  \Omnipay\Heartland\Gateway
+ * @codingStandardsIgnoreStart
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditSale.html
+ * @codingStandardsIgnoreEnd
  * @package Omnipay\Heartland\Message
  */
 class PurchaseRequest extends AuthorizeRequest
 {
-    
     /**
      * @return string
      */
@@ -103,5 +104,4 @@ class PurchaseRequest extends AuthorizeRequest
     {
         return 'CreditSale';
     }
-    
 }

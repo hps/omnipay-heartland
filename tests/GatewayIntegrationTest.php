@@ -169,25 +169,23 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \''.$transactionRef.'\'.  Original transaction is already part of a batch.', $response->getMessage());
     }
-    
+
     public function testcreateCustomer() {
         // createCustomer
         $request = $this->gateway->createCustomer(array(
             'card' => $this->getValidCard()
         ));
         $request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
-        
-        $response = $request->send();        
+
+        $response = $request->send();
         $this->assertTrue($response->isSuccessful(), 'createCustomer should succeed');
-        $transactionRef = $response->getTransactionReference();      
+        $transactionRef = $response->getTransactionReference();
     }
 
     public function testFetchSchedules()
     {
         $request = $this->gateway->fetchSchedules();
         $response = $request->send();
-
-        print_r($response);
 
         $this->assertTrue($response->isSuccessful(), 'Fetch Schedules should succeed');
     }

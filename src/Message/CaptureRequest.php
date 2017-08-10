@@ -52,7 +52,7 @@ class CaptureRequest extends AbstractRequest
     {
         parent::getData();
         $this->validate('transactionReference');
-        $amount = $this->getAmountInteger();
+        $amount = $this->getAmount();
 
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');

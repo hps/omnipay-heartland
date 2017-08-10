@@ -229,6 +229,40 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     // endregion
     // region Parameters
+    
+    /**
+     * Get the card data.
+     *
+     * Because the heartland gateway uses a common format for passing
+     * card data to the API, this function can be called to get the
+     * data from the associated card object in the format that the
+     * API requires.
+     *
+     * @return array
+     */
+    protected function getCardData() {
+        $card = $this->getCard();
+        $card->validate();
+
+        $data = array();
+        $data['object'] = 'card';
+        $data['number'] = $card->getNumber();
+        $data['exp_month'] = $card->getExpiryMonth();
+        $data['exp_year'] = $card->getExpiryYear();
+        if ($card->getCvv()) {
+            $data['cvc'] = $card->getCvv();
+        }
+        $data['name'] = $card->getName();
+        $data['address_line1'] = $card->getAddress1();
+        $data['address_line2'] = $card->getAddress2();
+        $data['address_city'] = $card->getCity();
+        $data['address_zip'] = $card->getPostcode();
+        $data['address_state'] = $card->getState();
+        $data['address_country'] = $card->getCountry();
+        $data['email'] = $card->getEmail();
+
+        return $data;
+    }
 
     // region Heartland Soap Building
     public function getData() 
@@ -240,7 +274,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $this->validate('secretApiKey');
         }      
         
-        $cardNotRequired = array('CreditAddToBatch');
+        $cardNotRequired = array('CreditAddToBatch', 'CreditVoid', 'CreditReturn', 'CreditReversal');
         if (in_array($this->getTransactionType(), $cardNotRequired) === false) {            
             //check the token value in card reference
             if ($this->getToken() == null && $this->getCardReference() != null) {
@@ -343,8 +377,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             return $this->_config->soapServiceUri;
         }
     }
-
-    /**
+    
+/**
      * @param        $url
      * @param null $data     
      *
@@ -359,7 +393,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'Accept' => 'text/xml',
             'SOAPAction' => '""',
             'Content-Length' => '' . strlen($data),
-        );
+        );        
+
         try {
             $config = $this->httpClient->getConfig();
             $curlOptions = $config->get('curl.options');
@@ -378,19 +413,21 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                     }
                 }
             );
-
-            $httpResponse = $this->httpClient->post($url, $headers, $data)->send();
+            
+            $httpResponse = $this->httpClient->post($url, $headers, $data)->send();     
+            
+            //get complete response string            
+            //echo (string) $httpResponse;
 
             $response = new \stdClass();
             $response->response = (string) $httpResponse->getBody();
-            $response->info = $httpResponse->getInfo();
-            $response->error = $httpResponse->getStatusCode();
+            $response->status = $httpResponse->getStatusCode();            
             
-            if ($response->error == 28) { //CURLE_OPERATION_TIMEOUTED
+            if ($response->status == 28) { //CURLE_OPERATION_TIMEOUTED
                 throw new InvalidResponseException("gateway_time-out");
             }
 
-            if ($response->error == 35) { //CURLE_SSL_CONNECT_ERROR
+            if ($response->status == 35) { //CURLE_SSL_CONNECT_ERROR
                 $err_msg = 'PHP-SDK cURL TLS 1.2 handshake failed. If you have any questions, please contact Specialty Products Team at 866.802.9753.';
                 if (extension_loaded('openssl') && OPENSSL_VERSION_NUMBER < self::MIN_OPENSSL_VER) { // then you don't have openSSL 1.0.1c or greater
                     $err_msg .= 'Your current version of OpenSSL is ' . OPENSSL_VERSION_TEXT . 'You do not have the minimum version of OpenSSL 1.0.1c which is required for curl to use TLS 1.2 handshake.';
@@ -398,7 +435,23 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 throw new InvalidResponseException($err_msg);
             }
             //process the response
-            return new Response($this, $response, $this->getTransactionType());
+            $gatewayResponse = new Response($this, $response, $this->getTransactionType());           
+            
+            //perform reversal incase of gateway error
+            if ($gatewayResponse->getTransactionReference() != null && $gatewayResponse->reversalRequired === true) {
+                try {                     
+                    $reverseRequest = new ReverseRequest($this->httpClient, $this->httpRequest); 
+                    $reverseRequest->initialize($this->getParameters());
+                    $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
+                    $reverseResponse = $reverseRequest->send();
+                } catch (Exception $e) {
+                    throw new InvalidResponseException('Error occurred while reversing a charge due to HPS issuer timeout. '.$e->getMessage());
+                    return;
+                }
+            }
+            
+            return $gatewayResponse;
+            
         } catch (Exception $e) {
             throw new InvalidRequestException($e->getMessage());
         }
@@ -507,6 +560,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         return $directMktDataElement;
     }
+        
 
     // endregion
 }

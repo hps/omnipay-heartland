@@ -2,9 +2,6 @@
 
 namespace Omnipay\Heartland\Message;
 
-use Omnipay\Common\Exception\InvalidRequestException;
-use Omnipay\Common\Exception\InvalidResponseException;
-
 /**
  * Class HpsIssuerResponseValidation
  */
@@ -105,7 +102,7 @@ class HpsIssuerResponseValidation
         );
 
         if ($e != null) {
-            throw $e;
+            return $e;
         }
     }
     /**
@@ -133,7 +130,7 @@ class HpsIssuerResponseValidation
         }
 
         if (in_array($responseCode, $acceptedCodes)) {
-            return null;
+            return 'Success';
         }
 
         $code = null;
@@ -142,7 +139,7 @@ class HpsIssuerResponseValidation
         }
 
         if ($code == null) {
-            return new InvalidResponseException(
+            return static::formResponseException(
                 self::$_creditExceptionCodeToMessage[HpsExceptionCodes::UNKNOWN_CREDIT_ERROR],
                 HpsExceptionCodes::UNKNOWN_CREDIT_ERROR
             );
@@ -155,6 +152,14 @@ class HpsIssuerResponseValidation
             $message = 'Unknown issuer error';
         }
 
-        return new InvalidResponseException($message, $code);
+        return static::formResponseException($message, $code);
+    }
+    
+    public static function formResponseException($responseException, $exceptionCode = '')
+    {
+        $exception = new \stdClass();
+        $exception->message = $responseException;
+        $exception->code = $exceptionCode;
+        return $exception;
     }
 }

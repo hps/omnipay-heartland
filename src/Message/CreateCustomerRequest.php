@@ -86,38 +86,278 @@ class CreateCustomerRequest extends AbstractPayPlanRequest
     private $alphabet = 'abcdefghijklmnopqrstuvwxyz';
     const ACTIVE   = 'Active';
     const INACTIVE = 'Inactive';
-    
+
     /**
      * @return string
      */
     public function getTransactionType()
     {
-        return 'HpsPayPlanCustomerAdd';
+        return 'PayPlanCustomerAdd';
     }
-    
+
     public function getData()
     {
         parent::getData();
-        $this->validate('card');
-        $data = array();
-        $data['description'] = $this->getDescription();
-        
-        $creditCard = $this->getCard();
-        
-        date_default_timezone_set('UTC');
-        $id = date('Ymd').'-SecureSubmit-'.substr(str_shuffle($this->alphabet), 0, 10);
-        $data['customerIdentifier'] = $id;
-        $data['firstName']          = $creditCard->getBillingFirstName();
-        $data['lastName']           = $creditCard->getBillingLastName();
-        $data['company']            = $creditCard->getBillingCompany();
-        $data['country']            = $creditCard->getBillingCountry();
-        $data['customerStatus']     = self::ACTIVE;
-        
-        $data['http'] = array(
-            'verb'     => 'POST',
-            'uri' => '/customers',
-        );
 
-        return $data;
+        return array_merge($this->getParameters(), array(
+            'customerIdentifier' => $this->getCustomerIdentifier(),
+            'customerStatus'     => $this->getCustomerStatus(),
+            'http' => array(
+              'uri' => 'customers',
+              'verb' => 'POST'
+            ),
+        ));
+    }
+
+    public function setCustomerIdentifier($value)
+    {
+        $this->setParameter('customerIdentifier', $value);
+        return $this;
+    }
+
+    public function getCustomerIdentifier()
+    {
+        return $this->getParameter('customerIdentifier') !== null && $this->getParameter('customerIdentifier') !== ''
+            ? $this->getParameter('customerIdentifier')
+            : $this->generateIdentifier();
+    }
+
+    public function setFirstName($value)
+    {
+        $this->setParameter('firstName', $value);
+        return $this;
+    }
+
+    public function getFirstName()
+    {
+        return $this->getParameter('firstName');
+    }
+
+    public function setLastName($value)
+    {
+        $this->setParameter('lastName', $value);
+        return $this;
+    }
+
+    public function getLastName()
+    {
+        return $this->getParameter('lastName');
+    }
+
+    public function setCompany($value)
+    {
+        $this->setParameter('company', $value);
+        return $this;
+    }
+
+    public function getCompany()
+    {
+        return $this->getParameter('company');
+    }
+
+    public function setCustomerStatus($value)
+    {
+        $this->setParameter('customerStatus', $value);
+        return $this;
+    }
+
+    public function getCustomerStatus()
+    {
+        return $this->getParameter('customerStatus') !== null && $this->getParameter('customerStatus') !== ''
+            ? $this->getParameter('customerStatus')
+            : static::ACTIVE;
+    }
+
+    public function setTitle($value)
+    {
+        $this->setParameter('title', $value);
+        return $this;
+    }
+
+    public function getTitle()
+    {
+        return $this->getParameter('title');
+    }
+
+    public function setDepartment($value)
+    {
+        $this->setParameter('department', $value);
+        return $this;
+    }
+
+    public function getDepartment()
+    {
+        return $this->getParameter('department');
+    }
+
+    public function setPrimaryEmail($value)
+    {
+        $this->setParameter('primaryEmail', $value);
+        return $this;
+    }
+
+    public function getPrimaryEmail()
+    {
+        return $this->getParameter('primaryEmail');
+    }
+
+    public function setSecondaryEmail($value)
+    {
+        $this->setParameter('secondaryEmail', $value);
+        return $this;
+    }
+
+    public function getSecondaryEmail()
+    {
+        return $this->getParameter('secondaryEmail');
+    }
+
+    public function setPhoneDay($value)
+    {
+        $this->setParameter('phoneDay', $value);
+        return $this;
+    }
+
+    public function getPhoneDay()
+    {
+        return $this->getParameter('phoneDay');
+    }
+
+    public function setPhoneDayExt($value)
+    {
+        $this->setParameter('phoneDayExt', $value);
+        return $this;
+    }
+
+    public function getPhoneDayExt()
+    {
+        return $this->getParameter('phoneDayExt');
+    }
+
+    public function setPhoneEvening($value)
+    {
+        $this->setParameter('phoneEvening', $value);
+        return $this;
+    }
+
+    public function getPhoneEvening()
+    {
+        return $this->getParameter('phoneEvening');
+    }
+
+    public function setPhoneEveningExt($value)
+    {
+        $this->setParameter('phoneEveningExt', $value);
+        return $this;
+    }
+
+    public function getPhoneEveningExt()
+    {
+        return $this->getParameter('phoneEveningExt');
+    }
+
+    public function setPhoneMobile($value)
+    {
+        $this->setParameter('phoneMobile', $value);
+        return $this;
+    }
+
+    public function getPhoneMobile()
+    {
+        return $this->getParameter('phoneMobile');
+    }
+
+    public function setPhoneMobileExt($value)
+    {
+        $this->setParameter('phoneMobileExt', $value);
+        return $this;
+    }
+
+    public function getPhoneMobileExt()
+    {
+        return $this->getParameter('phoneMobileExt');
+    }
+
+    public function setFax($value)
+    {
+        $this->setParameter('fax', $value);
+        return $this;
+    }
+
+    public function getFax()
+    {
+        return $this->getParameter('fax');
+    }
+
+    public function setAddressLine1($value)
+    {
+        $this->setParameter('addressLine1', $value);
+        return $this;
+    }
+
+    public function getAddressLine1()
+    {
+        return $this->getParameter('addressLine1');
+    }
+
+    public function setAddressLine2($value)
+    {
+        $this->setParameter('addressLine2', $value);
+        return $this;
+    }
+
+    public function getAddressLine2()
+    {
+        return $this->getParameter('addressLine2');
+    }
+
+    public function setCity($value)
+    {
+        $this->setParameter('city', $value);
+        return $this;
+    }
+
+    public function getCity()
+    {
+        return $this->getParameter('city');
+    }
+
+    public function setStateProvince($value)
+    {
+        $this->setParameter('stateProvince', $value);
+        return $this;
+    }
+
+    public function getStateProvince()
+    {
+        return $this->getParameter('stateProvince');
+    }
+
+    public function setZipPostalCode($value)
+    {
+        $this->setParameter('zipPostalCode', $value);
+        return $this;
+    }
+
+    public function getZipPostalCode()
+    {
+        return $this->getParameter('zipPostalCode');
+    }
+
+    public function setCountry($value)
+    {
+        $this->setParameter('country', $value);
+        return $this;
+    }
+
+    public function getCountry()
+    {
+        return $this->getParameter('country');
+    }
+
+    protected function generateIdentifier()
+    {
+        $format = '%s-Omnipay-%s';
+        return sprintf($format, date('Ymd'), substr(str_shuffle($this->alphabet), 0, 10));
     }
 }

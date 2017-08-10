@@ -170,16 +170,54 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \''.$transactionRef.'\'.  Original transaction is already part of a batch.', $response->getMessage());
     }
 
-    public function testcreateCustomer() {
+    public function testCreateCustomerMinimumData()
+    {
         // createCustomer
         $request = $this->gateway->createCustomer(array(
-            'card' => $this->getValidCard()
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
         ));
-        $request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
-
         $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'createCustomer should succeed');
-        $transactionRef = $response->getTransactionReference();
+
+        $this->assertTrue($response->isSuccessful(), 'Create Customer should succeed');
+    }
+
+    public function testCreateCustomerAllData()
+    {
+        $customerData = array(
+            'customerIdentifier' => base64_encode(random_bytes(22)),
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'company' => 'Acme',
+            'customerStatus' => 'Active',
+            'title' => 'Employee',
+            'department' => 'N A',
+            'primaryEmail' => 'john.doe@acme.com',
+            'secondaryEmail' => 'john.doe@email.com',
+            'phoneDay' => '5551112222',
+            'phoneDayExt' => '123',
+            'phoneEvening' => '5551112222',
+            'phoneEveningExt' => '123',
+            'phoneMobile' => '5551112222',
+            'phoneMobileExt' => '123',
+            'fax' => '5551112222',
+            'addressLine1' => '123 Main St.',
+            'addressLine2' => 'Suite 1A',
+            'city' => 'Anytown',
+            'stateProvince' => 'TX',
+            'zipPostalCode' => '75024',
+            'country' => 'USA',
+        );
+
+        // createCustomer
+        $request = $this->gateway->createCustomer($customerData);
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), 'Create Customer should succeed');
+        foreach ($customerData as $key => $value) {
+            $this->assertSame($value, $response->getData()[$key]);
+        }
     }
 
     public function testFetchSchedules()

@@ -180,7 +180,7 @@ class GatewayIntegrationTest extends TestCase {
         ));
         $response = $request->send();
 
-        $this->assertTrue($response->isSuccessful(), 'Create Customer should succeed');
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 
     public function testCreateCustomerAllData()
@@ -214,10 +214,32 @@ class GatewayIntegrationTest extends TestCase {
         $request = $this->gateway->createCustomer($customerData);
         $response = $request->send();
 
-        $this->assertTrue($response->isSuccessful(), 'Create Customer should succeed');
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
         foreach ($customerData as $key => $value) {
             $this->assertSame($value, $response->getData()[$key]);
         }
+    }
+
+    public function testUpdateCustomer()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // updateCustomer
+        $customer = $response->getData();
+        $customer['customerStatus'] = 'Inactive';
+        $request = $this->gateway->updateCustomer($customer);
+
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 
     public function testFetchSchedules()
@@ -225,6 +247,6 @@ class GatewayIntegrationTest extends TestCase {
         $request = $this->gateway->fetchSchedules();
         $response = $request->send();
 
-        $this->assertTrue($response->isSuccessful(), 'Fetch Schedules should succeed');
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 }

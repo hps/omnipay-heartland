@@ -40,7 +40,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertSame('10.00', $request->getAmount());
     }
 
-    
+
     public function testRefund()
     {
         $request = $this->gateway->refund(array('amount' => '10.00'));
@@ -55,7 +55,7 @@ class GatewayTest extends GatewayTestCase
 
         $this->assertInstanceOf('Omnipay\Heartland\Message\VoidRequest', $request);
     }
-    
+
     public function testReversal()
     {
         $request = $this->gateway->reverse();
@@ -68,5 +68,16 @@ class GatewayTest extends GatewayTestCase
         $request = $this->gateway->fetchTransaction(array());
 
         $this->assertInstanceOf('Omnipay\Heartland\Message\FetchTransactionRequest', $request);
+    }
+
+    public function testRecurring()
+    {
+        $request = $this->gateway->recurring([
+            'amount' => '10',
+            'currency' => 'usd',
+            'cardReference' => '12345678',
+        ]);
+
+        $this->assertInstanceOf(\Omnipay\Heartland\Message\RecurringBillingRequest::class, $request);
     }
 }

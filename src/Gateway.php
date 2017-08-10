@@ -128,7 +128,8 @@ use Omnipay\Common\AbstractGateway;
  * Setting the testMode flag on this gateway has no effect.  To
  * use test mode just use your test mode Secret API key.
  *
- * You can generate your Secret API key in heardland website https://developer.heartlandpaymentsystems.com/Account/KeysandCredentials
+ * You can generate your Secret API key in heardland website
+ * https://developer.heartlandpaymentsystems.com/Account/KeysandCredentials
  *
  * If you don't have a Secret API key, You can use your SiteId, DeviceId, licenseId, username and password details
  *
@@ -145,7 +146,6 @@ use Omnipay\Common\AbstractGateway;
  */
 class Gateway extends AbstractGateway
 {
-
     public function getName()
     {
         return 'Heartland';
@@ -209,7 +209,7 @@ class Gateway extends AbstractGateway
      *
      * @param string $value
      *
-     * @return Gateway provides a fluent interface.
+     * @return \Omnipay\Common\Message\AbstractRequest
      */
     public function setSecretApiKey($value)
     {
@@ -232,91 +232,265 @@ class Gateway extends AbstractGateway
         return $this->getParameter('siteId');
     }
 
+    /**
+     * Set the gateway Site Id.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setSiteId($value)
     {
         return $this->setParameter('siteId', $value);
     }
 
+    /**
+     * Get the gateway Device Id.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @return string
+     */
     public function getDeviceId()
     {
         return $this->getParameter('deviceId');
     }
 
+    /**
+     * Set the gateway Device Id.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setDeviceId($value)
     {
         return $this->setParameter('deviceId', $value);
     }
 
+    /**
+     * Get the gateway License Id.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @return string
+     */
     public function getLicenseId()
     {
         return $this->getParameter('licenseId');
     }
 
+    /**
+     * Set the gateway License Id.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setLicenseId($value)
     {
         return $this->setParameter('licenseId', $value);
     }
 
+    /**
+     * Get the gateway username.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @return string
+     */
     public function getUsername()
     {
         return $this->getParameter('username');
     }
 
+    /**
+     * Set the gateway username.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setUsername($value)
     {
         return $this->setParameter('username', $value);
     }
 
+    /**
+     * Get the gateway password.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @return string
+     */
     public function getPassword()
     {
         return $this->getParameter('password');
     }
 
+    /**
+     * Get the gateway password.
+     *
+     * Authentication is by means of a single secret API key set as
+     * the secretApiKey parameter when creating the gateway object.
+     *
+     * When you don't have a Secret API Key you can use your Site Id, Device Id, License Id
+     * User name and Password details
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setPassword($value)
     {
         return $this->setParameter('password', $value);
     }
 
+    /**
+     * Get the integration developer ID.
+     *
+     * The developer ID, in conjunction with the version number, is used to identify a
+     * specific integration.
+     *
+     * @return string
+     */
     public function getDeveloperId()
     {
         return $this->getParameter('developerId');
     }
 
+    /**
+     * Set the integration developer ID.
+     *
+     * The developer ID, in conjunction with the version number, is used to identify a
+     * specific integration.
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setDeveloperId($value)
     {
         return $this->setParameter('developerId', $value);
     }
 
+    /**
+     * Get the integration version number.
+     *
+     * The version number, in conjunction with the developer ID, is used to identify a
+     * specific integration.
+     *
+     * @return string
+     */
     public function getVersionNumber()
     {
         return $this->getParameter('versionNumber');
     }
 
+    /**
+     * Set the integration version number.
+     *
+     * The version number, in conjunction with the developer ID, is used to identify a
+     * specific integration.
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setVersionNumber($value)
     {
         return $this->setParameter('versionNumber', $value);
     }
 
+    /**
+     * Get the gateway site trace value.
+     *
+     * This can be used to debug issues with the gateway.
+     *
+     * @return string
+     */
     public function getSiteTrace()
     {
         return $this->getParameter('siteTrace');
     }
 
+    /**
+     * Set the gateway site trace value.
+     *
+     * This can be used to debug issues with the gateway.
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setSiteTrace($value)
     {
         return $this->setParameter('siteTrace', $value);
     }
 
+    /**
+     * Get the gateway service URI
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function getServiceUri()
     {
         return $this->getParameter('serviceUri');
     }
 
+    /**
+     * Set the gateway service URI
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setServiceUri($value)
     {
         return $this->setParameter('serviceUri', $value);
     }
-
 
     /**
      * Authorize Request.
@@ -389,7 +563,8 @@ class Gateway extends AbstractGateway
      *
      * @return \Omnipay\Heartland\Message\RefundRequest
      */
-    public function refund(array $parameters = array()) {
+    public function refund(array $parameters = array())
+    {
         return $this->createRequest('\Omnipay\Heartland\Message\RefundRequest', $parameters);
     }
 
@@ -400,7 +575,8 @@ class Gateway extends AbstractGateway
      *
      * @return \Omnipay\Heartland\Message\VoidRequest
      */
-    public function void(array $parameters = array()) {
+    public function void(array $parameters = array())
+    {
         return $this->createRequest('\Omnipay\Heartland\Message\VoidRequest', $parameters);
     }
 
@@ -420,17 +596,18 @@ class Gateway extends AbstractGateway
      *
      * @return \Omnipay\Heartland\Message\RefundRequest
      */
-    public function reverse(array $parameters = array()) {
+    public function reverse(array $parameters = array())
+    {
         return $this->createRequest('\Omnipay\Heartland\Message\ReverseRequest', $parameters);
     }
 
     /**
      * @param array $parameters
      *
-     * @return \Omnipay\Stripe\Message\FetchTransactionRequest
+     * @return \Omnipay\Heartland\Message\FetchTransactionRequest
      */
-    public function fetchTransaction(array $parameters = array()) {
+    public function fetchTransaction(array $parameters = array())
+    {
         return $this->createRequest('\Omnipay\Heartland\Message\FetchTransactionRequest', $parameters);
     }
-
 }

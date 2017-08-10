@@ -29,26 +29,27 @@ use DOMDocument;
  *       'amount'        => '10.00',
  *       'currency'      => 'USD'
  *   ));
- *   $transaction->setTransactionReference($auth_id); 
+ *   $transaction->setTransactionReference($auth_id);
 
  *   $response = $transaction->send();
  * </code>
  *
  * @see  CaptureRequest
+ * @codingStandardsIgnoreStart
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAddToBatch.html
+ * @codingStandardsIgnoreStart
  */
 class CaptureRequest extends AbstractPorticoRequest
 {
-
     /**
      * @return string
      */
-    public function getTransactionType() 
+    public function getTransactionType()
     {
         return 'CreditAddToBatch';
     }
 
-    public function getData() 
+    public function getData()
     {
         parent::getData();
         $this->validate('transactionReference');
@@ -64,10 +65,9 @@ class CaptureRequest extends AbstractPorticoRequest
             $hpsCreditAddToBatch->appendChild($xml->createElement('hps:Amt', $amount));
         }
         $hpsCreditAddToBatch->appendChild($this->hydrateDirectMarketData($xml));
-        
+
         $hpsTransaction->appendChild($hpsCreditAddToBatch);
 
         return $hpsTransaction;
     }
-
 }

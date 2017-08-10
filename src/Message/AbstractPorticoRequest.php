@@ -16,7 +16,7 @@ use DOMDocument;
 
 abstract class AbstractPorticoRequest extends AbstractRequest
 {
-    protected $responseType = PorticoResponse::class;
+    protected $responseType = '\Omnipay\Heartland\Message\PorticoResponse';
 
     // region Heartland Soap Building
 

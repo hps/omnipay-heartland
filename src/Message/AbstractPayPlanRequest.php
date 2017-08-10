@@ -16,7 +16,7 @@ use DOMDocument;
 
 abstract class AbstractPayPlanRequest extends AbstractRequest
 {
-    protected $responseType = PayPlanResponse::class;
+    protected $responseType = '\Omnipay\Heartland\Message\PayPlanResponse';
 
     // region Heartland Request Building
 

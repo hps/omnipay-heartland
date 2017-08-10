@@ -78,6 +78,6 @@ class GatewayTest extends GatewayTestCase
             'cardReference' => '12345678',
         ]);
 
-        $this->assertInstanceOf(\Omnipay\Heartland\Message\RecurringBillingRequest::class, $request);
+        $this->assertInstanceOf('\Omnipay\Heartland\Message\RecurringBillingRequest', $request);
     }
 }

@@ -70,6 +70,29 @@ class GatewayTest extends GatewayTestCase
         $this->assertInstanceOf('Omnipay\Heartland\Message\FetchTransactionRequest', $request);
     }
 
+    // Recurring (PayPlan)
+
+    public function testCreateCustomer()
+    {
+        $request = $this->gateway->createCustomer(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\CreateCustomerRequest', $request);
+    }
+
+    public function testUpdateCustomer()
+    {
+        $request = $this->gateway->updateCustomer(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\UpdateCustomerRequest', $request);
+    }
+
+    public function testFetchSchedules()
+    {
+        $request = $this->gateway->fetchSchedules(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\FetchSchedulesRequest', $request);
+    }
+
     public function testRecurring()
     {
         $request = $this->gateway->recurring(array(

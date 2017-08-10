@@ -184,14 +184,54 @@ abstract class AbstractPorticoRequest extends AbstractRequest
             if (!is_null($creditCard->getBillingAddress2())) {
                 $address .= ' ' . $creditCard->getBillingAddress2();
             }
-            $cardHolderData->appendChild($xml->createElement('hps:CardHolderFirstName', HpsInputValidation::checkCardHolderData($creditCard->getBillingFirstName(), 'FirstName')));
-            $cardHolderData->appendChild($xml->createElement('hps:CardHolderLastName', HpsInputValidation::checkCardHolderData($creditCard->getBillingLastName(), 'LastName')));
-            $cardHolderData->appendChild($xml->createElement('hps:CardHolderEmail', HpsInputValidation::checkEmailAddress($creditCard->getEmail())));
-            $cardHolderData->appendChild($xml->createElement('hps:CardHolderPhone', HpsInputValidation::checkPhoneNumber($creditCard->getBillingPhone())));
-            $cardHolderData->appendChild($xml->createElement('hps:CardHolderAddr', HpsInputValidation::checkCardHolderData($address)));
-            $cardHolderData->appendChild($xml->createElement('hps:CardHolderCity', HpsInputValidation::checkCardHolderData($creditCard->getBillingCity(), 'City')));
-            $cardHolderData->appendChild($xml->createElement('hps:CardHolderState', HpsInputValidation::checkCardHolderData($creditCard->getBillingState(), 'State')));
-            $cardHolderData->appendChild($xml->createElement('hps:CardHolderZip', HpsInputValidation::checkZipCode($creditCard->getBillingPostcode())));
+            $cardHolderData->appendChild(
+                $xml->createElement(
+                    'hps:CardHolderFirstName',
+                    HpsInputValidation::checkCardHolderData($creditCard->getBillingFirstName(), 'FirstName')
+                )
+            );
+            $cardHolderData->appendChild(
+                $xml->createElement(
+                    'hps:CardHolderLastName',
+                    HpsInputValidation::checkCardHolderData($creditCard->getBillingLastName(), 'LastName')
+                )
+            );
+            $cardHolderData->appendChild(
+                $xml->createElement(
+                    'hps:CardHolderEmail',
+                    HpsInputValidation::checkEmailAddress($creditCard->getEmail())
+                )
+            );
+            $cardHolderData->appendChild(
+                $xml->createElement(
+                    'hps:CardHolderPhone',
+                    HpsInputValidation::checkPhoneNumber($creditCard->getBillingPhone())
+                )
+            );
+            $cardHolderData->appendChild(
+                $xml->createElement(
+                    'hps:CardHolderAddr',
+                    HpsInputValidation::checkCardHolderData($address)
+                )
+            );
+            $cardHolderData->appendChild(
+                $xml->createElement(
+                    'hps:CardHolderCity',
+                    HpsInputValidation::checkCardHolderData($creditCard->getBillingCity(), 'City')
+                )
+            );
+            $cardHolderData->appendChild(
+                $xml->createElement(
+                    'hps:CardHolderState',
+                    HpsInputValidation::checkCardHolderData($creditCard->getBillingState(), 'State')
+                )
+            );
+            $cardHolderData->appendChild(
+                $xml->createElement(
+                    'hps:CardHolderZip',
+                    HpsInputValidation::checkZipCode($creditCard->getBillingPostcode())
+                )
+            );
         }
         return $cardHolderData;
     }

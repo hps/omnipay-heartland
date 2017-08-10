@@ -7,7 +7,7 @@ namespace Omnipay\Heartland\Message;
  */
 class HpsIssuerResponseValidation
 {
-    public static $_issuerCodeToCreditExceptionCode = array(
+    public static $issuerCodeToCreditExceptionCode = array(
         '02' => HpsExceptionCodes::CARD_DECLINED,
         '03' => HpsExceptionCodes::CARD_DECLINED,
         '04' => HpsExceptionCodes::CARD_DECLINED,
@@ -48,7 +48,7 @@ class HpsIssuerResponseValidation
         'FR' => HpsExceptionCodes::POSSIBLE_FRAUD_DETECTED,
     );
 
-    public static $_issuerCodeToGiftExceptionCode = array(
+    public static $issuerCodeToGiftExceptionCode = array(
         '1'  => HpsExceptionCodes::UNKNOWN_GIFT_ERROR,
         '2'  => HpsExceptionCodes::UNKNOWN_GIFT_ERROR,
         '11' => HpsExceptionCodes::UNKNOWN_GIFT_ERROR,
@@ -65,7 +65,7 @@ class HpsIssuerResponseValidation
         '14' => HpsExceptionCodes::INVALID_PIN,
     );
 
-    public static $_creditExceptionCodeToMessage = array(
+    public static $creditExceptionCodeToMessage = array(
         HpsExceptionCodes::CARD_DECLINED        => "The card was declined.",
         HpsExceptionCodes::PROCESSING_ERROR     => "An error occurred while processing the card.",
         HpsExceptionCodes::INVALID_AMOUNT       => "Must be greater than or equal 0.",
@@ -119,14 +119,14 @@ class HpsIssuerResponseValidation
         $map = array();
 
         switch ($type) {
-        case 'credit':
-            $acceptedCodes = array_merge($acceptedCodes, array('85', '10'));
-            $map = self::$_issuerCodeToCreditExceptionCode;
-            break;
-        case 'gift':
-            $acceptedCodes = array_merge($acceptedCodes, array('13'));
-            $map = self::$_issuerCodeToGiftExceptionCode;
-            break;
+            case 'credit':
+                $acceptedCodes = array_merge($acceptedCodes, array('85', '10'));
+                $map = self::$issuerCodeToCreditExceptionCode;
+                break;
+            case 'gift':
+                $acceptedCodes = array_merge($acceptedCodes, array('13'));
+                $map = self::$issuerCodeToGiftExceptionCode;
+                break;
         }
 
         if (in_array($responseCode, $acceptedCodes)) {
@@ -140,14 +140,14 @@ class HpsIssuerResponseValidation
 
         if ($code == null) {
             return static::formResponseException(
-                self::$_creditExceptionCodeToMessage[HpsExceptionCodes::UNKNOWN_CREDIT_ERROR],
+                self::$creditExceptionCodeToMessage[HpsExceptionCodes::UNKNOWN_CREDIT_ERROR],
                 HpsExceptionCodes::UNKNOWN_CREDIT_ERROR
             );
         }
 
         $message = null;
-        if (array_key_exists($code, self::$_creditExceptionCodeToMessage)) {
-            $message = self::$_creditExceptionCodeToMessage[$code];
+        if (array_key_exists($code, self::$creditExceptionCodeToMessage)) {
+            $message = self::$creditExceptionCodeToMessage[$code];
         } else {
             $message = 'Unknown issuer error';
         }

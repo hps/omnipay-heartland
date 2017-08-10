@@ -32,11 +32,12 @@ use DOMDocument;
  *
  * @see  PurchaseRequest
  * @see  Omnipay\Heartland\Gateway
+ * @codingStandardsIgnoreStart
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-ReportTxnDetail.html
+ * @codingStandardsIgnoreEnd
  */
 class FetchTransactionRequest extends AbstractPorticoRequest
 {
-
     /**
      * @return string
      */
@@ -57,5 +58,4 @@ class FetchTransactionRequest extends AbstractPorticoRequest
 
         return $hpsTransaction;
     }
-
 }

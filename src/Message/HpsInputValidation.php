@@ -162,7 +162,6 @@ class HpsInputValidation
      */
     public static function checkCardHolderData($value, $type = '')
     {
-
         $value = filter_var(trim($value), FILTER_SANITIZE_SPECIAL_CHARS);
 
         //validate length of input data and throw exception

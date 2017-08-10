@@ -25,9 +25,11 @@
         "omnipay/common": "~2.0"
     },
     "require-dev": {
-        "omnipay/tests": "~2.0"
+        "omnipay/tests": "~2.0",
+        "friendsofphp/php-cs-fixer": "2.2.5"
     },
     "scripts": {
-        "test": "phpcs --standard=PSR2 src && phpunit --coverage-text"
+        "test": "phpcs --standard=PSR2 src && phpunit --coverage-text",
+        "cs-fixer": "php-cs-fixer fix --rules=@PSR2 src"
     }
 }

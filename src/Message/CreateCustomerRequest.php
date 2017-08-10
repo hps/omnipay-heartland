@@ -102,7 +102,7 @@ class CreateCustomerRequest extends AbstractPayPlanRequest
         $data = array();
         $data['description'] = $this->getDescription();
         
-        $creditCard = $this->getCard();       
+        $creditCard = $this->getCard();
         
         date_default_timezone_set('UTC');
         $id = date('Ymd').'-SecureSubmit-'.substr(str_shuffle($this->alphabet), 0, 10);
@@ -120,5 +120,4 @@ class CreateCustomerRequest extends AbstractPayPlanRequest
 
         return $data;
     }
-
 }

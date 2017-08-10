@@ -611,6 +611,8 @@ class Gateway extends AbstractGateway
         return $this->createRequest('\Omnipay\Heartland\Message\FetchTransactionRequest', $parameters);
     }
 
+    // Recurring Payments (PayPlan)
+
     /**
      * @param array $parameters
      *
@@ -620,10 +622,9 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\Heartland\Message\RecurringBillingRequest', $parameters);
     }
-    
+
     //
     // Customers
-    // link: https://heartland.com/docs/api#customers
     //
 
     /**
@@ -642,5 +643,19 @@ class Gateway extends AbstractGateway
     public function createCustomer(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Heartland\Message\CreateCustomerRequest', $parameters);
+    }
+
+    //
+    // Schedules
+    //
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\FetchSchedulesRequest
+     */
+    public function fetchSchedules(array $parameters = array())
+    {
+        return $this->createRequest(Message\FetchSchedulesRequest::class, $parameters);
     }
 }

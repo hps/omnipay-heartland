@@ -620,4 +620,27 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\Heartland\Message\RecurringBillingRequest', $parameters);
     }
+    
+    //
+    // Customers
+    // link: https://heartland.com/docs/api#customers
+    //
+
+    /**
+     * Create Customer.
+     *
+     * Customer objects allow you to perform recurring charges and
+     * track multiple charges that are associated with the same customer.
+     * The API allows you to create, delete, and update your customers.
+     * You can retrieve individual customers as well as a list of all of
+     * your customers.
+     *
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\CreateCustomerRequest
+     */
+    public function createCustomer(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\CreateCustomerRequest', $parameters);
+    }
 }

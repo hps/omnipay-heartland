@@ -3,52 +3,16 @@
 namespace Omnipay\Heartland\Message;
 
 use DOMDocument;
-use Omnipay\Common\Exception\InvalidResponseException;
-use Omnipay\Common\Message\AbstractResponse;
-use Omnipay\Common\Message\RedirectResponseInterface;
-use Omnipay\Common\Message\RequestInterface;
 
 /**
- * Heartland Response
+ * Heartland Portico Response
  */
-class Response extends AbstractResponse
+class PorticoResponse extends AbstractResponse
 {
-    /**
-     *
-     *
-     * @var \stdClass
-     */
-    private $response = null;
-    private $statusOK = false;
-    private $heartlandResponseMessage = "";
-    private $heartlandResponseReasonCode = "";
-    private $heartlandTransactionId = "";
-    private $heartlandTransactionType = "";
-    private $responseData = null;
+    protected $heartlandResponseReasonCode = "";
+    protected $heartlandTransactionId = "";
+    protected $responseData = null;
     public $reversalRequired = false;
-
-    public function __construct($request, $response, $txnType)
-    {
-        $this->request = $request;
-        $this->response = $response;
-        $this->heartlandTransactionType = $txnType;
-        $this->goThroughResponse();
-    }
-
-    public function isSuccessful()
-    {
-        return $this->statusOK;
-    }
-
-    public function getMessage()
-    {
-        return (string) $this->heartlandResponseMessage;
-    }
-
-    public function getReasonCode()
-    {
-        return (string) $this->heartlandResponseReasonCode;
-    }
 
     /**
      * Get the transfer reference from the response of CreateTransferRequest,
@@ -61,7 +25,7 @@ class Response extends AbstractResponse
         return (string) $this->heartlandTransactionId;
     }
 
-    private function goThroughResponse()
+    protected function parseResponse()
     {
         switch ($this->response->status) {
             case '200':
@@ -73,7 +37,7 @@ class Response extends AbstractResponse
                 break;
             case '500':
                 $faultString = $this->XMLFault2String($this->response->response);
-                $this->statusOK = false;
+                $this->setStatusOK(false);
                 $this->heartlandResponseMessage = $faultString;
                 break;
             default:
@@ -89,11 +53,6 @@ class Response extends AbstractResponse
         return $this->mergeResponse($serverResponseArray);
     }
 
-    public function getCode()
-    {
-        return (string) $this->response->status;
-    }
-
     private function processChargeGatewayResponse()
     {
         $this->heartlandTransactionId = isset($this->responseData->Header->GatewayTxnId)
@@ -106,7 +65,7 @@ class Response extends AbstractResponse
             ? $this->responseData->Header->GatewayRspMsg
             : null;
 
-        $this->statusOK = ($gatewayRspCode == 0) ? true : false;
+        $this->setStatusOK($gatewayRspCode == 0);
 
         if ($gatewayRspCode == '0') {
             return;

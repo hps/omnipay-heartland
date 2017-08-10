@@ -16,6 +16,8 @@ use DOMDocument;
 
 abstract class AbstractPorticoRequest extends AbstractRequest
 {
+    protected $responseType = PorticoResponse::class;
+
     // region Heartland Soap Building
 
     /**

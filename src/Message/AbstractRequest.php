@@ -103,7 +103,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 throw new InvalidRequestException("unknown http method/verb");
             }
 
-            $httpResponse = $this->httpClient->{strtolower($http['verb'])}($url, $headers, $body)->send();
+            $httpResponse = $this->httpClient
+                ->{strtolower($http['verb'])}($url, $headers, $body)
+                ->send();
 
             $response = new \stdClass();
             $response->response = (string) $httpResponse->getBody();
@@ -125,7 +127,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 throw new InvalidResponseException($err_msg);
             }
             //process the response
-            $gatewayResponse = new Response($this, $response, $this->getTransactionType());
+            $gatewayResponse = new $this->responseType($this, $response, $this->getTransactionType());
 
             //perform reversal incase of gateway error
             if ($gatewayResponse->getTransactionReference() != null && $gatewayResponse->reversalRequired === true) {
@@ -134,7 +136,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                     $reverseRequest->initialize($this->getParameters());
                     $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
                     $reverseResponse = $reverseRequest->send();
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     throw new InvalidResponseException(
                         'Error occurred while reversing a charge due to HPS issuer timeout. '
                         . $e->getMessage()

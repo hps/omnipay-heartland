@@ -16,6 +16,8 @@ use DOMDocument;
 
 abstract class AbstractPayPlanRequest extends AbstractRequest
 {
+    protected $responseType = PayPlanResponse::class;
+
     // region Heartland Request Building
 
     public function getData()
@@ -40,7 +42,7 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
     public function sendData($data)
     {
         $http = isset($data['http']) ? $data['http'] : [];
-        $uri = isset($http['uri']) ? $http['uri'] : '';
+        $uri = isset($http['uri']) ? '/' . trim($http['uri'], '/') : '';
 
         if (isset($data['limit']) && isset($data['offset'])) {
             $paging = array(
@@ -51,25 +53,25 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
         }
 
         $identity = array();
-        if ($this->getSiteId() !== null) {
+        if ($this->getSiteId() !== null && $this->getSiteId() !== '') {
             $identity[0] = 'SiteID=' . $this->getSiteId();
         }
-        if ($this->getDeviceId() !== null) {
+        if ($this->getDeviceId() !== null && $this->getDeviceId() !== '') {
             $identity[1] = 'DeviceID=' . $this->getDeviceId();
         }
-        if ($this->getLicenseId() !== null) {
+        if ($this->getLicenseId() !== null && $this->getLicenseId() !== '') {
             $identity[2] = 'LicenseID=' . $this->getLicenseId();
         }
 
-        $auth = $this->getUsername() !== null
+        $auth = $this->getUsername() !== null && $this->getUsername() !== ''
             ? $this->getUsername() . ':' . $this->getPassword()
             : $this->getSecretApiKey();
 
-        $fieldsToIgnore = [
+        $fieldsToIgnore = array_merge([
           'http',
           'limit',
           'offset',
-        ];
+        ], array_keys((new \Omnipay\Heartland\Gateway())->getDefaultParameters()));
 
         $data = array_filter($data, function ($k) use ($fieldsToIgnore) {
             return !in_array($k, $fieldsToIgnore);
@@ -77,15 +79,15 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
 
         $headers = [
             'Authorization' => 'Basic ' . base64_encode($auth),
-            'Content-type' => 'application/json; charset="UTF-8"',
+            'Content-Type' => 'application/json; charset=utf-8',
         ];
 
-        if ($this->getUsername() !== null) {
+        if ($this->getUsername() !== null && $this->getSiteId() !== '') {
             $headers['HPS-Identity'] = implode(',', $identity);
         }
 
         return $this->submitRequest([
-            'body' => json_encode($data),
+            'body' => json_encode($data === [] ? (object) [] : $data),
             'headers' => $headers,
             'http' => [
               'uri' => $uri,

@@ -41,7 +41,7 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
 
     public function sendData($data)
     {
-        $http = isset($data['http']) ? $data['http'] : [];
+        $http = isset($data['http']) ? $data['http'] : array();
         $uri = isset($http['uri']) ? '/' . trim($http['uri'], '/') : '';
 
         if (isset($data['limit']) && isset($data['offset'])) {
@@ -67,33 +67,33 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
             ? $this->getUsername() . ':' . $this->getPassword()
             : $this->getSecretApiKey();
 
-        $fieldsToIgnore = array_merge([
+        $fieldsToIgnore = array_merge(array(
           'http',
           'limit',
           'offset',
-        ], array_keys((new \Omnipay\Heartland\Gateway())->getDefaultParameters()));
+        ), array_keys((new \Omnipay\Heartland\Gateway())->getDefaultParameters()));
 
         $data = array_filter($data, function ($k) use ($fieldsToIgnore) {
             return !in_array($k, $fieldsToIgnore);
         }, ARRAY_FILTER_USE_KEY);
 
-        $headers = [
+        $headers = array(
             'Authorization' => 'Basic ' . base64_encode($auth),
             'Content-Type' => 'application/json; charset=utf-8',
-        ];
+        );
 
         if ($this->getUsername() !== null && $this->getSiteId() !== '') {
             $headers['HPS-Identity'] = implode(',', $identity);
         }
 
-        return $this->submitRequest([
-            'body' => json_encode($data === [] ? (object) [] : $data),
+        return $this->submitRequest(array(
+            'body' => json_encode($data === array() ? (object) array() : $data),
             'headers' => $headers,
-            'http' => [
+            'http' => array(
               'uri' => $uri,
               'verb' => isset($http['verb']) ? $http['verb'] : 'GET',
-            ]
-        ]);
+            ),
+        ));
     }
 
     /**

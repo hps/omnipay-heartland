@@ -136,14 +136,14 @@ abstract class AbstractPorticoRequest extends AbstractRequest
         $soapXML = $xml->saveXML();
         //print $soapXML;die;
 
-        return $this->submitRequest([
+        return $this->submitRequest(array(
             'body' => $soapXML,
-            'headers' => [
+            'headers' => array(
                 'Content-type' => 'text/xml; charset="UTF-8"',
                 'Accept' => 'text/xml',
                 'SOAPAction' => '""',
-            ],
-        ]);
+            ),
+        ));
     }
 
     /**

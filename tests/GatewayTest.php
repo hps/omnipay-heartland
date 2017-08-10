@@ -72,11 +72,11 @@ class GatewayTest extends GatewayTestCase
 
     public function testRecurring()
     {
-        $request = $this->gateway->recurring([
+        $request = $this->gateway->recurring(array(
             'amount' => '10',
             'currency' => 'usd',
             'cardReference' => '12345678',
-        ]);
+        ));
 
         $this->assertInstanceOf('\Omnipay\Heartland\Message\RecurringBillingRequest', $request);
     }

@@ -66,17 +66,17 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      * @throws InvalidRequestException
      * @throws InvalidResponseException
      */
-    protected function submitRequest($args = [])
+    protected function submitRequest($args = array())
     {
-        $http = array_merge([
+        $http = array_merge(array(
             'uri' => '',
             'verb' => 'POST',
-        ], isset($args['http']) ? $args['http'] : []);
+        ), isset($args['http']) ? $args['http'] : array());
         $body = isset($args['body']) ? $args['body'] : null;
         $url = $this->getEndpoint() . $http['uri'];
-        $headers = array_merge([
+        $headers = array_merge(array(
             'Content-Length' => (string) strlen($body),
-        ], isset($args['headers']) ? $args['headers'] : []);
+        ), isset($args['headers']) ? $args['headers'] : array());
 
         try {
             $config = $this->httpClient->getConfig();

@@ -33,11 +33,11 @@ class FetchSchedulesRequest extends AbstractPayPlanRequest
     {
         parent::getData();
 
-        return array_merge($this->getParameters(), [
-          'http' => [
+        return array_merge($this->getParameters(), array(
+          'http' => array(
             'uri' => 'searchSchedules',
             'verb' => 'POST'
-          ]
-        ]);
+          ),
+        ));
     }
 }

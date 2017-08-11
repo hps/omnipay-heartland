@@ -29,5 +29,6 @@ class FetchScheduleRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
+        $this->assertSame('404', $response->getCode());
     }
 }

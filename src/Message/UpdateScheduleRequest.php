@@ -40,6 +40,14 @@ class UpdateScheduleRequest extends CreateScheduleRequest
         'cancellationDate',
     );
 
+    /**
+        * @return string
+        */
+    public function getTransactionType()
+    {
+        return 'PayPlanScheduleEdit';
+    }
+
     public function getData()
     {
         $data = parent::getData();

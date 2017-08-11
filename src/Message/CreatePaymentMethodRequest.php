@@ -98,6 +98,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     public function getData()
     {
         parent::getData();
+        $this->validate('customerKey');
         
         if ($this->getPaymentMethodType() != null && $this->getPaymentMethodType() == self::ACH) {
             $paymentMethodDetails = $this->addACH();
@@ -110,6 +111,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     
     public function addCreditCard()
     {       
+        
         $data = array();
         if ($this->getAccountNumber() != null) {
             $data['accountNumber'] = $this->getAccountNumber();
@@ -121,6 +123,54 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
             'uri' => 'paymentMethodsCreditCard',
         );
         return $data;
+    }
+    
+    /**
+     *
+     * @return mixed
+     */
+    public function addACH()
+    {
+        $this->validate('accountNumber', 'accountType', 'achType', 'routingNumber');
+        
+        $data['http'] = array(
+            'verb'     => 'POST',
+            'uri' => 'paymentMethodsACH',
+        );
+        return $data;
+    }
+    
+    public function setRoutingNumber($value)
+    {
+        $this->setParameter('routingNumber', $value);
+        return $this;
+    }
+
+    public function getRoutingNumber()
+    {
+        return $this->getParameter('routingNumber');
+    }
+    
+    public function setAchType($value)
+    {
+        $this->setParameter('achType', $value);
+        return $this;
+    }
+
+    public function getAchType()
+    {
+        return $this->getParameter('achType');
+    }
+    
+    public function setAccountType($value)
+    {
+        $this->setParameter('accountType', $value);
+        return $this;
+    }
+
+    public function getAccountType()
+    {
+        return $this->getParameter('accountType');
     }
     
     public function setPaymentToken($value)

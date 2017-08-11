@@ -268,10 +268,39 @@ class GatewayIntegrationTest extends TestCase {
         $request = $this->gateway->createPaymentMethod(array(
             'customerKey' =>    $customer['customerKey'],
             'nameOnAccount'  => 'Bill Johnson',
-            'accountNumber'  => 4111111111111111,
+            'accountNumber'  => '4111111111111111',
             'expirationMonth' => '01',
             'expirationYear' => '20',
             'country'        => 'USA'
+        ));
+
+        $response = $request->send(); 
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
+    
+    public function testCreatePaymentMethodACH()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // updateCustomer
+        $customer = $response->getData();
+        
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' =>    $customer['customerKey'],
+            'nameOnAccount'  => 'Bill Johnson',
+            'accountNumber'  => '4111111111111111',
+            'expirationMonth' => '01',
+            'expirationYear' => '20',
+            'country'        => 'USA',
+            'paymentMethodType' => 'ACH'
         ));
 
         $response = $request->send(); 

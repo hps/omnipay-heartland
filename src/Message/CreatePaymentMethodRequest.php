@@ -108,18 +108,19 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
         return array_merge($this->getParameters(), $paymentMethodDetails);
     }
     
-    public function addCreditCard(HpsPayPlanPaymentMethod $paymentMethod)
-    {        
-        if (isset($paymentMethod->accountNumber)) {
-            $data['accountNumber'] = $paymentMethod->accountNumber;
-        } else if (isset($paymentMethod->paymentToken)) {
-            $data['paymentToken'] = $paymentMethod->paymentToken;
+    public function addCreditCard()
+    {       
+        $data = array();
+        if ($this->getAccountNumber() != null) {
+            $data['accountNumber'] = $this->getAccountNumber();
+        } else if ($this->getPaymentToken() != null) {
+            $data['paymentToken'] = $this->getPaymentToken();
         }
-        $result = array(
+        $data['http'] = array(
             'verb'     => 'POST',
-            'endpoint' => 'paymentMethodsCreditCard',
+            'uri' => 'paymentMethodsCreditCard',
         );
-        return $this->hydrateObject($result, 'HpsPayPlanPaymentMethod');
+        return $data;
     }
     
     public function setPaymentToken($value)

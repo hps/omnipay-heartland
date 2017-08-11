@@ -264,11 +264,17 @@ class GatewayIntegrationTest extends TestCase {
 
         // updateCustomer
         $customer = $response->getData();
-        $customer['customerStatus'] = 'Inactive';
-        $request = $this->gateway->updateCustomer($customer);
+        
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' =>    $customer['customerKey'],
+            'nameOnAccount'  => 'Bill Johnson',
+            'accountNumber'  => 4111111111111111,
+            'expirationMonth' => '01',
+            'expirationYear' => '20',
+            'country'        => 'USA'
+        ));
 
-        $response = $request->send();
-
+        $response = $request->send(); 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 }

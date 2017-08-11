@@ -186,7 +186,7 @@ class GatewayIntegrationTest extends TestCase {
     public function testCreateCustomerAllData()
     {
         $customerData = array(
-            'customerIdentifier' => base64_encode(random_bytes(22)),
+            'customerIdentifier' => $this->createTestIdentifier(),
             'firstName' => 'John',
             'lastName' => 'Doe',
             'company' => 'Acme',
@@ -248,5 +248,10 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
+
+    protected function createTestIdentifier()
+    {
+        return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 1, 50);
     }
 }

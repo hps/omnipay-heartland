@@ -77,9 +77,7 @@ class UpdateScheduleRequest extends CreateScheduleRequest
                 break;
         }
 
-        $data = array_filter($data, function ($k) use ($allowedFields) {
-            return in_array($k, $allowedFields);
-        }, ARRAY_FILTER_USE_KEY);
+        $data = array_intersect_key($data, array_flip($allowedFields));
 
         return array_merge($data, array(
             'http' => array(

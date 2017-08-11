@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Pragma: no-cache
+Content-Length: 1315
+Content-Type: application/json; charset=utf-8
+Expires: -1
+Server: Microsoft-IIS/7.5
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Date: Fri, 11 Aug 2017 15:21:22 GMT
+
+{"scheduleKey":26576,"scheduleIdentifier":"08112017-Omnipay-jkfghdaskhgiu","customerKey":65617,"scheduleName":null,"scheduleStatus":"Inactive","paymentMethodKey":"d0e7eba5-7cdd-47af-9992-9f732f56f5d7","subtotalAmount":{"value":"100","currency":"USD"},"taxAmount":{"value":"0","currency":"USD"},"totalAmount":{"value":"100","currency":"USD"},"deviceID":5315938,"startDate":"08122017","processingDateInfo":"First","frequency":"Monthly","duration":"Ongoing","endDate":"","reprocessingCount":1,"emailReceipt":"Approvals","emailAdvanceNotice":"No","invoiceNbr":null,"description":null,"poNumber":null,"statusSetDate":"8/11/2017 10:21:22 AM","nextProcessingDate":"08122017","previousProcessingDate":"","approvedTransactionCount":0,"failureCount":0,"totalApprovedAmountToDate":{"value":"0","currency":"USD"},"numberOfPaymentsRemaining":null,"cancellationDate":"","creationDate":"8/11/2017 10:06:37 AM","lastChangeDate":"8/11/2017 10:21:22 AM","scheduleStarted":false,"links":[{"href":"https://cert.api2.heartlandportico.com/Portico.PayPlan.v2/Schedules/26576","rel":"self","method":"GET"},{"href":"https://cert.api2.heartlandportico.com/Portico.PayPlan.v2/Schedules/26576","rel":"update","method":"PUT"},{"href":"https://cert.api2.heartlandportico.com/Portico.PayPlan.v2/Customers/65617","rel":"customer","method":"GET"}]}

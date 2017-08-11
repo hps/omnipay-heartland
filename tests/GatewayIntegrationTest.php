@@ -249,4 +249,26 @@ class GatewayIntegrationTest extends TestCase {
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
+    
+    public function testCreatePaymentMethod()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // updateCustomer
+        $customer = $response->getData();
+        $customer['customerStatus'] = 'Inactive';
+        $request = $this->gateway->updateCustomer($customer);
+
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
 }

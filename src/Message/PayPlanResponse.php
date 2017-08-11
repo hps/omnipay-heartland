@@ -18,6 +18,13 @@ class PayPlanResponse extends AbstractResponse
             case '200':
                 $this->responseData = $resp;
                 $this->setStatusOK(true);
+
+                if (empty($resp)) {
+                    $this->setStatusOk(false);
+                    $this->response->status = '404';
+                    $this->response->response = 'Not Found';
+                }
+
                 break;
             case '400':
                 $this->heartlandResponseMessage = $resp->error->message;

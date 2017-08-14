@@ -321,4 +321,44 @@ class GatewayIntegrationTest extends TestCase {
     {
         return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 1, 50);
     }
+    
+    public function testGetPaymentMethod()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // updateCustomer
+        $customer = $response->getData();
+        
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' =>    $customer['customerKey'],
+            'nameOnAccount'  => 'John Doe',
+            'accountNumber'  => '5473500000000014',            
+            'expirationDate' => '1225',
+            'country'        => 'USA'
+        ));
+
+        $payment = $request->send(); 
+        $paymentData = $payment->getData(); 
+        
+        $this->assertTrue($payment->isSuccessful(), $payment->getMessage());
+        $this->assertNotNull($paymentData['paymentMethodKey']); 
+        
+        //get the payment details
+        $request = $this->gateway->getPaymentMethod(array(
+            'paymentMethodKey' =>    $paymentData['paymentMethodKey']
+        ));
+
+        $response = $request->send(); 
+        $responseData = $response->getData(); 
+        
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
 }

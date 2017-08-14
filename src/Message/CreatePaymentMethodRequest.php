@@ -106,12 +106,11 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
             $paymentMethodDetails = $this->addCreditCard();
         }
 
-        return array_merge($this->getParameters(), $paymentMethodDetails);
+        return $paymentMethodDetails;
     }
     
     public function addCreditCard()
-    {       
-        
+    {               
         $data = array();
         if ($this->getAccountNumber() != null) {
             $data['accountNumber'] = $this->getAccountNumber();
@@ -123,7 +122,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
             'verb'     => 'POST',
             'uri' => 'paymentMethodsCreditCard',
         );
-        return $data;
+        return array_merge($this->getParameters(), $data);
     }
     
     /**
@@ -133,6 +132,10 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     public function addACH()
     {
         $this->validate('accountNumber', 'accountType', 'achType', 'routingNumber');
+        
+        $data = $this->getParameters();
+        //remove unwanted param from request
+        unset($data['paymentMethodType']);
         
         $data['http'] = array(
             'verb'     => 'POST',

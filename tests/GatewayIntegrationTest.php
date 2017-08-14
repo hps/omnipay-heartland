@@ -274,7 +274,10 @@ class GatewayIntegrationTest extends TestCase {
         ));
 
         $response = $request->send(); 
+        $responseData = $response->getData(); 
+        
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($responseData['paymentMethodKey']);        
     }
     
     public function testCreatePaymentMethodACH()
@@ -293,17 +296,25 @@ class GatewayIntegrationTest extends TestCase {
         $customer = $response->getData();
         
         $request = $this->gateway->createPaymentMethod(array(
-            'customerKey' =>    $customer['customerKey'],
-            'nameOnAccount'  => 'Bill Johnson',
-            'accountNumber'  => '4111111111111111',
-            'expirationMonth' => '01',
-            'expirationYear' => '20',
-            'country'        => 'USA',
-            'paymentMethodType' => 'ACH'
+            'customerKey' => $customer['customerKey'],
+            'paymentMethodType' => 'ACH',
+            'achType' => 'Checking',
+            'accountType' => 'Personal',
+            'routingNumber' => '490000018',
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '24413815',
+            'addressLine1' => '123 Main St',
+            'city' => 'Dallas',
+            'stateProvince' => 'TX',
+            'zipPostalCode' => '98765',
+            'accountHolderYob' => '1989'
         ));
-
+        
         $response = $request->send(); 
+        $responseData = $response->getData(); 
+        
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($responseData['paymentMethodKey']);
     }
     
     protected function createTestIdentifier()

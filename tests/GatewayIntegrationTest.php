@@ -356,10 +356,10 @@ class GatewayIntegrationTest extends TestCase {
             'paymentMethodKey' =>    $paymentData['paymentMethodKey']
         ));
 
-        /*$response = $request->send(); 
+        $response = $request->send(); 
         $responseData = $response->getData(); 
         
-        $this->assertTrue($response->isSuccessful(), $response->getMessage());*/
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
     
     public function testDeletePaymentMethod()
@@ -396,9 +396,9 @@ class GatewayIntegrationTest extends TestCase {
             'paymentMethodKey' =>    $paymentData['paymentMethodKey']
         ));
 
-        /*$response = $request->send(); 
-        $responseData = $response->getData();  print_r($responseData);
+        $response = $request->send(); 
+        $responseData = $response->getData();  
         
-        $this->assertTrue($response->isSuccessful(), $response->getMessage());*/
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 }

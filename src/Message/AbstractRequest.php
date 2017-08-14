@@ -69,11 +69,17 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected function submitRequest($args = array())
     {
         $http = array_merge(array(
+            'options' => array(),
             'uri' => '',
             'verb' => 'POST',
         ), isset($args['http']) ? $args['http'] : array());
         $body = isset($args['body']) ? $args['body'] : null;
         $url = $this->getEndpoint() . $http['uri'];
+
+        if (strtoupper($http['verb']) === 'GET') {
+            $body = null;
+        }
+
         $headers = array_merge(array(
             'Content-Length' => (string) strlen($body),
         ), isset($args['headers']) ? $args['headers'] : array());
@@ -104,7 +110,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             }
 
             $httpResponse = $this->httpClient
-                ->{strtolower($http['verb'])}($url, $headers, $body)
+                ->createRequest(strtoupper($http['verb']), $url, $headers, $body, $http['options'])
                 ->send();
 
             $response = new \stdClass();

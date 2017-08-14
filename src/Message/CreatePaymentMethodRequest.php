@@ -118,6 +118,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
         } else if ($this->getPaymentToken() != null) {
             $data['paymentToken'] = $this->getPaymentToken();
         }
+        
         $data['http'] = array(
             'verb'     => 'POST',
             'uri' => 'paymentMethodsCreditCard',
@@ -138,6 +139,17 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
             'uri' => 'paymentMethodsACH',
         );
         return $data;
+    }
+    
+    public function setExpirationDate($value)
+    {
+        $this->setParameter('expirationDate', $value);
+        return $this;
+    }
+
+    public function getExpirationDate()
+    {
+        return $this->getParameter('expirationDate');
     }
     
     public function setRoutingNumber($value)
@@ -227,29 +239,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('accountNumber');
     }
-
-    public function setExpirationMonth($value)
-    {
-        $this->setParameter('ExpirationMonth', $value);
-        return $this;
-    }
-
-    public function getExpirationMonth()
-    {
-        return $this->getParameter('ExpirationMonth');
-    }
     
-    public function setExpirationYear($value)
-    {
-        $this->setParameter('ExpirationYear', $value);
-        return $this;
-    }
-
-    public function getExpirationYear()
-    {
-        return $this->getParameter('ExpirationYear');
-    }
-
     public function setCustomerStatus($value)
     {
         $this->setParameter('customerStatus', $value);

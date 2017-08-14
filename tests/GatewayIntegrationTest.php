@@ -267,10 +267,9 @@ class GatewayIntegrationTest extends TestCase {
         
         $request = $this->gateway->createPaymentMethod(array(
             'customerKey' =>    $customer['customerKey'],
-            'nameOnAccount'  => 'Bill Johnson',
-            'accountNumber'  => '4111111111111111',
-            'expirationMonth' => '01',
-            'expirationYear' => '20',
+            'nameOnAccount'  => 'John Doe',
+            'accountNumber'  => '5473500000000014',            
+            'expirationDate' => '1225',
             'country'        => 'USA'
         ));
 

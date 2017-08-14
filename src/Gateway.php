@@ -678,7 +678,7 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\Heartland\Message\FetchSchedulesRequest', $parameters);
     }
-    
+   
     //
     // Payment Methods
     //
@@ -692,7 +692,5 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\Heartland\Message\CreatePaymentMethodRequest', $parameters);
     }
-    
-    
     
 }

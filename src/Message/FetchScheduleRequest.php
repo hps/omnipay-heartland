@@ -16,28 +16,38 @@ use DOMDocument;
 
 /**
  *
- * @see CreateScheduleRequest
+ * @see FetchScheduleRequest
  * @see Omnipay\Heartland\Gateway
  */
-class FetchSchedulesRequest extends AbstractPayPlanRequest
+class FetchScheduleRequest extends AbstractPayPlanRequest
 {
     /**
      * @return string
      */
     public function getTransactionType()
     {
-        return 'PayPlanSchedulesSearch';
+        return 'PayPlanScheduleGet';
     }
 
     public function getData()
     {
         parent::getData();
 
-        return array_merge($this->getParameters(), array(
+        return array(
           'http' => array(
-            'uri' => 'searchSchedules',
-            'verb' => 'POST'
+            'uri' => 'schedules/' . $this->getScheduleKey(),
+            'verb' => 'GET'
           ),
-        ));
+        );
+    }
+
+    public function getScheduleKey()
+    {
+        return $this->getParameter('scheduleKey');
+    }
+
+    public function setScheduleKey($value)
+    {
+        return $this->setParameter('scheduleKey', $value);
     }
 }

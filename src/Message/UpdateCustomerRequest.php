@@ -40,9 +40,7 @@ class UpdateCustomerRequest extends CreateCustomerRequest
         $data = parent::getData();
         $key = $data['customerKey'];
 
-        $data = array_filter($data, function ($k) {
-            return in_array($k, $this->allowedFields);
-        }, ARRAY_FILTER_USE_KEY);
+        $data = array_intersect_key($data, array_flip($this->allowedFields));
 
         return array_merge($data, array(
             'http' => array(

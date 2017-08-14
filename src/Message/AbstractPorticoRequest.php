@@ -186,6 +186,7 @@ abstract class AbstractPorticoRequest extends AbstractRequest
             if (!is_null($creditCard->getBillingAddress2())) {
                 $address .= ' ' . $creditCard->getBillingAddress2();
             }
+
             $cardHolderData->appendChild(
                 $xml->createElement(
                     'hps:CardHolderFirstName',

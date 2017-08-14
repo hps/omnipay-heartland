@@ -15,9 +15,17 @@ class PayPlanResponse extends AbstractResponse
     {
         $resp = json_decode($this->response->response);
         switch ($this->response->status) {
+            case '204':
             case '200':
                 $this->responseData = $resp;
                 $this->setStatusOK(true);
+
+                if ($this->response->status == '200' && empty($resp)) {
+                    $this->setStatusOk(false);
+                    $this->response->status = '404';
+                    $this->response->response = 'Not Found';
+                }
+
                 break;
             case '400':
                 $this->heartlandResponseMessage = $resp->error->message;

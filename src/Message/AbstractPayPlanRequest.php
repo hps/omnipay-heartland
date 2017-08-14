@@ -73,9 +73,11 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
           'offset',
         ), array_keys((new \Omnipay\Heartland\Gateway())->getDefaultParameters()));
 
-        $data = array_filter($data, function ($k) use ($fieldsToIgnore) {
-            return !in_array($k, $fieldsToIgnore);
-        }, ARRAY_FILTER_USE_KEY);
+        $allowedFields = array_filter(array_keys($data), function ($key) use ($fieldsToIgnore) {
+            return !in_array($key, $fieldsToIgnore);
+        });
+
+        $data = array_intersect_key($data, array_flip($allowedFields));
 
         $headers = array(
             'Authorization' => 'Basic ' . base64_encode($auth),

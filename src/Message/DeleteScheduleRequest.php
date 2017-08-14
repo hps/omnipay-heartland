@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  Heartland Fetch Schedules Request.
+ *  Heartland Delete Schedule Request.
  *
  * @category    HPS
  * @package     Omnipay_Heartland
@@ -16,28 +16,38 @@ use DOMDocument;
 
 /**
  *
- * @see CreateScheduleRequest
+ * @see DeleteScheduleRequest
  * @see Omnipay\Heartland\Gateway
  */
-class FetchSchedulesRequest extends AbstractPayPlanRequest
+class DeleteScheduleRequest extends AbstractPayPlanRequest
 {
     /**
      * @return string
      */
     public function getTransactionType()
     {
-        return 'PayPlanSchedulesSearch';
+        return 'PayPlanScheduleDelete';
     }
 
     public function getData()
     {
         parent::getData();
 
-        return array_merge($this->getParameters(), array(
+        return array(
           'http' => array(
-            'uri' => 'searchSchedules',
-            'verb' => 'POST'
+            'uri' => 'schedules/' . $this->getScheduleKey(),
+            'verb' => 'DELETE'
           ),
-        ));
+        );
+    }
+
+    public function getScheduleKey()
+    {
+        return $this->getParameter('scheduleKey');
+    }
+
+    public function setScheduleKey($value)
+    {
+        return $this->setParameter('scheduleKey', $value);
     }
 }

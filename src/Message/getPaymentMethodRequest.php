@@ -5,10 +5,8 @@
  */
 namespace Omnipay\Heartland\Message;
 
-
 class getPaymentMethodRequest extends AbstractPayPlanRequest
 {
-    private $alphabet = 'abcdefghijklmnopqrstuvwxyz';
     const ACH         = 'ACH';
     const CREDIT_CARD = 'Credit Card';
 
@@ -47,6 +45,4 @@ class getPaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('paymentMethodKey');
     }
-    
-    
 }

@@ -5,7 +5,6 @@
  */
 namespace Omnipay\Heartland\Message;
 
-
 class CreatePaymentMethodRequest extends AbstractPayPlanRequest
 {
     private $alphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -27,7 +26,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
         
         if ($this->getPaymentMethodType() != null && $this->getPaymentMethodType() == self::ACH) {
             $paymentMethodDetails = $this->addACH();
-        } else { 
+        } else {
             $paymentMethodDetails = $this->addCreditCard();
         }
 
@@ -35,11 +34,11 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     }
     
     public function addCreditCard()
-    {               
+    {
         $data = array();
         if ($this->getAccountNumber() != null) {
             $data['accountNumber'] = $this->getAccountNumber();
-        } else if ($this->getPaymentToken() != null) {
+        } elseif ($this->getPaymentToken() != null) {
             $data['paymentToken'] = $this->getPaymentToken();
         }
         
@@ -367,5 +366,4 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('country');
     }
-
 }

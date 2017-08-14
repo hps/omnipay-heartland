@@ -5,7 +5,6 @@
  */
 namespace Omnipay\Heartland\Message;
 
-
 class deletePaymentMethodRequest extends AbstractPayPlanRequest
 {
     private $alphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -58,6 +57,4 @@ class deletePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('forceDelete');
     }
-    
-    
 }

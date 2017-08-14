@@ -35,6 +35,14 @@ class UpdateCustomerRequest extends CreateCustomerRequest
         'country',
     );
 
+    /**
+        * @return string
+        */
+    public function getTransactionType()
+    {
+        return 'PayPlanCustomerEdit';
+    }
+
     public function getData()
     {
         $data = parent::getData();

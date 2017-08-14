@@ -692,35 +692,35 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\Heartland\Message\CreatePaymentMethodRequest', $parameters);
     }
-    
+
     /**
      * @param array $parameters
      *
-     * @return \Omnipay\Heartland\Message\getPaymentMethodRequest
+     * @return \Omnipay\Heartland\Message\FetchPaymentMethodRequest
      */
-    public function getPaymentMethod(array $parameters = array())
+    public function fetchPaymentMethod(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Heartland\Message\getPaymentMethodRequest', $parameters);
+        return $this->createRequest('\Omnipay\Heartland\Message\FetchPaymentMethodRequest', $parameters);
     }
-    
+
     /**
      * @param array $parameters
      *
-     * @return \Omnipay\Heartland\Message\deletePaymentMethodRequest
+     * @return \Omnipay\Heartland\Message\DeletePaymentMethodRequest
      */
     public function deletePaymentMethod(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Heartland\Message\deletePaymentMethodRequest', $parameters);
+        return $this->createRequest('\Omnipay\Heartland\Message\DeletePaymentMethodRequest', $parameters);
     }
-    
+
     /**
      * @param array $parameters
      *
-     * @return \Omnipay\Heartland\Message\editPaymentMethodRequest
+     * @return \Omnipay\Heartland\Message\UpdatePaymentMethodRequest
      */
-    public function editPaymentMethodRequest(array $parameters = array())
+    public function updatePaymentMethodRequest(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Heartland\Message\editPaymentMethodRequest', $parameters);
+        return $this->createRequest('\Omnipay\Heartland\Message\UpdatePaymentMethodRequest', $parameters);
     }
-    
+
 }

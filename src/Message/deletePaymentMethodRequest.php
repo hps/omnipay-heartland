@@ -5,37 +5,33 @@
  */
 namespace Omnipay\Heartland\Message;
 
-class deletePaymentMethodRequest extends AbstractPayPlanRequest
+class DeletePaymentMethodRequest extends AbstractPayPlanRequest
 {
-    private $alphabet = 'abcdefghijklmnopqrstuvwxyz';
-    const ACH         = 'ACH';
-    const CREDIT_CARD = 'Credit Card';
-
     /**
      * @return string
      */
     public function getTransactionType()
     {
-        return 'DeletePayPlanPaymentMethod';
+        return 'PayPlanPaymentMethodDelete';
     }
 
     public function getData()
     {
         parent::getData();
         $this->validate('paymentMethodKey');
-        
+
         $newdata = [];
         $newdata['http'] = array(
             'verb'     => 'DELETE',
-            'uri' => 'paymentMethods/'.$this->getPaymentMethodKey(),
+            'uri' => 'paymentMethods/' . $this->getPaymentMethodKey(),
         );
-        
+
         $actualData = $this->getParameters();
         unset($actualData['paymentMethodKey']);
-        
+
         return array_merge($actualData, $newdata);
     }
-    
+
     public function setPaymentMethodKey($value)
     {
         $this->setParameter('paymentMethodKey', $value);
@@ -46,7 +42,7 @@ class deletePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('paymentMethodKey');
     }
-    
+
     public function setForceDelete($value)
     {
         $this->setParameter('forceDelete', $value);

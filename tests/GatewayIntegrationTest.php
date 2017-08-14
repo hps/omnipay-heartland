@@ -249,7 +249,7 @@ class GatewayIntegrationTest extends TestCase {
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
-    
+
     public function testCreatePaymentMethod()
     {
         // createCustomer
@@ -264,22 +264,22 @@ class GatewayIntegrationTest extends TestCase {
 
         // updateCustomer
         $customer = $response->getData();
-        
+
         $request = $this->gateway->createPaymentMethod(array(
             'customerKey' =>    $customer['customerKey'],
             'nameOnAccount'  => 'John Doe',
-            'accountNumber'  => '5473500000000014',            
+            'accountNumber'  => '5473500000000014',
             'expirationDate' => '1225',
             'country'        => 'USA'
         ));
 
-        $response = $request->send(); 
-        $responseData = $response->getData(); 
-        
+        $response = $request->send();
+        $responseData = $response->getData();
+
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
-        $this->assertNotNull($responseData['paymentMethodKey']);        
+        $this->assertNotNull($responseData['paymentMethodKey']);
     }
-    
+
     public function testCreatePaymentMethodACH()
     {
         // createCustomer
@@ -294,7 +294,7 @@ class GatewayIntegrationTest extends TestCase {
 
         // updateCustomer
         $customer = $response->getData();
-        
+
         $request = $this->gateway->createPaymentMethod(array(
             'customerKey' => $customer['customerKey'],
             'paymentMethodType' => 'ACH',
@@ -309,20 +309,20 @@ class GatewayIntegrationTest extends TestCase {
             'zipPostalCode' => '98765',
             'accountHolderYob' => '1989'
         ));
-        
-        $response = $request->send(); 
-        $responseData = $response->getData(); 
-        
+
+        $response = $request->send();
+        $responseData = $response->getData();
+
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertNotNull($responseData['paymentMethodKey']);
     }
-    
+
     protected function createTestIdentifier()
     {
         return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 1, 50);
     }
-    
-    public function testGetPaymentMethod()
+
+    public function testFetchPaymentMethod()
     {
         // createCustomer
         $request = $this->gateway->createCustomer(array(
@@ -336,32 +336,32 @@ class GatewayIntegrationTest extends TestCase {
 
         // updateCustomer
         $customer = $response->getData();
-        
+
         $request = $this->gateway->createPaymentMethod(array(
             'customerKey' =>    $customer['customerKey'],
             'nameOnAccount'  => 'John Doe',
-            'accountNumber'  => '5473500000000014',            
+            'accountNumber'  => '5473500000000014',
             'expirationDate' => '1225',
             'country'        => 'USA'
         ));
 
-        $payment = $request->send(); 
-        $paymentData = $payment->getData(); 
-        
+        $payment = $request->send();
+        $paymentData = $payment->getData();
+
         $this->assertTrue($payment->isSuccessful(), $payment->getMessage());
-        $this->assertNotNull($paymentData['paymentMethodKey']); 
-        
+        $this->assertNotNull($paymentData['paymentMethodKey']);
+
         //get the payment details
-        $request = $this->gateway->getPaymentMethod(array(
+        $request = $this->gateway->fetchPaymentMethod(array(
             'paymentMethodKey' =>    $paymentData['paymentMethodKey']
         ));
 
-        $response = $request->send(); 
-        $responseData = $response->getData(); 
-        
+        $response = $request->send();
+        $responseData = $response->getData();
+
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
-    
+
     public function testDeletePaymentMethod()
     {
         // createCustomer
@@ -376,29 +376,29 @@ class GatewayIntegrationTest extends TestCase {
 
         // updateCustomer
         $customer = $response->getData();
-        
+
         $request = $this->gateway->createPaymentMethod(array(
             'customerKey' =>    $customer['customerKey'],
             'nameOnAccount'  => 'John Doe',
-            'accountNumber'  => '5473500000000014',            
+            'accountNumber'  => '5473500000000014',
             'expirationDate' => '1225',
             'country'        => 'USA'
         ));
 
-        $payment = $request->send(); 
-        $paymentData = $payment->getData(); 
-        
+        $payment = $request->send();
+        $paymentData = $payment->getData();
+
         $this->assertTrue($payment->isSuccessful(), $payment->getMessage());
-        $this->assertNotNull($paymentData['paymentMethodKey']); 
-        
+        $this->assertNotNull($paymentData['paymentMethodKey']);
+
         //delete the payment details
         $request = $this->gateway->deletePaymentMethod(array(
             'paymentMethodKey' =>    $paymentData['paymentMethodKey']
         ));
 
-        $response = $request->send(); 
-        $responseData = $response->getData();  
-        
+        $response = $request->send();
+        $responseData = $response->getData();
+
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 }

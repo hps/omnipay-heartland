@@ -703,4 +703,14 @@ class Gateway extends AbstractGateway
         return $this->createRequest('\Omnipay\Heartland\Message\getPaymentMethodRequest', $parameters);
     }
     
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\deletePaymentMethodRequest
+     */
+    public function deletePaymentMethod(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\deletePaymentMethodRequest', $parameters);
+    }
+    
 }

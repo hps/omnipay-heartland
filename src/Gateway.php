@@ -648,6 +648,16 @@ class Gateway extends AbstractGateway
     /**
      * @param array $parameters
      *
+     * @return \Omnipay\Heartland\Message\FetchCustomerRequest
+     */
+    public function fetchCustomer(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\FetchCustomerRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
      * @return \Omnipay\Heartland\Message\UpdateCustomerRequest
      */
     public function updateCustomer(array $parameters = array())
@@ -656,67 +666,13 @@ class Gateway extends AbstractGateway
     }
 
     /**
-        * @param array $parameters
-        *
-        * @return \Omnipay\Heartland\Message\DeleteCustomerRequest
-        */
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\DeleteCustomerRequest
+     */
     public function deleteCustomer(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Heartland\Message\DeleteCustomerRequest', $parameters);
-    }
-
-    //
-    // Schedules
-    //
-
-    /**
-     * @param array $parameters
-     *
-     * @return \Omnipay\Heartland\Message\CreateScheduleRequest
-     */
-    public function createSchedule(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\Heartland\Message\CreateScheduleRequest', $parameters);
-    }
-
-    /**
-     * @param array $parameters
-     *
-     * @return \Omnipay\Heartland\Message\FetchSchedulesRequest
-     */
-    public function fetchSchedules(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\Heartland\Message\FetchSchedulesRequest', $parameters);
-    }
-
-    /**
-        * @param array $parameters
-        *
-        * @return \Omnipay\Heartland\Message\FetchScheduleRequest
-        */
-    public function fetchSchedule(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\Heartland\Message\FetchScheduleRequest', $parameters);
-    }
-
-    /**
-        * @param array $parameters
-        *
-        * @return \Omnipay\Heartland\Message\UpdateScheduleRequest
-        */
-    public function updateSchedule(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\Heartland\Message\UpdateScheduleRequest', $parameters);
-    }
-
-    /**
-        * @param array $parameters
-        *
-        * @return \Omnipay\Heartland\Message\DeleteScheduleRequest
-        */
-    public function deleteSchedule(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\Heartland\Message\DeleteScheduleRequest', $parameters);
     }
 
     //
@@ -761,5 +717,59 @@ class Gateway extends AbstractGateway
     public function updatePaymentMethod(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Heartland\Message\UpdatePaymentMethodRequest', $parameters);
+    }
+
+    //
+    // Schedules
+    //
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\CreateScheduleRequest
+     */
+    public function createSchedule(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\CreateScheduleRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\FetchSchedulesRequest
+     */
+    public function fetchSchedules(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\FetchSchedulesRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\FetchScheduleRequest
+     */
+    public function fetchSchedule(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\FetchScheduleRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\UpdateScheduleRequest
+     */
+    public function updateSchedule(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\UpdateScheduleRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\DeleteScheduleRequest
+     */
+    public function deleteSchedule(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\DeleteScheduleRequest', $parameters);
     }
 }

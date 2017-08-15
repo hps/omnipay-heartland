@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  Heartland Fetch Schedules Request.
+ *  Heartland Fetch Customer Request.
  *
  * @category    HPS
  * @package     Omnipay_Heartland
@@ -16,39 +16,39 @@ use DOMDocument;
 
 /**
  *
- * @see FetchScheduleRequest
+ * @see FetchCustomerRequest
  * @see Omnipay\Heartland\Gateway
  */
-class FetchScheduleRequest extends AbstractPayPlanRequest
+class FetchCustomerRequest extends AbstractPayPlanRequest
 {
     /**
      * @return string
      */
     public function getTransactionType()
     {
-        return 'PayPlanScheduleGet';
+        return 'PayPlanCustomerGet';
     }
 
     public function getData()
     {
         parent::getData();
-        $this->validate('scheduleKey');
+        $this->validate('customerKey');
 
         return array(
           'http' => array(
-            'uri' => 'schedules/' . $this->getScheduleKey(),
+            'uri' => 'customers/' . $this->getCustomerKey(),
             'verb' => 'GET'
           ),
         );
     }
 
-    public function getScheduleKey()
+    public function getCustomerKey()
     {
-        return $this->getParameter('scheduleKey');
+        return $this->getParameter('customerKey');
     }
 
-    public function setScheduleKey($value)
+    public function setCustomerKey($value)
     {
-        return $this->setParameter('scheduleKey', $value);
+        return $this->setParameter('customerKey', $value);
     }
 }

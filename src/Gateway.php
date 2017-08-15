@@ -736,11 +736,11 @@ class Gateway extends AbstractGateway
     /**
      * @param array $parameters
      *
-     * @return \Omnipay\Heartland\Message\FetchSchedulesRequest
+     * @return \Omnipay\Heartland\Message\SearchSchedulesRequest
      */
-    public function fetchSchedules(array $parameters = array())
+    public function searchSchedules(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Heartland\Message\FetchSchedulesRequest', $parameters);
+        return $this->createRequest('\Omnipay\Heartland\Message\SearchSchedulesRequest', $parameters);
     }
 
     /**

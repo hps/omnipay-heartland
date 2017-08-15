@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  Heartland Fetch Schedules Request.
+ *  Heartland Search Schedules Request.
  *
  * @category    HPS
  * @package     Omnipay_Heartland
@@ -16,10 +16,10 @@ use DOMDocument;
 
 /**
  *
- * @see CreateScheduleRequest
+ * @see SearchSchedulesRequest
  * @see Omnipay\Heartland\Gateway
  */
-class FetchSchedulesRequest extends AbstractPayPlanRequest
+class SearchSchedulesRequest extends AbstractPayPlanRequest
 {
     /**
      * @return string

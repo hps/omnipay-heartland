@@ -135,11 +135,11 @@ class GatewayTest extends GatewayTestCase
         $this->assertInstanceOf('Omnipay\Heartland\Message\CreateScheduleRequest', $request);
     }
 
-    public function testFetchSchedules()
+    public function testSearchSchedules()
     {
-        $request = $this->gateway->fetchSchedules(array());
+        $request = $this->gateway->searchSchedules(array());
 
-        $this->assertInstanceOf('Omnipay\Heartland\Message\FetchSchedulesRequest', $request);
+        $this->assertInstanceOf('Omnipay\Heartland\Message\SearchSchedulesRequest', $request);
     }
 
     public function testFetchSchedule()

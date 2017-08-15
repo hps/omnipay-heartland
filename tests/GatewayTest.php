@@ -93,6 +93,34 @@ class GatewayTest extends GatewayTestCase
         $this->assertInstanceOf('Omnipay\Heartland\Message\DeleteCustomerRequest', $request);
     }
 
+    public function testCreatePaymentMethod()
+    {
+        $request = $this->gateway->createPaymentMethod(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\CreatePaymentMethodRequest', $request);
+    }
+
+    public function testFetchPaymentMethod()
+    {
+        $request = $this->gateway->fetchPaymentMethod(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\FetchPaymentMethodRequest', $request);
+    }
+
+    public function testUpdatePaymentMethod()
+    {
+        $request = $this->gateway->updatePaymentMethod(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\UpdatePaymentMethodRequest', $request);
+    }
+
+    public function testDeletePaymentMethod()
+    {
+        $request = $this->gateway->deletePaymentMethod(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\DeletePaymentMethodRequest', $request);
+    }
+
     public function testCreateSchedule()
     {
         $request = $this->gateway->createSchedule(array());

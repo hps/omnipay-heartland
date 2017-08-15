@@ -58,20 +58,6 @@ abstract class AbstractPorticoRequest extends AbstractRequest
     // region Heartland Soap Building
     public function getData()
     {
-        //check whether secretApiKey or siteid details passed
-        if ($this->getSecretApiKey() == null) {
-            $this->validate(
-                'siteId',
-                'deviceId',
-                'licenseId',
-                'username',
-                'password',
-                'serviceUri'
-            );
-        } else {
-            $this->validate('secretApiKey');
-        }
-
         $cardNotRequired = array('CreditAddToBatch', 'CreditVoid', 'CreditReturn', 'CreditReversal');
         if (in_array($this->getTransactionType(), $cardNotRequired) === false) {
             //check the token value in card reference

@@ -23,7 +23,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         parent::getData();
         $this->validate('customerKey');
-        
+
         if ($this->getPaymentMethodType() != null && $this->getPaymentMethodType() == self::ACH) {
             $paymentMethodDetails = $this->addACH();
         } else {
@@ -32,7 +32,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
 
         return $paymentMethodDetails;
     }
-    
+
     public function addCreditCard()
     {
         $data = array();
@@ -41,14 +41,14 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
         } elseif ($this->getPaymentToken() != null) {
             $data['paymentToken'] = $this->getPaymentToken();
         }
-        
+
         $data['http'] = array(
             'verb'     => 'POST',
             'uri' => 'paymentMethodsCreditCard',
         );
         return array_merge($this->getParameters(), $data);
     }
-    
+
     /**
      *
      * @return mixed
@@ -56,18 +56,18 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     public function addACH()
     {
         $this->validate('accountNumber', 'accountType', 'achType', 'routingNumber');
-        
+
         $data = $this->getParameters();
         //remove unwanted param from request
         unset($data['paymentMethodType']);
-        
+
         $data['http'] = array(
             'verb'     => 'POST',
             'uri' => 'paymentMethodsACH',
         );
         return $data;
     }
-    
+
     public function setExpirationDate($value)
     {
         $this->setParameter('expirationDate', $value);
@@ -78,7 +78,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('expirationDate');
     }
-    
+
     public function setRoutingNumber($value)
     {
         $this->setParameter('routingNumber', $value);
@@ -89,7 +89,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('routingNumber');
     }
-    
+
     public function setAchType($value)
     {
         $this->setParameter('achType', $value);
@@ -100,7 +100,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('achType');
     }
-    
+
     public function setAccountType($value)
     {
         $this->setParameter('accountType', $value);
@@ -111,7 +111,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('accountType');
     }
-    
+
     public function setPaymentToken($value)
     {
         $this->setParameter('paymentToken', $value);
@@ -122,7 +122,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('paymentToken');
     }
-    
+
     public function setPaymentMethodType($value)
     {
         $this->setParameter('paymentMethodType', $value);
@@ -166,17 +166,17 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('accountNumber');
     }
-    
-    public function setCustomerStatus($value)
+
+    public function setPaymentStatus($value)
     {
-        $this->setParameter('customerStatus', $value);
+        $this->setParameter('paymentStatus', $value);
         return $this;
     }
 
-    public function getCustomerStatus()
+    public function getPaymentStatus()
     {
-        return $this->getParameter('customerStatus') !== null && $this->getParameter('customerStatus') !== ''
-            ? $this->getParameter('customerStatus')
+        return $this->getParameter('paymentStatus') !== null && $this->getParameter('paymentStatus') !== ''
+            ? $this->getParameter('paymentStatus')
             : static::ACTIVE;
     }
 

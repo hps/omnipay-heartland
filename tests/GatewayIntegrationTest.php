@@ -170,6 +170,10 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \''.$transactionRef.'\'.  Original transaction is already part of a batch.', $response->getMessage());
     }
 
+    /// Recurring Payments (PayPlan)
+
+    // Customers
+
     public function testCreateCustomerMinimumData()
     {
         // createCustomer
@@ -181,6 +185,7 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['customerKey']);
     }
 
     public function testCreateCustomerAllData()
@@ -215,9 +220,35 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['customerKey']);
         foreach ($customerData as $key => $value) {
             $this->assertSame($value, $response->getData()[$key]);
         }
+    }
+
+    public function testFetchCustomer()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['customerKey']);
+
+        // fetchCustomer
+        $customerKey = $response->getData()['customerKey'];
+        $request = $this->gateway->fetchCustomer(array(
+            'customerKey' => $customerKey,
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['customerKey']);
+        $this->assertSame($customerKey, $response->getData()['customerKey']);
     }
 
     public function testUpdateCustomer()
@@ -242,15 +273,31 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 
-    public function testFetchSchedules()
+    public function testDeleteCustomer()
     {
-        $request = $this->gateway->fetchSchedules();
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // deleteCustomer
+        $request = $this->gateway->deleteCustomer(array(
+            'customerKey' => $response->getData()['customerKey'],
+        ));
+
         $response = $request->send();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 
-    public function testCreatePaymentMethod()
+    // Payment Methods
+
+    public function testCreatePaymentMethodCCMinimumData()
     {
         // createCustomer
         $request = $this->gateway->createCustomer(array(
@@ -280,7 +327,43 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertNotNull($responseData['paymentMethodKey']);
     }
 
-    public function testCreatePaymentMethodACH()
+    public function testCreatePaymentMethodCCAllData()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // updateCustomer
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' => $customer['customerKey'],
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '5473500000000014',
+            'expirationDate' => '1225',
+            'addressLine1' => '123 Main St.',
+            'addressLine2' => 'Suite 1A',
+            'city' => 'Anytown',
+            'stateProvince' => 'TX',
+            'zipPostalCode' => '75024',
+            'country' => 'USA',
+            'cardVerificationValue' => '123',
+        ));
+
+        $response = $request->send();
+        $responseData = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($responseData['paymentMethodKey']);
+    }
+
+    public function testCreatePaymentMethodACHMinimumData()
     {
         // createCustomer
         $request = $this->gateway->createCustomer(array(
@@ -317,9 +400,46 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertNotNull($responseData['paymentMethodKey']);
     }
 
-    protected function createTestIdentifier()
+    public function testCreatePaymentMethodACHAllData()
     {
-        return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 1, 50);
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // updateCustomer
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' => $customer['customerKey'],
+            'paymentMethodType' => 'ACH',
+            'achType' => 'Checking',
+            'accountType' => 'Personal',
+            'telephoneIndiciator' => 'False',
+            'routingNumber' => '490000018',
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '24413815',
+            'addressLine1' => '123 Main St.',
+            'addressLine2' => 'Suite 1A',
+            'city' => 'Anytown',
+            'stateProvince' => 'TX',
+            'zipPostalCode' => '75024',
+            'accountHolderYob' => '1989',
+            'driversLicenseState' => 'TX',
+            'driversLicenseNumber' => '123456789',
+            'socialSecurityNumberLast4' => '1234',
+        ));
+
+        $response = $request->send();
+        $responseData = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($responseData['paymentMethodKey']);
     }
 
     public function testFetchPaymentMethod()
@@ -334,7 +454,7 @@ class GatewayIntegrationTest extends TestCase {
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
 
-        // updateCustomer
+        // createPaymentMethod
         $customer = $response->getData();
 
         $request = $this->gateway->createPaymentMethod(array(
@@ -358,6 +478,46 @@ class GatewayIntegrationTest extends TestCase {
 
         $response = $request->send();
         $responseData = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
+
+    public function testUpdatePaymentMethod()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' =>    $customer['customerKey'],
+            'nameOnAccount'  => 'John Doe',
+            'accountNumber'  => '5473500000000014',
+            'expirationDate' => '1225',
+            'country'        => 'USA'
+        ));
+
+        $response = $request->send();
+        $paymentData = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($paymentData['paymentMethodKey']);
+
+        // updatePaymentMethod
+        $request = $this->gateway->updatePaymentMethod(array(
+            'paymentMethodKey' => $paymentData['paymentMethodKey'],
+            'paymentStatus' => 'Inactive',
+        ));
+
+        $response = $request->send();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
@@ -393,12 +553,335 @@ class GatewayIntegrationTest extends TestCase {
 
         //delete the payment details
         $request = $this->gateway->deletePaymentMethod(array(
-            'paymentMethodKey' =>    $paymentData['paymentMethodKey']
+            'paymentMethodKey' => $paymentData['paymentMethodKey']
         ));
 
         $response = $request->send();
         $responseData = $response->getData();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
+
+    // Schedules
+
+    public function testCreateScheduleMinimumData()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' => $customer['customerKey'],
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '5473500000000014',
+            'expirationDate' => '1225',
+            'country' => 'USA'
+        ));
+
+        $response = $request->send();
+        $paymentMethod = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($paymentMethod['paymentMethodKey']);
+
+        //createSchedule
+        $request = $this->gateway->createSchedule(array(
+            'customerKey' => $customer['customerKey'],
+            'paymentMethodKey' => $paymentMethod['paymentMethodKey'],
+            'scheduleIdentifier' => $this->createTestIdentifier(),
+            'scheduleStatus' => 'Active',
+            'subtotalAmount' => array(
+                'value' => 100,
+            ),
+            'startDate' => '02012027',
+            'frequency' => 'Monthly',
+            'processingDateInfo' => 'First',
+            'duration' => 'Ongoing',
+            'reprocessingCount' => 1,
+            'emailReceipt' => 'Never',
+            'emailAdvanceNotice' => 'No',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['scheduleKey']);
+    }
+
+    public function testCreateScheduleAllData()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' => $customer['customerKey'],
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '5473500000000014',
+            'expirationDate' => '1225',
+            'country' => 'USA'
+        ));
+
+        $response = $request->send();
+        $paymentMethod = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($paymentMethod['paymentMethodKey']);
+
+        //createSchedule
+        $request = $this->gateway->createSchedule(array(
+            'customerKey' => $customer['customerKey'],
+            'paymentMethodKey' => $paymentMethod['paymentMethodKey'],
+            'scheduleIdentifier' => $this->createTestIdentifier(),
+            'scheduleStatus' => 'Active',
+            'subtotalAmount' => array(
+                'currency' => 'USD',
+                'value' => 100,
+            ),
+            'startDate' => '02012027',
+            'frequency' => 'Monthly',
+            'processingDateInfo' => 'First',
+            'duration' => 'Ongoing',
+            'reprocessingCount' => 1,
+            'emailReceipt' => 'Never',
+            'emailAdvanceNotice' => 'No',
+            'scheduleName' => 'Test Schedule',
+            'taxAmount' => array(
+                'currency' => 'USD',
+                'value' => 100,
+            ),
+            'deviceId' => '123456',
+            'debtRepayInd' => false,
+            'invoiceNbr' => '123456',
+            'poNumber' => '123456',
+            'description' => 'Test Schedule',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['scheduleKey']);
+    }
+
+    public function testFetchSchedule()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' => $customer['customerKey'],
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '5473500000000014',
+            'expirationDate' => '1225',
+            'country' => 'USA'
+        ));
+
+        $response = $request->send();
+        $paymentMethod = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($paymentMethod['paymentMethodKey']);
+
+        //createSchedule
+        $request = $this->gateway->createSchedule(array(
+            'customerKey' => $customer['customerKey'],
+            'paymentMethodKey' => $paymentMethod['paymentMethodKey'],
+            'scheduleIdentifier' => $this->createTestIdentifier(),
+            'scheduleStatus' => 'Active',
+            'subtotalAmount' => array(
+                'value' => 100,
+            ),
+            'startDate' => '02012027',
+            'frequency' => 'Monthly',
+            'processingDateInfo' => 'First',
+            'duration' => 'Ongoing',
+            'reprocessingCount' => 1,
+            'emailReceipt' => 'Never',
+            'emailAdvanceNotice' => 'No',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['scheduleKey']);
+
+        $scheduleKey = $response->getData()['scheduleKey'];
+
+        // fetchSchedule
+
+        $request = $this->gateway->fetchSchedule(array(
+            'scheduleKey' => $scheduleKey,
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertSame($scheduleKey, $response->getData()['scheduleKey']);
+    }
+
+    public function testUpdateSchedule()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' => $customer['customerKey'],
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '5473500000000014',
+            'expirationDate' => '1225',
+            'country' => 'USA'
+        ));
+
+        $response = $request->send();
+        $paymentMethod = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($paymentMethod['paymentMethodKey']);
+
+        //createSchedule
+        $request = $this->gateway->createSchedule(array(
+            'customerKey' => $customer['customerKey'],
+            'paymentMethodKey' => $paymentMethod['paymentMethodKey'],
+            'scheduleIdentifier' => $this->createTestIdentifier(),
+            'scheduleStatus' => 'Active',
+            'subtotalAmount' => array(
+                'value' => 100,
+            ),
+            'startDate' => '02012027',
+            'frequency' => 'Monthly',
+            'processingDateInfo' => 'First',
+            'duration' => 'Ongoing',
+            'reprocessingCount' => 1,
+            'emailReceipt' => 'Never',
+            'emailAdvanceNotice' => 'No',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['scheduleKey']);
+
+        $scheduleKey = $response->getData()['scheduleKey'];
+
+        // updateSchedule
+
+        $request = $this->gateway->updateSchedule(array(
+            'scheduleKey' => $scheduleKey,
+            'scheduleStatus' => 'Inactive',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
+
+    public function testDeleteSchedule()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' => $customer['customerKey'],
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '5473500000000014',
+            'expirationDate' => '1225',
+            'country' => 'USA'
+        ));
+
+        $response = $request->send();
+        $paymentMethod = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($paymentMethod['paymentMethodKey']);
+
+        //createSchedule
+        $request = $this->gateway->createSchedule(array(
+            'customerKey' => $customer['customerKey'],
+            'paymentMethodKey' => $paymentMethod['paymentMethodKey'],
+            'scheduleIdentifier' => $this->createTestIdentifier(),
+            'scheduleStatus' => 'Active',
+            'subtotalAmount' => array(
+                'value' => 100,
+            ),
+            'startDate' => '02012027',
+            'frequency' => 'Monthly',
+            'processingDateInfo' => 'First',
+            'duration' => 'Ongoing',
+            'reprocessingCount' => 1,
+            'emailReceipt' => 'Never',
+            'emailAdvanceNotice' => 'No',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getData()['scheduleKey']);
+
+        $scheduleKey = $response->getData()['scheduleKey'];
+
+        // deleteSchedule
+
+        $request = $this->gateway->deleteSchedule(array(
+            'scheduleKey' => $scheduleKey,
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
+
+    public function testSearchSchedules()
+    {
+        $request = $this->gateway->searchSchedules();
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+    }
+
+    /// Helpers
+
+    protected function createTestIdentifier()
+    {
+        return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 1, 50);
     }
 }

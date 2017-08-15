@@ -22,22 +22,8 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
 
     public function getData()
     {
-        //check whether secretApiKey or siteid details passed
-        if ($this->getSecretApiKey() == null) {
-            $this->validate(
-                'siteId',
-                'deviceId',
-                'licenseId',
-                'username',
-                'password',
-                'serviceUri'
-            );
-        } else {
-            $this->validate('secretApiKey');
-        }
-
-        // TODO: Build correct validations based on request type.
     }
+
 
     public function sendData($data)
     {

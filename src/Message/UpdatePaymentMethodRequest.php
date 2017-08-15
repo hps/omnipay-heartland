@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Heartland Get Payment Method By Id
+ * Heartland GetPayment Method By Id
  */
 namespace Omnipay\Heartland\Message;
 
-class UpdatePaymentMethodRequest extends AbstractPayPlanRequest
+class UpdatePaymentMethodRequest extends CreatePaymentMethodRequest
 {
     const ACH         = 'ACH';
     const CREDIT_CARD = 'Credit Card';
@@ -46,9 +46,9 @@ class UpdatePaymentMethodRequest extends AbstractPayPlanRequest
 
     public function getData()
     {
-        $data = parent::getData();
         $this->validate('paymentMethodKey');
 
+        $data = $this->getParameters();
         $allowedFields = $this->allowedFields;
         $result = [];
 
@@ -62,15 +62,15 @@ class UpdatePaymentMethodRequest extends AbstractPayPlanRequest
 
         $data = array_intersect_key($data, array_flip($allowedFields));
 
-        return array_merge($actualData, $result);
+        return array_merge($data, $result);
     }
 
     private function editCreditCard()
     {
         $data = [];
         $data['http'] = array(
-            'uri'     => 'PUT',
-            'endpoint' => 'paymentMethodsCreditCard/' . $this->getPaymentMethodKey(),
+            'uri' => 'paymentMethodsCreditCard/' . $this->getPaymentMethodKey(),
+            'verb' => 'PUT',
         );
         return $data;
     }
@@ -79,8 +79,8 @@ class UpdatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         $data = [];
         $data['http'] = array(
-            'uri'     => 'PUT',
-            'endpoint' => 'paymentMethodsACH/' . $this->getPaymentMethodKey(),
+            'uri' => 'paymentMethodsACH/' . $this->getPaymentMethodKey(),
+            'verb' => 'PUT',
         );
         return $data;
     }
@@ -94,16 +94,5 @@ class UpdatePaymentMethodRequest extends AbstractPayPlanRequest
     public function getPaymentMethodKey()
     {
         return $this->getParameter('paymentMethodKey');
-    }
-
-    public function setPaymentMethodType($value)
-    {
-        $this->setParameter('paymentMethodType', $value);
-        return $this;
-    }
-
-    public function getPaymentMethodType()
-    {
-        return $this->getParameter('paymentMethodType');
     }
 }

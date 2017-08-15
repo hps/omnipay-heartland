@@ -27,7 +27,7 @@ class GatewayValidationTest extends TestCase
     public function testSiteIdRequired()
     {
         $this->request->setSecretApiKey(null);
-        $this->request->getData();
+        $this->request->validateConnectionParameters();
     }
 
     /**
@@ -38,7 +38,7 @@ class GatewayValidationTest extends TestCase
     {
         $this->request->setSecretApiKey(null);
         $this->request->setSiteId('20518');
-        $this->request->getData();
+        $this->request->validateConnectionParameters();
     }
 
     /**
@@ -50,7 +50,7 @@ class GatewayValidationTest extends TestCase
         $this->request->setSecretApiKey(null);
         $this->request->setSiteId('20518');
         $this->request->setDeviceId('90911395');
-        $this->request->getData();
+        $this->request->validateConnectionParameters();
     }
 
     /**
@@ -63,7 +63,7 @@ class GatewayValidationTest extends TestCase
         $this->request->setSiteId('20518');
         $this->request->setDeviceId('90911395');
         $this->request->setLicenseId('20527');
-        $this->request->getData();
+        $this->request->validateConnectionParameters();
     }
 
     /**
@@ -77,7 +77,7 @@ class GatewayValidationTest extends TestCase
         $this->request->setDeviceId('90911395');
         $this->request->setLicenseId('20527');
         $this->request->setUsername('30360021');
-        $this->request->getData();
+        $this->request->validateConnectionParameters();
     }
 
     /**
@@ -92,7 +92,7 @@ class GatewayValidationTest extends TestCase
         $this->request->setLicenseId('20527');
         $this->request->setUsername('30360021');
         $this->request->setPassword('$Test1234');
-        $this->request->getData();
+        $this->request->validateConnectionParameters();
     }
 
     public function testDOMElementCreated()

@@ -29,7 +29,10 @@
         "friendsofphp/php-cs-fixer": "2.2.5"
     },
     "scripts": {
-        "test": "phpcs --standard=PSR2 src && phpunit --coverage-text",
+        "lint": "phpcs --standard=PSR2 src",
+        "test": "composer lint && phpunit --coverage-text",
+        "test:unit": "composer lint && phpunit --coverage-text --testsuite unit",
+        "test:integration": "composer lint && phpunit --coverage-text --testsuite integration",
         "cs-fixer": "php-cs-fixer fix --rules=@PSR2 src"
     }
 }

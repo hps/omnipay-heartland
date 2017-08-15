@@ -41,8 +41,8 @@ class UpdateScheduleRequest extends CreateScheduleRequest
     );
 
     /**
-        * @return string
-        */
+     * @return string
+     */
     public function getTransactionType()
     {
         return 'PayPlanScheduleEdit';
@@ -51,7 +51,7 @@ class UpdateScheduleRequest extends CreateScheduleRequest
     public function getData()
     {
         $data = parent::getData();
-        $key = $data['scheduleKey'];
+        $this->validate('scheduleKey');
 
         $allowedFields = array();
 
@@ -81,7 +81,7 @@ class UpdateScheduleRequest extends CreateScheduleRequest
 
         return array_merge($data, array(
             'http' => array(
-                'uri' => 'schedules/' . $key,
+                'uri' => 'schedules/' . $this->getScheduleKey(),
                 'verb' => 'PUT',
             ),
         ));

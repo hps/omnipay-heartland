@@ -36,8 +36,8 @@ class UpdateCustomerRequest extends CreateCustomerRequest
     );
 
     /**
-        * @return string
-        */
+     * @return string
+     */
     public function getTransactionType()
     {
         return 'PayPlanCustomerEdit';
@@ -46,13 +46,13 @@ class UpdateCustomerRequest extends CreateCustomerRequest
     public function getData()
     {
         $data = parent::getData();
-        $key = $data['customerKey'];
+        $this->validate('customerKey');
 
         $data = array_intersect_key($data, array_flip($this->allowedFields));
 
         return array_merge($data, array(
             'http' => array(
-                'uri' => 'customers/' . $key,
+                'uri' => 'customers/' . $this->getCustomerKey(),
                 'verb' => 'PUT',
             ),
         ));

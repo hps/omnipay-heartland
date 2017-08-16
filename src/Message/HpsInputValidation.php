@@ -10,16 +10,17 @@ use Omnipay\Common\Exception\InvalidResponseException;
  */
 class HpsInputValidation
 {
-    private static $_defaultAllowedCurrencies = array('usd');
-    private static $_inputFldMaxLength = array(
+    private static $defaultAllowedCurrencies = array('usd');
+    private static $inputFldMaxLength = array(
         'PhoneNumber' => 20,
         'ZipCode' => 9,
         'FirstName' => 26,
         'LastName' => 26,
         'City' => 20,
         'Email' => 100,
-    'State' => 20
+        'State' => 20,
     );
+
     /**
      * @param $amount
      *
@@ -36,6 +37,7 @@ class HpsInputValidation
         $amount = preg_replace('/[^0-9\.]/', '', $amount);
         return sprintf("%0.2f", round($amount, 3));
     }
+
     /**
      * @param      $currency
      * @param null     $allowedCurrencies
@@ -44,7 +46,7 @@ class HpsInputValidation
      */
     public static function checkCurrency($currency, $allowedCurrencies = null)
     {
-        $currencies = self::$_defaultAllowedCurrencies;
+        $currencies = self::$defaultAllowedCurrencies;
         if (isset($allowedCurrencies) && is_array($allowedCurrencies)) {
             $currencies = $allowedCurrencies;
         }
@@ -53,12 +55,13 @@ class HpsInputValidation
             throw new InvalidRequestException(
                 'Currency cannot be none'
             );
-        } else if (!in_array(strtolower($currency), $currencies)) {
+        } elseif (!in_array(strtolower($currency), $currencies)) {
             throw new InvalidRequestException(
                 "'".strtolower($currency)."' is not a supported currency"
             );
         }
     }
+
     /**
      * @param $number
      *
@@ -68,6 +71,7 @@ class HpsInputValidation
     {
         return preg_replace('/\D+/', '', trim($number));
     }
+
     /**
      * @param $zip
      *
@@ -77,6 +81,7 @@ class HpsInputValidation
     {
         return preg_replace('/[^0-9A-Za-z]/', '', trim($zip));
     }
+
     /**
      * @param $date
      *
@@ -92,6 +97,7 @@ class HpsInputValidation
             );
         }
     }
+
     /**
      * @param $text
      *
@@ -101,99 +107,103 @@ class HpsInputValidation
     {
         return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $text);
     }
-    
-    /**      
-     * This method clears the user input and return the phone number in correct format or throw an exception  
-     *     
-     * @param  string $phoneNumber this is user entered phone number    
+
+    /**
+     * This method clears the user input and return the phone number in correct format or throw an exception
+     *
+     * @param  string $phoneNumber this is user entered phone number
      * @return string
-     * @throws InvalidRequestException     
+     * @throws InvalidRequestException
      */
-    public static function checkPhoneNumber($phoneNumber) 
+    public static function checkPhoneNumber($phoneNumber)
     {
         $phoneNumber = self::cleanPhoneNumber($phoneNumber);
 
-        if (!empty($phoneNumber) && strlen($phoneNumber) > self::$_inputFldMaxLength['PhoneNumber']) {
-            $errorMessage = 'The value for phone number can be no more than ' . self::$_inputFldMaxLength['PhoneNumber'] . ' characters, Please try again after making corrections';
+        if (!empty($phoneNumber) && strlen($phoneNumber) > self::$inputFldMaxLength['PhoneNumber']) {
+            $errorMessage = 'The value for phone number can be no more than '
+                . self::$inputFldMaxLength['PhoneNumber']
+                . ' characters, Please try again after making corrections';
             throw new InvalidRequestException(
                 $errorMessage
             );
         }
         return $phoneNumber;
     }
-    
-    /**      
-     * This method clears the user input and return the Zip code in correct format or throw an exception  
-     *     
-     * @param  string $zipCode this is user entered zip code    
+
+    /**
+     * This method clears the user input and return the Zip code in correct format or throw an exception
+     *
+     * @param  string $zipCode this is user entered zip code
      * @return string
-     * @throws InvalidRequestException     
+     * @throws InvalidRequestException
      */
-    public static function checkZipCode($zipCode) 
+    public static function checkZipCode($zipCode)
     {
         $zipCode = self::cleanZipCode($zipCode);
 
-        if (!empty($zipCode) && strlen($zipCode) > self::$_inputFldMaxLength['ZipCode']) {
-            $errorMessage = 'The value for zip code can be no more than ' . self::$_inputFldMaxLength['ZipCode'] . ' characters, Please try again after making corrections';
+        if (!empty($zipCode) && strlen($zipCode) > self::$inputFldMaxLength['ZipCode']) {
+            $errorMessage = 'The value for zip code can be no more than '
+                . self::$inputFldMaxLength['ZipCode']
+                . ' characters, Please try again after making corrections';
             throw new InvalidRequestException(
                 $errorMessage
             );
         }
         return $zipCode;
     }
-    
-    /**      
-     * This method clears the user input and return the user input in correct format or throw an exception  
-     *     
-     * @param  string $value this is user entered value (first name or last name or email or city)    
+
+    /**
+     * This method clears the user input and return the user input in correct format or throw an exception
+     *
+     * @param  string $value this is user entered value (first name or last name or email or city)
      * @param  string $type  this is user entered value field name
      * @return string
-     * @throws InvalidRequestException     
+     * @throws InvalidRequestException
      */
-    public static function checkCardHolderData($value, $type = '') 
-    {       
-        
+    public static function checkCardHolderData($value, $type = '')
+    {
         $value = filter_var(trim($value), FILTER_SANITIZE_SPECIAL_CHARS);
-        
+
         //validate length of input data and throw exception
-        //if maximum characters is not mentioned in $_inputFldMaxLength the sanitized values will be returned
-        if (!empty(self::$_inputFldMaxLength[$type]) && strlen($value) > self::$_inputFldMaxLength[$type]) {            
-            $errorMessage = "The value for $type can be no more than " . self::$_inputFldMaxLength[$type] . ' characters, Please try again after making corrections';
+        //if maximum characters is not mentioned in $inputFldMaxLength the sanitized values will be returned
+        if (!empty(self::$inputFldMaxLength[$type]) && strlen($value) > self::$inputFldMaxLength[$type]) {
+            $errorMessage = "The value for $type can be no more than "
+                . self::$inputFldMaxLength[$type]
+                . ' characters, Please try again after making corrections';
             throw new InvalidRequestException(
                 $errorMessage
             );
         }
         return $value;
     }
-    
-    /**      
-     * This method clears the user input and return the email in correct format or throw an exception  
-     *     
-     * @param  string $value this is user entered email address 
+
+    /**
+     * This method clears the user input and return the email in correct format or throw an exception
+     *
+     * @param  string $value this is user entered email address
      * @return string
-     * @throws InvalidRequestException     
+     * @throws InvalidRequestException
      */
-    public static function checkEmailAddress($value) 
+    public static function checkEmailAddress($value)
     {
         $value = filter_var(trim($value), FILTER_SANITIZE_EMAIL);
-        
+
         //validate the email address format
-        if(!empty($value) && filter_var($value, FILTER_VALIDATE_EMAIL) === false) {            
+        if (!empty($value) && filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidRequestException(
                 'Invalid email address'
             );
         }
 
         //validate length of input data and throw exception
-        if (!empty(self::$_inputFldMaxLength['Email']) && strlen($value) > self::$_inputFldMaxLength['Email']) {            
-            $errorMessage = "The value for Email can be no more than " . self::$_inputFldMaxLength['Email'] . ' characters, Please try again after making corrections';
+        if (!empty(self::$inputFldMaxLength['Email']) && strlen($value) > self::$inputFldMaxLength['Email']) {
+            $errorMessage = "The value for Email can be no more than "
+                . self::$inputFldMaxLength['Email']
+                . ' characters, Please try again after making corrections';
             throw new InvalidRequestException(
                 $errorMessage
             );
         }
         return $value;
     }
-    
-    
-
 }

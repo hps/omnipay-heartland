@@ -17,14 +17,14 @@ use DOMDocument;
 /**
  * Heartland Void Request.
  *
- * CreditVoid is used to cancel an open auth or remove a transaction from the current open batch. 
+ * CreditVoid is used to cancel an open auth or remove a transaction from the current open batch.
  * The original transaction must be a CreditAuth, CreditSale, CreditReturn, RecurringBilling, RecurringBillingAuth.
- * 
- * Note: Once a batch is closed, associated transactions can no longer be voided. 
+ *
+ * Note: Once a batch is closed, associated transactions can no longer be voided.
  *       In these cases, a CreditReturn can be used to adjust a customer's account.
- * 
+ *
  * Note: If a transaction has been fully or partially returned, it cannot be voided.
- *  
+ *
  * Example -- note this example assumes that the purchase has been successful
  * and that the transaction ID returned from the purchase is held in $sale_id.
  * See PurchaseRequest for the first part of this example transaction:
@@ -44,18 +44,22 @@ use DOMDocument;
  *
  * @see RefundRequest
  * @see Omnipay\Heartland\Gateway
+ * @codingStandardsIgnoreStart
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditVoid.html
+ * @codingStandardsIgnoreEnd
  */
-class VoidRequest extends AbstractRequest {
-
+class VoidRequest extends AbstractPorticoRequest
+{
     /**
      * @return string
      */
-    public function getTransactionType() {
+    public function getTransactionType()
+    {
         return 'CreditVoid';
     }
 
-    public function getData() {
+    public function getData()
+    {
         parent::getData();
         $this->validate('transactionReference');
 
@@ -67,5 +71,4 @@ class VoidRequest extends AbstractRequest {
 
         return $hpsTransaction;
     }
-
 }

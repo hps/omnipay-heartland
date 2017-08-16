@@ -41,41 +41,15 @@ use DOMDocument;
  *
  *   ));
  *
- *   // By using card details
- *
- *   // Create a credit card object
- *   // This card can be used for testing.
- *   $card = new CreditCard(array(
- *      'firstName'    => 'Example',
- *      'lastName'     => 'Customer',
- *      'number'       => '4242424242424242',
- *      'expiryMonth'  => '01',
- *      'expiryYear'   => '2020',
- *      'cvv'          => '123',
- *      'email'                 => 'customer@example.com',
- *      'billingAddress1'       => '1 Scrubby Creek Road',
- *      'billingCountry'        => 'AU',
- *      'billingCity'           => 'Scrubby Creek',
- *      'billingPostcode'       => '4999',
- *      'billingState'          => 'QLD',
+ *   // Prepare the transaction
+ *   $transaction = $gateway->recurring(array(
+ *       'amount'            => '10.00',
+ *       'currency'          => 'USD',
+ *       'description'       => 'This is a test authorize transaction.', // optional
+ *       'cardReference'     => 'payment-method-key',
+ *       'scheduleReference' => 'schedule-key', // optional
+ *       'oneTime'           => true, // default is false
  *   ));
- *
- *   // Do an authorize transaction on the gateway
- *   $transaction = $gateway->authorize(array(
- *       'amount'                   => '10.00',
- *       'currency'                 => 'USD',
- *       'description'              => 'This is a test authorize transaction.',
- *       'card'                     => $card,
- *   ));
- *
- *   //By using token details
- *   $transaction = $gateway->authorize(array(
- *       'amount'                   => '10.00',
- *       'currency'                 => 'USD',
- *       'description'              => 'This is a test authorize transaction.'
- *   ));
- *
- *   $transaction->setToken('abc-123');
  *
  *   $response = $transaction->send();
  *   if ($response->isSuccessful()) {
@@ -87,17 +61,17 @@ use DOMDocument;
  *
  * @see  \Omnipay\Heartland\Gateway
  * @codingStandardsIgnoreStart
- * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAuth.html
+ * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-RecurringBilling.html
  * @codingStandardsIgnoreEnd
  */
-class AuthorizeRequest extends AbstractPorticoRequest
+class RecurringBillingRequest extends AbstractPorticoRequest
 {
     /**
      * @return string
      */
     public function getTransactionType()
     {
-        return 'CreditAuth';
+        return 'RecurringBilling';
     }
 
     public function getData()
@@ -113,29 +87,28 @@ class AuthorizeRequest extends AbstractPorticoRequest
         $hpsBlock1->appendChild($xml->createElement('hps:AllowDup', 'Y'));
         //$hpsBlock1->appendChild($xml->createElement('hps:AllowPartialAuth', ($allowPartialAuth ? 'Y' : 'N')));
         $hpsBlock1->appendChild($xml->createElement('hps:Amt', $amount));
+        $hpsBlock1->appendChild($xml->createELement('hps:PaymentMethodKey', $this->getCardReference()));
 
         $hpsBlock1->appendChild($this->hydrateCardHolderData($xml));
 
         if ($this->getTransactionId()) {
             $hpsBlock1->appendChild($this->hydrateAdditionalTxnFields($xml));
         }
-        if ($this->getDescription()) {
-            $hpsBlock1->appendChild($xml->createElement('hps:TxnDescriptor', $this->getDescription()));
+
+        if ($this->getOneTime()) {
+            $recurringData = $xml->createElement('hps:RecurringData');
+            $recurringData->appendChild($xml->createElement('hps:OneTime', $this->getOneTime()));
+            $hpsBlock1->appendChild($recurringData);
         }
-
-        $cardData = $xml->createElement('hps:CardData');
-
-        if ($this->getToken()) {
-            $cardData->appendChild($this->hydrateTokenData($xml));
-        } else {
-            $cardData->appendChild($this->hydrateManualEntry($xml));
-        }
-
-        $hpsBlock1->appendChild($cardData);
 
         $hpsCreditAuth->appendChild($hpsBlock1);
         $hpsTransaction->appendChild($hpsCreditAuth);
 
         return $hpsTransaction;
+    }
+
+    protected function getOneTime()
+    {
+        return (bool) $this->getParameter('oneTime');
     }
 }

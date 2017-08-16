@@ -9,7 +9,7 @@ class AbstractRequestTest extends TestCase
 {
     public function setUp()
     {
-        $this->request = Mockery::mock('\Omnipay\Heartland\Message\AbstractRequest')->makePartial();          
+        $this->request = Mockery::mock('\Omnipay\Heartland\Message\AbstractPorticoRequest')->makePartial();
         $this->request->initialize();
     }
 

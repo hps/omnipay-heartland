@@ -55,21 +55,25 @@ use DOMDocument;
  *
  * @see PurchaseRequest
  * @see \Omnipay\Heartland\Gateway
+ * @codingStandardsIgnoreStart
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditReversal.html
+ * @codingStandardsIgnoreEnd
  */
-class ReverseRequest extends AbstractRequest {
-
+class ReverseRequest extends AbstractPorticoRequest
+{
     /**
      * @return string
      */
-    public function getTransactionType() {
+    public function getTransactionType()
+    {
         return 'CreditReversal';
     }
 
-    public function getData() {
+    public function getData()
+    {
         parent::getData();
         $this->validate('transactionReference', 'amount');
-        
+
         $authAmount = null;
 
         $xml = new DOMDocument();
@@ -78,8 +82,8 @@ class ReverseRequest extends AbstractRequest {
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
         $hpsBlock1->appendChild($xml->createElement('hps:Amt', $this->getAmount()));
-        
-        if ($authAmount !== null){
+
+        if ($authAmount !== null) {
             //$hpsBlock1->appendChild($xml->createElement('hps:AuthAmt', HpsInputValidation::checkAmount($authAmount)));
         }
 
@@ -94,7 +98,7 @@ class ReverseRequest extends AbstractRequest {
             }
             $hpsBlock1->appendChild($cardData);
         }
-        
+
         if ($this->getTransactionId()) {
             $hpsBlock1->appendChild($this->hydrateAdditionalTxnFields($xml));
         }
@@ -104,5 +108,4 @@ class ReverseRequest extends AbstractRequest {
 
         return $hpsTransaction;
     }
-
 }

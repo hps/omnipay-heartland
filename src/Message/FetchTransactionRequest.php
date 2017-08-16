@@ -32,20 +32,21 @@ use DOMDocument;
  *
  * @see  PurchaseRequest
  * @see  Omnipay\Heartland\Gateway
+ * @codingStandardsIgnoreStart
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-ReportTxnDetail.html
+ * @codingStandardsIgnoreEnd
  */
-class FetchTransactionRequest extends AbstractRequest
+class FetchTransactionRequest extends AbstractPorticoRequest
 {
-
     /**
      * @return string
      */
-    public function getTransactionType() 
+    public function getTransactionType()
     {
         return 'ReportTxnDetail';
     }
 
-    public function getData() 
+    public function getData()
     {
         $this->validate('transactionReference');
 
@@ -57,5 +58,4 @@ class FetchTransactionRequest extends AbstractRequest
 
         return $hpsTransaction;
     }
-
 }

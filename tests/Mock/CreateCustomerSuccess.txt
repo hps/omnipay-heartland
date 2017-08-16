@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Pragma: no-cache
+Content-Length: 1076
+Content-Type: application/json; charset=utf-8
+Expires: -1
+Server: Microsoft-IIS/7.5
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Date: Thu, 10 Aug 2017 20:09:13 GMT
+
+{"customerKey":65697,"customerIdentifier":"08102017-Omnipay-fghduisakhngiueqwbngikra","customerStatus":"Active","firstName":"John","lastName":"Doe","company":"","primaryEmail":"","secondaryEmail":"","phoneDay":"","phoneDayExt":"","phoneEvening":"","phoneEveningExt":"","phoneMobile":"","phoneMobileExt":"","fax":"","title":"","department":"","addressLine1":"","addressLine2":"","city":"","country":"USA","stateProvince":"","zipPostalCode":"","statusSetDate":"2017-08-10T20:09:13.123","creationDate":"2017-08-10T20:09:13.123","lastChangeDate":"2017-08-10T20:09:13.123","links":[{"href":"https://cert.api2.heartlandportico.com/Portico.PayPlan.v2/Customers/65697","rel":"self","method":"GET"},{"href":"https://cert.api2.heartlandportico.com/Portico.PayPlan.v2/Customers/65697","rel":"update","method":"PUT"},{"href":"https://cert.api2.heartlandportico.com/Portico.PayPlan.v2/PaymentMethodsCreditCard","rel":"paymentMethodCreditCard","method":"POST"},{"href":"https://cert.api2.heartlandportico.com/Portico.PayPlan.v2/PaymentMethodsACH","rel":"paymentMethodACH","method":"POST"}]}

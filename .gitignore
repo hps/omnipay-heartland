@@ -6,3 +6,5 @@ phpunit.xml
 /dirlist.*
 /documents/
 /.idea/
+.php_cs.cache
+.vscode/

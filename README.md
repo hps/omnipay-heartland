@@ -32,6 +32,7 @@ And run composer to update your dependencies:
 The following gateways are provided by this package:
 
 * Heartland’s [**Portico Gateway API**](http://developer.heartlandpaymentsystems.com/Portico)
+* Heartland's [**PayPlan API**](https://developer.heartlandpaymentsystems.com/Resource/download/payplan-devguide)
 
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.

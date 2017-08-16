@@ -40,7 +40,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertSame('10.00', $request->getAmount());
     }
 
-    
+
     public function testRefund()
     {
         $request = $this->gateway->refund(array('amount' => '10.00'));
@@ -55,7 +55,7 @@ class GatewayTest extends GatewayTestCase
 
         $this->assertInstanceOf('Omnipay\Heartland\Message\VoidRequest', $request);
     }
-    
+
     public function testReversal()
     {
         $request = $this->gateway->reverse();
@@ -68,5 +68,109 @@ class GatewayTest extends GatewayTestCase
         $request = $this->gateway->fetchTransaction(array());
 
         $this->assertInstanceOf('Omnipay\Heartland\Message\FetchTransactionRequest', $request);
+    }
+
+    // Recurring (PayPlan)
+
+    public function testCreateCustomer()
+    {
+        $request = $this->gateway->createCustomer(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\CreateCustomerRequest', $request);
+    }
+
+    public function testFetchCustomer()
+    {
+        $request = $this->gateway->fetchCustomer(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\FetchCustomerRequest', $request);
+    }
+
+    public function testUpdateCustomer()
+    {
+        $request = $this->gateway->updateCustomer(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\UpdateCustomerRequest', $request);
+    }
+
+    public function testDeleteCustomer()
+    {
+        $request = $this->gateway->deleteCustomer(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\DeleteCustomerRequest', $request);
+    }
+
+    public function testCreatePaymentMethod()
+    {
+        $request = $this->gateway->createPaymentMethod(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\CreatePaymentMethodRequest', $request);
+    }
+
+    public function testFetchPaymentMethod()
+    {
+        $request = $this->gateway->fetchPaymentMethod(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\FetchPaymentMethodRequest', $request);
+    }
+
+    public function testUpdatePaymentMethod()
+    {
+        $request = $this->gateway->updatePaymentMethod(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\UpdatePaymentMethodRequest', $request);
+    }
+
+    public function testDeletePaymentMethod()
+    {
+        $request = $this->gateway->deletePaymentMethod(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\DeletePaymentMethodRequest', $request);
+    }
+
+    public function testCreateSchedule()
+    {
+        $request = $this->gateway->createSchedule(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\CreateScheduleRequest', $request);
+    }
+
+    public function testSearchSchedules()
+    {
+        $request = $this->gateway->searchSchedules(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\SearchSchedulesRequest', $request);
+    }
+
+    public function testFetchSchedule()
+    {
+        $request = $this->gateway->fetchSchedule(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\FetchScheduleRequest', $request);
+    }
+
+    public function testUpdateSchedule()
+    {
+        $request = $this->gateway->updateSchedule(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\UpdateScheduleRequest', $request);
+    }
+
+    public function testDeleteSchedule()
+    {
+        $request = $this->gateway->deleteSchedule(array());
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\DeleteScheduleRequest', $request);
+    }
+
+    public function testRecurring()
+    {
+        $request = $this->gateway->recurring(array(
+            'amount' => '10',
+            'currency' => 'usd',
+            'cardReference' => '12345678',
+        ));
+
+        $this->assertInstanceOf('\Omnipay\Heartland\Message\RecurringBillingRequest', $request);
     }
 }

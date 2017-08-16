@@ -3,55 +3,17 @@
 namespace Omnipay\Heartland\Message;
 
 use DOMDocument;
-use Omnipay\Common\Exception\InvalidResponseException;
-use Omnipay\Common\Message\AbstractResponse;
-use Omnipay\Common\Message\RedirectResponseInterface;
-use Omnipay\Common\Message\RequestInterface;
 
 /**
- * Heartland Response
+ * Heartland Portico Response
  */
-class Response extends AbstractResponse
+class PorticoResponse extends AbstractResponse
 {
-
-    /**
-     * 
-     *
-     * @var \stdClass  
-     */
-    private $response = null;
-    private $statusOK = false;
-    private $heartlandResponseMessage = "";
-    private $heartlandResponseReasonCode = "";
-    private $heartlandTransactionId = "";
-    private $heartlandTransactionType = "";
-    private $responseData = null;
+    protected $heartlandResponseReasonCode = "";
+    protected $heartlandTransactionId = "";
+    protected $responseData = null;
     public $reversalRequired = false;
 
-    public function __construct($request, $response, $txnType) 
-    {
-        $this->request = $request;
-        $this->response = $response;
-        $this->heartlandTransactionType = $txnType;
-        $this->goThroughResponse();
-    }
-
-    public function isSuccessful() 
-    {
-        return $this->statusOK;
-    }
-
-    public function getMessage() 
-    {
-        return (string) $this->heartlandResponseMessage;
-    }
-
-    public function getReasonCode() 
-    {
-        return (string) $this->heartlandResponseReasonCode;
-    }
-      
-    
     /**
      * Get the transfer reference from the response of CreateTransferRequest,
      * UpdateTransferRequest, and FetchTransferRequest.
@@ -62,48 +24,49 @@ class Response extends AbstractResponse
     {
         return (string) $this->heartlandTransactionId;
     }
-   
 
-    private function goThroughResponse() 
-    {         
+    protected function parseResponse()
+    {
         switch ($this->response->status) {
             case '200':
-                $responseObject = $this->_XML2Array($this->response->response);
+                $responseObject = $this->XML2Array($this->response->response);
                 $ver = "Ver1.0";
                 $this->responseData = $responseObject->$ver;
-                $this->_processChargeGatewayResponse();
-                $this->_processChargeIssuerResponse();
+                $this->processChargeGatewayResponse();
+                $this->processChargeIssuerResponse();
                 break;
             case '500':
-                $faultString = $this->_XMLFault2String($this->response->response);
-                $this->statusOK = false;
+                $faultString = $this->XMLFault2String($this->response->response);
+                $this->setStatusOK(false);
                 $this->heartlandResponseMessage = $faultString;
                 break;
             default:
-                $this->heartlandResponseMessage = 'Unexpected response';                
+                $this->heartlandResponseMessage = 'Unexpected response';
                 break;
-        }        
-    }
-    
-    public function getData() {        
-        //convert the xml object as an array
-        $serverResponseArray = $this->xmlObj2array($this->responseData);        
-        return $this->mergeResponse($serverResponseArray);
-    }
-    
-    public function getCode()
-    {
-        return (string) $this->response->status;
+        }
     }
 
-    private function _processChargeGatewayResponse() 
+    public function getData()
     {
-        $this->heartlandTransactionId = (isset($this->responseData->Header->GatewayTxnId) ? $this->responseData->Header->GatewayTxnId : null);
-        $gatewayRspCode = (isset($this->responseData->Header->GatewayRspCode) ? $this->responseData->Header->GatewayRspCode : null);
-        $this->heartlandResponseMessage = (isset($this->responseData->Header->GatewayRspMsg) ? $this->responseData->Header->GatewayRspMsg : null);
-        
-        $this->statusOK = ($gatewayRspCode == 0) ? true : false;
-        
+        //convert the xml object as an array
+        $serverResponseArray = $this->xmlObj2array($this->responseData);
+        return $this->mergeResponse($serverResponseArray);
+    }
+
+    private function processChargeGatewayResponse()
+    {
+        $this->heartlandTransactionId = isset($this->responseData->Header->GatewayTxnId)
+            ? $this->responseData->Header->GatewayTxnId
+            : null;
+        $gatewayRspCode = isset($this->responseData->Header->GatewayRspCode)
+            ? $this->responseData->Header->GatewayRspCode
+            : null;
+        $this->heartlandResponseMessage = isset($this->responseData->Header->GatewayRspMsg)
+            ? $this->responseData->Header->GatewayRspMsg
+            : null;
+
+        $this->setStatusOK($gatewayRspCode == 0);
+
         if ($gatewayRspCode == '0') {
             return;
         }
@@ -120,7 +83,10 @@ class Response extends AbstractResponse
                 return;
             }
         }
-        $gatewayException = HpsGatewayResponseValidation::checkResponse($this->responseData, $this->heartlandTransactionType);
+        $gatewayException = HpsGatewayResponseValidation::checkResponse(
+            $this->responseData,
+            $this->heartlandTransactionType
+        );
         $this->heartlandResponseMessage = $gatewayException->message;
         $this->heartlandResponseReasonCode = $gatewayException->code;
     }
@@ -131,10 +97,12 @@ class Response extends AbstractResponse
      * @throws \HpsCreditException
      * @throws null
      */
-    private function _processChargeIssuerResponse() 
+    private function processChargeIssuerResponse()
     {
         $expectedType = $this->heartlandTransactionType;
-        $transactionId = (isset($this->responseData->Header->GatewayTxnId) ? $this->responseData->Header->GatewayTxnId : null);
+        $transactionId = isset($this->responseData->Header->GatewayTxnId)
+            ? $this->responseData->Header->GatewayTxnId
+            : null;
         $item = $this->responseData->Transaction->$expectedType;
 
         if ($item != null) {
@@ -144,12 +112,19 @@ class Response extends AbstractResponse
             if ($responseCode != null) {
                 // check if we need to do a reversal
                 if ($responseCode == '91') {
-                    $this->reversalRequired = true;                    
+                    $this->reversalRequired = true;
                 }
                 //concat earlier messages
-                $gatewayException = HpsIssuerResponseValidation::checkResponse($transactionId, $responseCode, $responseText);
-                $this->heartlandResponseMessage .= $gatewayException->message;
-                $this->heartlandResponseReasonCode .= $gatewayException->code;
+                $gatewayException = HpsIssuerResponseValidation::checkResponse(
+                    $transactionId,
+                    $responseCode,
+                    $responseText
+                );
+
+                if ($gatewayException != null) {
+                    $this->heartlandResponseMessage .= $gatewayException->message;
+                    $this->heartlandResponseReasonCode .= $gatewayException->code;
+                }
             }
         }
     }
@@ -159,7 +134,7 @@ class Response extends AbstractResponse
      *
      * @return mixed
      */
-    private function _XML2Array($xml) 
+    private function XML2Array($xml)
     {
         $envelope = simplexml_load_string($xml, "SimpleXMLElement", 0, 'http://schemas.xmlsoap.org/soap/envelope/');
         foreach ($envelope->Body as $response) {
@@ -175,38 +150,40 @@ class Response extends AbstractResponse
      *
      * @return string
      */
-    private function _XMLFault2String($xml) 
+    private function XMLFault2String($xml)
     {
         $dom = new DOMDocument();
         $dom->loadXML($xml);
         return $dom->getElementsByTagName('faultstring')->item(0)->nodeValue;
     }
-    
+
     /**
-     * 
-     * Convert xml object into array recursively 
-     * 
+     *
+     * Convert xml object into array recursively
+     *
      * @param $xmlObject
      * @param $out
      *
      * @return array
      */
-    private function xmlObj2array($xmlObject, $out = array()) {
+    private function xmlObj2array($xmlObject, $out = array())
+    {
         foreach ((array) $xmlObject as $index => $node) {
-            $out[$index] = ( is_object($node) ) ? $this->xmlObj2array($node) : $node;
+            $out[$index] = (is_object($node)) ? $this->xmlObj2array($node) : $node;
         }
         return $out;
     }
 
     /**
-     * 
-     * merge array recursively 
-     * 
+     *
+     * merge array recursively
+     *
      * @param $array
      *
      * @return array
      */
-    private function mergeResponse($array) {
+    private function mergeResponse($array)
+    {
         $return = array();
         foreach ($array as $key => $value) {
             if (is_array($value)) {
@@ -218,5 +195,4 @@ class Response extends AbstractResponse
 
         return $return;
     }
-
 }

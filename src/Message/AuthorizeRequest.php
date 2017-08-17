@@ -138,4 +138,14 @@ class AuthorizeRequest extends AbstractPorticoRequest
 
         return $hpsTransaction;
     }
+
+    public function setCustomerReference($value)
+    {
+        return $this->setParameter('customerReference', $value);
+    }
+
+    public function getCustomerReference()
+    {
+        return $this->getParameter('customerReference');
+    }
 }

@@ -35,7 +35,8 @@ class GatewayIntegrationTest extends TestCase {
         // Authorize
         $request = $this->gateway->authorize(array(
             'amount' => '42.42',
-            'card' => $this->getValidCard()
+            'card' => $this->getValidCard(),
+            'transactionId' => 1
         ));
         $response = $request->send();
         $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
@@ -111,6 +112,7 @@ class GatewayIntegrationTest extends TestCase {
         $request = $this->gateway->reverse(array(
             'card' => $this->getValidCard(),
             'transactionId' => 1,
+            'customerReference' => 'abc-123',
             'amount' => '42.42'
         ));
         $response = $request->send();
@@ -156,6 +158,48 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Invalid card data', $response->getMessage());
+    }
+    
+    public function testPurchaseWithSiteId() {
+        // Purchase
+        $this->gateway->setSecretApiKey(null);
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'card' => $this->getValidCard(),
+            'deviceId' => 1520053,
+            'licenseId' => 20903,
+            'password' => '$Test1234',
+            'siteId' => 20904,
+            'siteTrace' => "trace0001",
+            'username' => "777700004597",
+            'developerId' => "123456",
+            'versionNumber' => "1234",
+            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getTransactionReference());
+    }
+        
+    public function testPurchaseWithInvalidCredentials() {
+        // Purchase
+        $this->gateway->setSecretApiKey(null);
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'card' => $this->getValidCard(),
+            'deviceId' => 123,
+            'licenseId' => 20903,
+            'password' => 'test',
+            'siteId' => 20904,
+            'siteTrace' => "001",
+            'username' => "111",
+            'developerId' => "123456",
+            'versionNumber' => "1234",
+            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+        ));
+        $response = $request->send();
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Authentication Error. Please double check your service configuration', $response->getMessage());
     }
 
     public function testFetchTransaction() {

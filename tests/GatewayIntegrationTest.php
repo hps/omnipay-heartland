@@ -75,12 +75,26 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
         $this->assertTrue($response->isSuccessful(), 'Refund should succeed');
 
+    }
+    
+    public function testRefundBycard() {
+        // Purchase
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'card' => $this->getValidCard()
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Purchase should succeed');
+        $transactionRef = $response->getTransactionReference();
+
         $request = $this->gateway->refund(array(
-            'transactionReference' => $transactionRef,
+            'card' => $this->getValidCard(),
             'amount' => '10.00'
         ));
 
         $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Refund should succeed');
+
     }
 
     public function testAuthReversal() {

@@ -72,7 +72,12 @@ class RefundRequest extends AbstractPorticoRequest
     public function getData()
     {
         parent::getData();
-        $this->validate('transactionReference', 'amount');
+        $this->validate('amount');
+        if($this->getTransactionReference() == null){
+            $this->validate('card');
+        } else {        
+            $this->validate('transactionReference');
+        }
 
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');

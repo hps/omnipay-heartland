@@ -81,7 +81,7 @@ class ReverseRequest extends AbstractPorticoRequest
         $hpsCreditReturn = $xml->createElement('hps:' . $this->getTransactionType());
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
-        $hpsBlock1->appendChild($xml->createElement('hps:Amt', $this->getAmount()));
+        $hpsBlock1->appendChild($xml->createElement('hps:Amt', HpsInputValidation::checkAmount($this->getAmount())));
 
         if ($authAmount !== null) {
             //$hpsBlock1->appendChild($xml->createElement('hps:AuthAmt', HpsInputValidation::checkAmount($authAmount)));

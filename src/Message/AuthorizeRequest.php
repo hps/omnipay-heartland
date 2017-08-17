@@ -115,7 +115,7 @@ class AuthorizeRequest extends AbstractPorticoRequest
             return $recurring->getData();
         }
 
-        $amount = $this->getAmount();
+        $amount = HpsInputValidation::checkAmount($this->getAmount());
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');
         $hpsCreditAuth = $xml->createElement('hps:' . $this->getTransactionType());

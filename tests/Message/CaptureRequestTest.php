@@ -11,6 +11,7 @@ class CaptureRequestTest extends TestCase
         $this->request = new CaptureRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->setSecretApiKey('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ');        
         $this->request->setTransactionReference('1023533094');
+        $this->request->setAmount('10.0');
     }
 
     public function testSendSuccess()

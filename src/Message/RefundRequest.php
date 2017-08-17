@@ -80,7 +80,7 @@ class RefundRequest extends AbstractPorticoRequest
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
         $hpsBlock1->appendChild($xml->createElement('hps:AllowDup', 'Y'));
-        $hpsBlock1->appendChild($xml->createElement('hps:Amt', $this->getAmount()));
+        $hpsBlock1->appendChild($xml->createElement('hps:Amt', HpsInputValidation::checkAmount($this->getAmount())));
 
         if ($this->getTransactionReference()) {
             $hpsBlock1->appendChild($xml->createElement('hps:GatewayTxnId', $this->getTransactionReference()));

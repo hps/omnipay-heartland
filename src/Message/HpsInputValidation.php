@@ -37,31 +37,7 @@ class HpsInputValidation
         $amount = preg_replace('/[^0-9\.]/', '', $amount);
         return sprintf("%0.2f", round($amount, 3));
     }
-
-    /**
-     * @param      $currency
-     * @param null     $allowedCurrencies
-     *
-     * @throws \InvalidRequestException
-     */
-    public static function checkCurrency($currency, $allowedCurrencies = null)
-    {
-        $currencies = self::$defaultAllowedCurrencies;
-        if (isset($allowedCurrencies) && is_array($allowedCurrencies)) {
-            $currencies = $allowedCurrencies;
-        }
-
-        if ($currency == null || $currency == '') {
-            throw new InvalidRequestException(
-                'Currency cannot be none'
-            );
-        } elseif (!in_array(strtolower($currency), $currencies)) {
-            throw new InvalidRequestException(
-                "'".strtolower($currency)."' is not a supported currency"
-            );
-        }
-    }
-
+    
     /**
      * @param $number
      *
@@ -82,31 +58,6 @@ class HpsInputValidation
         return preg_replace('/[^0-9A-Za-z]/', '', trim($zip));
     }
 
-    /**
-     * @param $date
-     *
-     * @throws \InvalidRequestException
-     */
-    public static function checkDateNotFuture($date)
-    {
-        $current = date('Y-m-d\TH:i:s.00\Z', time());
-
-        if ($date != null && $date > $current) {
-            throw new InvalidRequestException(
-                'Date cannot be in the future'
-            );
-        }
-    }
-
-    /**
-     * @param $text
-     *
-     * @return mixed
-     */
-    public static function cleanAscii($text)
-    {
-        return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $text);
-    }
 
     /**
      * This method clears the user input and return the phone number in correct format or throw an exception

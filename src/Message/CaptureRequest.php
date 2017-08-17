@@ -53,7 +53,7 @@ class CaptureRequest extends AbstractPorticoRequest
     {
         parent::getData();
         $this->validate('transactionReference');
-        $amount = $this->getAmount();
+        $amount = HpsInputValidation::checkAmount($this->getAmount());
 
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');

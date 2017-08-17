@@ -45,7 +45,10 @@ class GatewayIntegrationTest extends TestCase {
         // Capture
         $request = $this->gateway->capture(array(
             'amount' => '42.42',
-            'transactionReference' => $transactionRef
+            'transactionReference' => $transactionRef,
+            'transactionId' => 1,
+            'customerReference' => 'abc-123',
+            'transactionHistoryId' => 12
         ));
         $response = $request->send();
         $this->assertTrue($response->isSuccessful(), 'Capture should succeed');
@@ -113,6 +116,7 @@ class GatewayIntegrationTest extends TestCase {
             'card' => $this->getValidCard(),
             'transactionId' => 1,
             'customerReference' => 'abc-123',
+            'transactionHistoryId' => 12,
             'amount' => '42.42'
         ));
         $response = $request->send();

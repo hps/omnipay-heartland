@@ -107,8 +107,8 @@ abstract class AbstractPorticoRequest extends AbstractRequest
             $hpsHeader->appendChild($xml->createElement('hps:VersionNbr', $this->getVersionNumber()));
             $hpsHeader->appendChild($xml->createElement('hps:SiteTrace', $this->getSiteTrace()));
         }
-        if (isset($options['clientTransactionId'])) {
-            $hpsHeader->appendChild($xml->createElement('hps:ClientTxnId', $options['clientTransactionId']));
+        if ($this->getTransactionHistoryId() !== null) {
+            $hpsHeader->appendChild($xml->createElement('hps:ClientTxnId', $this->getTransactionHistoryId()));
         }
 
         $hpsVersion->appendChild($hpsHeader);

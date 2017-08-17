@@ -236,7 +236,7 @@ abstract class AbstractPorticoRequest extends AbstractRequest
      */
     public function hydrateTokenData(DOMDocument $xml, $cardPresent = false, $readerPresent = false)
     {
-        $token = $this->getToken();
+        $token = ($this->getToken() !== null) ? $this->getToken() : $this->getCardReference();
 
         $tokenData = $xml->createElement('hps:TokenData');
         $tokenData->appendChild($xml->createElement('hps:TokenValue', $token));
@@ -306,7 +306,7 @@ abstract class AbstractPorticoRequest extends AbstractRequest
         $additionalTxnFields->appendChild($xml->createElement('hps:Description', $this->getDescription()));
         $additionalTxnFields->appendChild($xml->createElement('hps:InvoiceNbr', $this->getTransactionId()));
 
-        if ($this->getCustomerReference()) {
+        if ($this->getCustomerReference() !== null) {
             $additionalTxnFields->appendChild($xml->createElement('hps:CustomerID', $this->getCustomerReference()));
         }
 

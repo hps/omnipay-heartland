@@ -89,6 +89,7 @@ class GatewayIntegrationTest extends TestCase {
 
         $request = $this->gateway->refund(array(
             'card' => $this->getValidCard(),
+            'transactionId' => 1,
             'amount' => '10.00'
         ));
 

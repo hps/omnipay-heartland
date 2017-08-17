@@ -497,4 +497,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return $this->setParameter('serviceUri', $value);
     }
+    
+    public function getCustomerReference()
+    {
+        return $this->getParameter('customerReference');
+    }
+   
+    public function setCustomerReference($value)
+    {
+        return $this->setParameter('customerReference', $value);
+    }
+    
+    
 }

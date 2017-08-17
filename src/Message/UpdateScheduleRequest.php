@@ -81,18 +81,18 @@ class UpdateScheduleRequest extends CreateScheduleRequest
 
         return array_merge($data, array(
             'http' => array(
-                'uri' => 'schedules/' . $this->getScheduleKey(),
+                'uri' => 'schedules/' . $this->getScheduleReference(),
                 'verb' => 'PUT',
             ),
         ));
     }
 
-    public function getScheduleKey()
+    public function getScheduleReference()
     {
         return $this->getParameter('scheduleKey');
     }
 
-    public function setScheduleKey($value)
+    public function setScheduleReference($value)
     {
         $this->setParameter('scheduleKey', $value);
         return $this;

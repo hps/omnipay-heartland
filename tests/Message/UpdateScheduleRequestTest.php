@@ -11,8 +11,8 @@ class UpdateScheduleRequestTest extends TestCase
         $this->request = new UpdateScheduleRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
-                'ScheduleKey' => '65697',
-                'ScheduleStatus' => 'Inactive',
+                'scheduleReference' => '65697',
+                'scheduleStatus' => 'Inactive',
             )
         );
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');

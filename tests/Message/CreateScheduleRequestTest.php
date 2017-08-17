@@ -11,8 +11,8 @@ class CreateScheduleRequestTest extends TestCase
         $this->request = new CreateScheduleRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
-                'customerKey' => 65617,
-                'paymentMethodKey' => 'd0e7eba5-7cdd-47af-9992-9f732f56f5d7',
+                'customerReference' => 65617,
+                'paymentMethodReference' => 'd0e7eba5-7cdd-47af-9992-9f732f56f5d7',
                 'scheduleIdentifier' => '08112017-Omnipay-jkfghdaskhgiu',
                 'scheduleStatus' => 'Active',
                 'subtotalAmount' => array(

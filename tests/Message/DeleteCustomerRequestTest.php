@@ -10,7 +10,7 @@ class DeleteCustomerRequestTest extends TestCase
     {
         $this->request = new DeleteCustomerRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
-        $this->request->setCustomerKey('1234');
+        $this->request->setCustomerReference('1234');
     }
 
     public function testSendSuccess()

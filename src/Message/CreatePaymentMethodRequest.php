@@ -134,13 +134,13 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
         return $this->getParameter('paymentMethodType');
     }
 
-    public function setCustomerKey($value)
+    public function setCustomerReference($value)
     {
         $this->setParameter('customerKey', $value);
         return $this;
     }
 
-    public function getCustomerKey()
+    public function getCustomerReference()
     {
         return $this->getParameter('customerKey');
     }

@@ -36,18 +36,18 @@ class FetchCustomerRequest extends AbstractPayPlanRequest
 
         return array(
           'http' => array(
-            'uri' => 'customers/' . $this->getCustomerKey(),
+            'uri' => 'customers/' . $this->getCustomerReference(),
             'verb' => 'GET'
           ),
         );
     }
 
-    public function getCustomerKey()
+    public function getCustomerReference()
     {
         return $this->getParameter('customerKey');
     }
 
-    public function setCustomerKey($value)
+    public function setCustomerReference($value)
     {
         return $this->setParameter('customerKey', $value);
     }

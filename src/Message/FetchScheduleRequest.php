@@ -36,18 +36,18 @@ class FetchScheduleRequest extends AbstractPayPlanRequest
 
         return array(
           'http' => array(
-            'uri' => 'schedules/' . $this->getScheduleKey(),
+            'uri' => 'schedules/' . $this->getScheduleReference(),
             'verb' => 'GET'
           ),
         );
     }
 
-    public function getScheduleKey()
+    public function getScheduleReference()
     {
         return $this->getParameter('scheduleKey');
     }
 
-    public function setScheduleKey($value)
+    public function setScheduleReference($value)
     {
         return $this->setParameter('scheduleKey', $value);
     }

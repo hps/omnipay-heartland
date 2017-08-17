@@ -49,13 +49,13 @@ class CreateScheduleRequest extends AbstractPayPlanRequest
             : $this->generateIdentifier();
     }
 
-    public function setCustomerKey($value)
+    public function setCustomerReference($value)
     {
         $this->setParameter('customerKey', $value);
         return $this;
     }
 
-    public function getCustomerKey()
+    public function getCustomerReference()
     {
         return $this->getParameter('customerKey');
     }
@@ -84,13 +84,13 @@ class CreateScheduleRequest extends AbstractPayPlanRequest
             : static::ACTIVE;
     }
 
-    public function setPaymentMethodKey($value)
+    public function setPaymentMethodReference($value)
     {
         $this->setParameter('paymentMethodKey', $value);
         return $this;
     }
 
-    public function getPaymentMethodKey()
+    public function getPaymentMethodReference()
     {
         return $this->getParameter('paymentMethodKey');
     }

@@ -23,7 +23,7 @@ class FetchPaymentMethodRequest extends AbstractPayPlanRequest
         $newdata = [];
         $newdata['http'] = array(
             'verb'     => 'GET',
-            'uri' => 'paymentMethods/' . $this->getPaymentMethodKey(),
+            'uri' => 'paymentMethods/' . $this->getPaymentMethodReference(),
         );
 
         $actualData = $this->getParameters();
@@ -32,13 +32,13 @@ class FetchPaymentMethodRequest extends AbstractPayPlanRequest
         return array_merge($actualData, $newdata);
     }
 
-    public function setPaymentMethodKey($value)
+    public function setPaymentMethodReference($value)
     {
         $this->setParameter('paymentMethodKey', $value);
         return $this;
     }
 
-    public function getPaymentMethodKey()
+    public function getPaymentMethodReference()
     {
         return $this->getParameter('paymentMethodKey');
     }

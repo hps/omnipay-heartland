@@ -13,7 +13,7 @@ class RecurringBillingRequestTest extends TestCase
             array(
                 'amount' => '12.00',
                 'currency' => 'USD',
-                'cardReference' => 'd0e7eba5-7cdd-47af-9992-9f732f56f5d7',
+                'paymentMethodReference' => 'd0e7eba5-7cdd-47af-9992-9f732f56f5d7',
                 'description' => 'Order #42'
             )
         );

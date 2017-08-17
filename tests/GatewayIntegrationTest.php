@@ -170,6 +170,84 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \''.$transactionRef.'\'.  Original transaction is already part of a batch.', $response->getMessage());
     }
 
+    public function testAuthWithPaymentMethodReference()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response;
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerReference' => $customer->getCustomerReference(),
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '5473500000000014',
+            'expirationDate' => '1225',
+            'country' => 'USA'
+        ));
+
+        $response = $request->send();
+        $paymentMethod = $response;
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($paymentMethod->getPaymentMethodReference());
+
+        $request = $this->gateway->authorize(array(
+            'amount' => '42.42',
+            'paymentMethodReference' => $paymentMethod->getPaymentMethodReference(),
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
+        $transactionRef = $response->getTransactionReference();
+    }
+
+    public function testPurchaseWithPaymentMethodReference()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response;
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerReference' => $customer->getCustomerReference(),
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '5473500000000014',
+            'expirationDate' => '1225',
+            'country' => 'USA'
+        ));
+
+        $response = $request->send();
+        $paymentMethod = $response;
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($paymentMethod->getPaymentMethodReference());
+
+        $request = $this->gateway->purchase(array(
+            'amount' => '42.42',
+            'paymentMethodReference' => $paymentMethod->getPaymentMethodReference(),
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), 'Purchase should succeed');
+        $transactionRef = $response->getTransactionReference();
+    }
+
     /// Recurring Payments (PayPlan)
 
     // Customers

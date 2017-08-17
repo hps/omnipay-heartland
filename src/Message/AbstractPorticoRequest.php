@@ -69,7 +69,9 @@ abstract class AbstractPorticoRequest extends AbstractRequest
             }
             //if token not passed validate card
             $this->validate('amount');
-            if ($this->getToken() == null) {
+            if (method_exists($this, 'getPaymentMethodReference') && $this->getPaymentMethodReference() != null) {
+                $this->validate('paymentMethodKey');
+            } elseif ($this->getToken() == null) {
                 $this->validate('card');
                 $this->getCard()->validate();
             } else {

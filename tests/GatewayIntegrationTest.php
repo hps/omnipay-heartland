@@ -556,7 +556,7 @@ class GatewayIntegrationTest extends TestCase {
 
         $response = $request->send();
 
-        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());        
     }
 
     public function testDeletePaymentMethod()
@@ -1047,6 +1047,56 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertSame('Authentication Error. Please double check your service configuration', $response->getMessage());
     }
     
+    public function testUpdatePaymentMethodACH()
+    {
+        // createCustomer
+        $request = $this->gateway->createCustomer(array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'country' => 'USA',
+        ));
+        $response = $request->send();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+
+        // createPaymentMethod
+        $customer = $response->getData();
+
+        $request = $this->gateway->createPaymentMethod(array(
+            'customerKey' => $customer['customerKey'],
+            'paymentMethodType' => 'ACH',
+            'achType' => 'Checking',
+            'accountType' => 'Personal',
+            'routingNumber' => '490000018',
+            'nameOnAccount' => 'John Doe',
+            'accountNumber' => '24413815',
+            'addressLine1' => '123 Main St',
+            'city' => 'Dallas',
+            'stateProvince' => 'TX',
+            'zipPostalCode' => '98765',
+            'accountHolderYob' => '1989'
+        ));
+
+        $response = $request->send();
+        $responseData = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($responseData['paymentMethodKey']);
+        $this->assertSame($responseData['paymentStatus'], 'Active');
+        
+        // updatePaymentMethod
+        $request = $this->gateway->updatePaymentMethod(array(
+            'paymentMethodKey' => $responseData['paymentMethodKey'],
+            'paymentStatus' => 'Inactive',
+            'paymentMethodType' => 'ACH'
+        ));
+
+        $response = $request->send();
+        $responseData = $response->getData();
+        
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertSame($responseData['paymentStatus'], 'Inactive');
+    }
     
     
 }

@@ -33,9 +33,6 @@ class CreatePaymentMethodRequestTest extends TestCase
         $this->request->initialize($ccDetails);
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
         
-        //$response = $this->request->send();
-        //$this->assertTrue($response->isSuccessful(), $response->getMessage());
-        
         $this->assertSame($this->request->getCustomerKey(), 66770);
         $this->assertSame($this->request->getNameOnAccount(), 'John Doe');
         $this->assertSame($this->request->getAccountNumber(), '5473500000000014');
@@ -73,9 +70,6 @@ class CreatePaymentMethodRequestTest extends TestCase
         );
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
 
-        //$response = $this->request->send();
-        //$this->assertTrue($response->isSuccessful(), $response->getMessage());
-        
         $this->assertSame($this->request->getPaymentMethodType(), 'ACH');
         $this->assertSame($this->request->getAchType(), 'Checking');
         $this->assertSame($this->request->getAccountType(), 'Personal');
@@ -86,5 +80,5 @@ class CreatePaymentMethodRequestTest extends TestCase
         $this->assertSame($this->request->getCity(), 'Anytown');
         $this->assertSame($this->request->getStateProvince(), 'TX');
         $this->assertSame($this->request->getZipPostalCode(), '75024');
-    }
+    }    
 }

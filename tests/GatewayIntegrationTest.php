@@ -80,131 +80,6 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), 'Refund should succeed');
 
     }
-    
-    public function testRefundBycard() {
-        // Purchase
-        $request = $this->gateway->purchase(array(
-            'amount' => 10.00,
-            'card' => $this->getValidCard()
-        ));
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Purchase should succeed');
-        $transactionRef = $response->getTransactionReference();
-
-        $request = $this->gateway->refund(array(
-            'card' => $this->getValidCard(),
-            'transactionId' => 1,
-            'amount' => '10.00'
-        ));
-
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Refund should succeed');
-
-    }
-
-    public function testAuthReversal() {
-        // Authorize
-        $request = $this->gateway->authorize(array(
-            'amount' => '42.42',
-            'card' => $this->getValidCard()
-        ));
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
-
-        // reverse
-        $request = $this->gateway->reverse(array(
-            'card' => $this->getValidCard(),
-            'transactionId' => 1,
-            'customerReference' => 'abc-123',
-            'transactionHistoryId' => 12,
-            'amount' => '42.42'
-        ));
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Reversal should succeed');
-    }
-    
-    public function testReversalByToken() {
-        // Authorize
-        $request = $this->gateway->authorize(array(
-            'amount' => '42.42',
-            'card' => $this->getValidCard()
-        ));
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
-        $transactionRef = $response->getTransactionReference();
-
-        // reverse
-        $request = $this->gateway->reverse(array(
-            'amount' => '42.42',
-            'transactionReference' => $transactionRef
-        ));
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), 'Reversal should succeed');
-    }
-
-    public function testPurchaseWithInvalidCardReference() {
-        // Purchase
-        $request = $this->gateway->purchase(array(
-            'amount' => 10.00,
-            'cardReference' => '123456'
-        ));
-        $response = $request->send();
-        $this->assertFalse($response->isSuccessful());
-        $this->assertSame('Invalid card data', $response->getMessage());
-    }
-
-    public function testPurchaseWithInvalidToken() {
-        // Purchase
-        $request = $this->gateway->purchase(array(
-            'amount' => 10.00,
-            'token' => '123456'
-        ));
-        $response = $request->send();
-        $this->assertFalse($response->isSuccessful());
-        $this->assertSame('Invalid card data', $response->getMessage());
-    }
-    
-    public function testPurchaseWithSiteId() {
-        // Purchase
-        $this->gateway->setSecretApiKey(null);
-        $request = $this->gateway->purchase(array(
-            'amount' => 10.00,
-            'card' => $this->getValidCard(),
-            'deviceId' => 1520053,
-            'licenseId' => 20903,
-            'password' => '$Test1234',
-            'siteId' => 20904,
-            'siteTrace' => "trace0001",
-            'username' => "777700004597",
-            'developerId' => "123456",
-            'versionNumber' => "1234",
-            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
-        ));
-        $response = $request->send();
-        $this->assertTrue($response->isSuccessful(), $response->getMessage());
-        $this->assertNotNull($response->getTransactionReference());
-    }
-        
-    public function testPurchaseWithInvalidCredentials() {
-        // Purchase
-        $this->gateway->setSecretApiKey(null);
-        $request = $this->gateway->purchase(array(
-            'amount' => 10.00,
-            'card' => $this->getValidCard(),
-            'deviceId' => 123,
-            'licenseId' => 20903,
-            'password' => 'test',
-            'siteId' => 20904,
-            'siteTrace' => "001",
-            'username' => "111",
-            'developerId' => "123456",
-            'versionNumber' => "1234",
-            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
-        ));
-        $response = $request->send();
-        $this->assertFalse($response->isSuccessful());
-        $this->assertSame('Authentication Error. Please double check your service configuration', $response->getMessage());
-    }
 
     public function testFetchTransaction() {
         // Authorize
@@ -1046,4 +921,132 @@ class GatewayIntegrationTest extends TestCase {
     {
         return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 1, 50);
     }
+        
+    public function testRefundBycard() {
+        // Purchase
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'card' => $this->getValidCard()
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Purchase should succeed');
+        $transactionRef = $response->getTransactionReference();
+
+        $request = $this->gateway->refund(array(
+            'card' => $this->getValidCard(),
+            'transactionId' => 1,
+            'amount' => '10.00'
+        ));
+
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Refund should succeed');
+
+    }
+
+    public function testAuthReversal() {
+        // Authorize
+        $request = $this->gateway->authorize(array(
+            'amount' => '42.42',
+            'card' => $this->getValidCard()
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
+
+        // reverse
+        $request = $this->gateway->reverse(array(
+            'card' => $this->getValidCard(),
+            'transactionId' => 1,
+            'customerReference' => 'abc-123',
+            'transactionHistoryId' => 12,
+            'amount' => '42.42'
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Reversal should succeed');
+    }
+    
+    public function testReversalByToken() {
+        // Authorize
+        $request = $this->gateway->authorize(array(
+            'amount' => '42.42',
+            'card' => $this->getValidCard()
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
+        $transactionRef = $response->getTransactionReference();
+
+        // reverse
+        $request = $this->gateway->reverse(array(
+            'amount' => '42.42',
+            'transactionReference' => $transactionRef
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), 'Reversal should succeed');
+    }
+
+    public function testPurchaseWithInvalidCardReference() {
+        // Purchase
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'cardReference' => '123456'
+        ));
+        $response = $request->send();
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Invalid card data', $response->getMessage());
+    }
+
+    public function testPurchaseWithInvalidToken() {
+        // Purchase
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'token' => '123456'
+        ));
+        $response = $request->send();
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Invalid card data', $response->getMessage());
+    }
+    
+    public function testPurchaseWithSiteId() {
+        // Purchase
+        $this->gateway->setSecretApiKey(null);
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'card' => $this->getValidCard(),
+            'deviceId' => 1520053,
+            'licenseId' => 20903,
+            'password' => '$Test1234',
+            'siteId' => 20904,
+            'siteTrace' => "trace0001",
+            'username' => "777700004597",
+            'developerId' => "123456",
+            'versionNumber' => "1234",
+            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+        ));
+        $response = $request->send();
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($response->getTransactionReference());
+    }
+        
+    public function testPurchaseWithInvalidCredentials() {
+        // Purchase
+        $this->gateway->setSecretApiKey(null);
+        $request = $this->gateway->purchase(array(
+            'amount' => 10.00,
+            'card' => $this->getValidCard(),
+            'deviceId' => 123,
+            'licenseId' => 20903,
+            'password' => 'test',
+            'siteId' => 20904,
+            'siteTrace' => "001",
+            'username' => "111",
+            'developerId' => "123456",
+            'versionNumber' => "1234",
+            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+        ));
+        $response = $request->send();
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Authentication Error. Please double check your service configuration', $response->getMessage());
+    }
+    
+    
+    
 }

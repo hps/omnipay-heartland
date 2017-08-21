@@ -246,6 +246,4 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
     {
         return $this->getParameter('country');
     }
-        
-    
 }

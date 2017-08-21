@@ -87,7 +87,7 @@ class ReverseRequest extends AbstractPorticoRequest
             $hpsBlock1->appendChild($xml->createElement('hps:GatewayTxnId', $this->getTransactionReference()));
         } else {
             $cardData = $xml->createElement('hps:CardData');
-            $tokenRef = ($this->getToken() !== null) ? $this->getToken() : $this->getCardReference();   
+            $tokenRef = ($this->getToken() !== null) ? $this->getToken() : $this->getCardReference();
             
             if ($tokenRef !== null) {
                 $cardData->appendChild($this->hydrateTokenData($xml));

@@ -39,7 +39,11 @@ class GatewayIntegrationTest extends TestCase {
             'transactionId' => 1
         ));
         $response = $request->send();
+        $responseData = $response->getData();
+        
         $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
+        $this->assertNotNull($responseData['GatewayTxnId']);
+        
         $transactionRef = $response->getTransactionReference();
 
         // Capture

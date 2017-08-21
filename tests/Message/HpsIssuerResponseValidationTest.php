@@ -268,4 +268,17 @@ class HpsIssuerResponseValidationTest extends TestCase
     {
         return (string)simplexml_load_string('<RspCode>' . $value . '</RspCode>');
     }
+    
+    public function testGetExceptionUnknownCard()
+    {
+        $sxml = $this->createStringFromTextNode('26');
+        $codes = array('26', $sxml);
+        $this->assertExceptionValues(
+            $codes,
+            HpsExceptionCodes::UNKNOWN_CREDIT_ERROR,
+            'An unknown issuer error has occurred.',
+            'credit'
+        );
+    }
+    
 }

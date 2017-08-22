@@ -23,6 +23,10 @@ class RecurringBillingRequestTest extends TestCase
     public function testSendSuccess()
     {
         $this->setMockHttpResponse('RecurringBillingSuccess.txt');
+        
+        $this->request->setOneTime(true);
+        $this->request->setTransactionId('123456');
+        
         $response = $this->request->send();
 
         $this->assertTrue($response->isSuccessful());

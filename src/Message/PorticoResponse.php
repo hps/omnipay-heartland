@@ -35,7 +35,7 @@ class PorticoResponse extends AbstractResponse
                 $this->processChargeGatewayResponse();
                 $this->processChargeIssuerResponse();
                 break;
-            case '500': 
+            case '500':
                 $faultString = $this->XMLFault2String($this->response->response);
                 $this->setStatusOK(false);
                 $this->heartlandResponseMessage = $faultString;

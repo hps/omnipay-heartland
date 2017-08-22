@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Cache-Control: private, max-age=0
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/7.5
+X-dynaTrace: PT=975570;PA=1714832109;SP=Gateway Cert;PS=1926692524
+dynaTrace: PT=975570;PA=1714832109;SP=Gateway Cert;PS=1926692524
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Date: Mon, 07 Aug 2017 13:59:02 GMT
+Content-Length: 715

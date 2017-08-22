@@ -594,9 +594,11 @@ class GatewayIntegrationTest extends TestCase {
 
         //delete the payment details
         $request = $this->gateway->deletePaymentMethod(array(
-            'paymentMethodReference' => $paymentData->getPaymentMethodReference()
+            'paymentMethodReference' => $paymentData->getPaymentMethodReference(),
+            'forceDelete' => true,
         ));
 
+        $this->assertTrue($request->getForceDelete());            
         $response = $request->send();
         $responseData = $response;
 
@@ -1101,6 +1103,7 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertSame($responseData['paymentStatus'], 'Inactive');
     }
+    
     
     
 }

@@ -35,7 +35,7 @@ class PorticoResponse extends AbstractResponse
                 $this->processChargeGatewayResponse();
                 $this->processChargeIssuerResponse();
                 break;
-            case '500':
+            case '500': 
                 $faultString = $this->XMLFault2String($this->response->response);
                 $this->setStatusOK(false);
                 $this->heartlandResponseMessage = $faultString;
@@ -136,10 +136,12 @@ class PorticoResponse extends AbstractResponse
      */
     private function XML2Array($xml)
     {
-        $envelope = simplexml_load_string($xml, "SimpleXMLElement", 0, 'http://schemas.xmlsoap.org/soap/envelope/');
-        foreach ($envelope->Body as $response) {
-            foreach ($response->children('http://Hps.Exchange.PosGateway') as $item) {
-                return $item;
+        if (!empty($xml)) {
+            $envelope = simplexml_load_string($xml, "SimpleXMLElement", 0, 'http://schemas.xmlsoap.org/soap/envelope/');
+            foreach ($envelope->Body as $response) {
+                foreach ($response->children('http://Hps.Exchange.PosGateway') as $item) {
+                    return $item;
+                }
             }
         }
         return null;

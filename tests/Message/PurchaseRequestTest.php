@@ -54,4 +54,14 @@ class PurchaseRequestTest extends TestCase
         $this->assertSame('1023524629', $response->getTransactionReference());
         $this->assertSame('Success', $response->getMessage());
     }
+    
+    public function testGatewayEmptyResponse()
+    {
+        $this->setMockHttpResponse('PurchaseEmptyResponse.txt');
+        $response = $this->request->send();
+        
+        $this->assertTrue($response->isSuccessful());
+        $this->assertEmpty($response->getData());            
+    }
+    
 }

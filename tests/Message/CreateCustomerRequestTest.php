@@ -21,6 +21,15 @@ class CreateCustomerRequestTest extends TestCase
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
     }
 
+    public function testSendSuccess()
+    {
+        $this->setMockHttpResponse('CreateCustomerSuccess.txt');
+        $response = $this->request->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+    }   
+
     public function testGetValues()
     {
         $this->request->initialize(
@@ -72,13 +81,7 @@ class CreateCustomerRequestTest extends TestCase
         $this->assertSame('PA', $this->request->getStateProvince());
         $this->assertSame('54321', $this->request->getZipPostalCode());
     }
-        
-    public function testSendSuccess()
-    {
-        $this->setMockHttpResponse('CreateCustomerSuccess.txt');
-        $response = $this->request->send();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-    }
+            
 }
+
+

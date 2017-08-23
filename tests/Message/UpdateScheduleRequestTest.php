@@ -26,4 +26,24 @@ class UpdateScheduleRequestTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
     }
+    
+    public function testScheduleStarted()
+    {
+        $this->setMockHttpResponse('UpdateScheduleSuccess.txt');
+        $this->request->setScheduleStarted('true');
+        $response = $this->request->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+    }
+    
+    public function testScheduleNotStarted()
+    {
+        $this->setMockHttpResponse('UpdateScheduleSuccess.txt');
+        $this->request->setScheduleStarted('false');
+        $response = $this->request->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+    }
 }

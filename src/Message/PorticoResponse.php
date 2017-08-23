@@ -9,7 +9,7 @@ use DOMDocument;
  */
 class PorticoResponse extends AbstractResponse
 {
-    protected $heartlandResponseReasonCode = "";
+    protected $heartlandResponseReasonCode = 0;
     protected $heartlandTransactionId = "";
     protected $responseData = null;
     public $reversalRequired = false;
@@ -32,8 +32,12 @@ class PorticoResponse extends AbstractResponse
                 $responseObject = $this->XML2Array($this->response->response);
                 $ver = "Ver1.0";
                 $this->responseData = $responseObject->$ver;
-                $this->processChargeGatewayResponse();
-                $this->processChargeIssuerResponse();
+                $this->processChargeGatewayResponse(); 
+
+                if($this->getReasonCode() === 0)
+                {
+                    $this->processChargeIssuerResponse();
+                }
                 break;
             case '500':
                 $faultString = $this->XMLFault2String($this->response->response);

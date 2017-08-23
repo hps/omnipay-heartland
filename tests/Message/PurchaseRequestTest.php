@@ -67,4 +67,40 @@ class PurchaseRequestTest extends TestCase
         */ 
     }
     
+    public function testErrorNoOpenBatch()
+    {
+        $this->setMockHttpResponse('PurchaseNoOpenBatch.txt');
+        $response = $this->request->send();
+
+        $this->assertSame($response->getReasonCode(), '8');
+        $this->assertSame('Transaction rejected because the referenced original transaction is invalid', $response->getMessage());                    
+    }
+    
+    public function testErrorInvalidCPCData()
+    {
+        $this->setMockHttpResponse('PurchaseInvalidCPCData.txt');
+        $response = $this->request->send();
+
+        $this->assertSame($response->getReasonCode(), '9');
+        $this->assertSame('Invalid CPC data', $response->getMessage());                    
+    }
+    
+    public function testErrorInvalidNumber()
+    {
+        $this->setMockHttpResponse('PurchaseInvalidNumber.txt');
+        $response = $this->request->send();
+
+        $this->assertSame($response->getReasonCode(), '11');
+        $this->assertSame('The card number is not valid', $response->getMessage());                    
+    }
+    
+    public function testGatewayError()
+    {
+        /*$this->setMockHttpResponse('PurchaseGatewayError.txt');
+        $response = $this->request->send();
+
+        $this->assertSame($response->getReasonCode(), '31');
+        $this->assertSame('Gateway error', $response->getMessage());  */                  
+    }
+    
 }

@@ -28,7 +28,8 @@ class CreatePaymentMethodRequestTest extends TestCase
                 'accountHolderYob' => '1989',
                 'driversLicenseState' => 'TX',
                 'driversLicenseNumber' => '123456789',
-                'socialSecurityNumberLast4' => '1234'
+                'socialSecurityNumberLast4' => '1234',
+                'paymentStatus' => 'Active'
             );
         $this->request->initialize($ccDetails);
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
@@ -43,6 +44,7 @@ class CreatePaymentMethodRequestTest extends TestCase
         $this->assertSame($this->request->getStateProvince(), 'TX');
         $this->assertSame($this->request->getZipPostalCode(), '75024');
         $this->assertSame($this->request->getCountry(), 'USA');
+        $this->assertSame($this->request->getPaymentStatus(), 'Active');
     }
     
     public function testGetMethodsForACH()
@@ -81,4 +83,27 @@ class CreatePaymentMethodRequestTest extends TestCase
         $this->assertSame($this->request->getStateProvince(), 'TX');
         $this->assertSame($this->request->getZipPostalCode(), '75024');
     }    
+    
+    
+    public function testCreatePaymentMethodWithToken()
+    {        
+        $request = $this->request->initialize(array(
+            'customerKey' =>    69138,
+            'nameOnAccount'  => 'John Doe',
+            'paymentToken'  => 'supt_ijY46jtn38lXhk77LSlafe79'
+        ));
+        $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
+
+        $this->setMockHttpResponse('CreatePaymentMethodSuccess.txt');
+        $response = $this->request->send();
+        $responseData = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
+        $this->assertNotNull($responseData['paymentMethodKey']);
+        $this->assertSame('b7981e65-9d06-4c30-a97f-6f220ab7a724', $responseData['paymentMethodKey']);        
+    }
+    
+    
+    
+    
 }

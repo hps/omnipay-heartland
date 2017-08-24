@@ -154,11 +154,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
             //perform reversal incase of gateway error
             //CURLE_OPERATION_TIMEOUTED
-            if (($response->status == 28 || $gatewayResponse->reversalRequired === true) && in_array($this->getTransactionType(), array('CreditSale', 'CreditAuth')) && $gatewayResponse->getTransactionReference() != null) {
+            if (($response->status == 28 || $gatewayResponse->reversalRequired === true) &&
+                in_array($this->getTransactionType(), array('CreditSale', 'CreditAuth'))) {
                 try {
                     $reverseRequest = new ReverseRequest($this->httpClient, $this->httpRequest);
                     $reverseRequest->initialize($this->getParameters());
-                    $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
+                    if ($gatewayResponse->getTransactionReference() != null) {
+                        $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
+                    }
                     $reverseResponse = $reverseRequest->send();
                 } catch (\Exception $e) {
                     throw new InvalidResponseException(

@@ -49,7 +49,9 @@ class AuthorizeRequestTest extends TestCase
     {
         $this->setMockHttpResponse('AuthorizeFailureGatewayError.txt');
         $response = $this->request->send();
-    }
+        
+        $this->assertSame($response->getMessage(), 'Unexpected response');
+        $this->assertNotNull($response->reversalDataObject->getData());    }
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidRequestException

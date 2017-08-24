@@ -13,6 +13,7 @@ class PorticoResponse extends AbstractResponse
     protected $heartlandTransactionId = "";
     protected $responseData = null;
     public $reversalRequired = false;
+    public $reversalDataObject = null;
 
     /**
      * Get the transfer reference from the response of CreateTransferRequest,
@@ -32,10 +33,9 @@ class PorticoResponse extends AbstractResponse
                 $responseObject = $this->XML2Array($this->response->response);
                 $ver = "Ver1.0";
                 $this->responseData = $responseObject->$ver;
-                $this->processChargeGatewayResponse(); 
+                $this->processChargeGatewayResponse();
 
-                if($this->getReasonCode() == 0)
-                { 
+                if ($this->getReasonCode() == 0) {
                     $this->processChargeIssuerResponse();
                 }
                 break;
@@ -76,7 +76,7 @@ class PorticoResponse extends AbstractResponse
         }
 
         if ($gatewayRspCode == '30') {
-            $this->reversalRequired = true;            
+            $this->reversalRequired = true;
         }
         $gatewayException = HpsGatewayResponseValidation::checkResponse(
             $this->responseData,
@@ -103,7 +103,7 @@ class PorticoResponse extends AbstractResponse
         if ($item != null) {
             $responseCode = (isset($item->RspCode) ? $item->RspCode : null);
             $responseText = (isset($item->RspText) ? $item->RspText : null);
-
+           
             if ($responseCode != null) {
                 // check if we need to do a reversal
                 if ($responseCode == '91') {
@@ -117,8 +117,8 @@ class PorticoResponse extends AbstractResponse
                 );
 
                 if ($gatewayException != null) {
-                    $this->heartlandResponseMessage .= $gatewayException->message;
-                    $this->heartlandResponseReasonCode .= $gatewayException->code;
+                    $this->heartlandResponseMessage = $gatewayException->message;
+                    $this->heartlandResponseReasonCode = $gatewayException->code;
                 }
             }
         }

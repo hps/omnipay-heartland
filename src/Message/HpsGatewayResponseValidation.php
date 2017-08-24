@@ -24,8 +24,7 @@ class HpsGatewayResponseValidation
 
         if ($e != null) {
             return $e;
-        }      
-        
+        }
     }
 
     /**
@@ -39,7 +38,7 @@ class HpsGatewayResponseValidation
     {
         $e = null;
 
-        switch ($responseCode) {            
+        switch ($responseCode) {
             case '-2':
                 $e = static::formResponseException(
                     'Authentication Error. Please double check your service configuration',

@@ -94,17 +94,26 @@ class PurchaseRequestTest extends TestCase
         $this->assertSame('The card number is not valid', $response->getMessage());                    
     }
     
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     * @expectedExceptionMessage gateway_time-out
-     */
+    
     public function testGatewayErrorReversal()
     {
         $this->setMockHttpResponse('PurchaseGatewayError.txt');
-        $response = $this->request->send();
+        $response = $this->request->send(); 
 
-        //$this->assertSame($response->getReasonCode(), '31');
-        //$this->assertSame('Gateway timed out', $response->getMessage());                    
+        $this->assertSame($response->getReasonCode(), '31');
+        $this->assertSame($response->getMessage(), 'Gateway timed out');
+        $this->assertNotNull($response->reversalDataObject->getData());
+    }
+    
+   
+    public function testGatewayTimeoutError()
+    {
+        $this->setMockHttpResponse('PurchaseGatewayTimeout.txt');
+        $response = $this->request->send();  
+        
+        $this->assertSame($response->getReasonCode(), '21');
+        $this->assertSame($response->getMessage(), 'The card issuer timed-out.');
+        $this->assertNotNull($response->reversalDataObject->getData());
     }
     
 }

@@ -159,7 +159,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                     $reverseRequest = new ReverseRequest($this->httpClient, $this->httpRequest);
                     $reverseRequest->initialize($this->getParameters());
                     $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
-                    $reverseResponse = $reverseRequest->send();   
+                    $reverseResponse = $reverseRequest->send();
                 } catch (\Exception $e) {
                     throw new InvalidResponseException(
                         'Error occurred while reversing a charge due to HPS issuer timeout. '
@@ -167,7 +167,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                     );
                     return;
                 }
-                throw new InvalidResponseException("gateway_time-out");
+                $gatewayResponse->reversalDataObject = $reverseResponse;
             }
 
             return $gatewayResponse;

@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Cache-Control: private, max-age=0
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/7.5
+X-dynaTrace: PT=1414341;PA=-1293828433;SP=Gateway Cert;PS=1926692524
+dynaTrace: PT=1414341;PA=-1293828433;SP=Gateway Cert;PS=1926692524
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Date: Mon, 07 Aug 2017 13:58:21 GMT
+Content-Length: 1018
+
+<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><PosResponse rootUrl="https://posgateway.cert.secureexchange.net/Hps.Exchange.PosGateway" xmlns="http://Hps.Exchange.PosGateway"><Ver1.0><Header><LicenseId>95878</LicenseId><SiteId>95881</SiteId><DeviceId>2409000</DeviceId><GatewayTxnId>1023524629</GatewayTxnId><GatewayRspCode>00</GatewayRspCode><GatewayRspMsg>Success</GatewayRspMsg><RspDT>2017-08-07T08:58:22.3870485</RspDT></Header><Transaction><CreditSale><RspCode>91</RspCode><RspText>APPROVAL</RspText><AuthCode>71512A</AuthCode><AVSRsltCode>0</AVSRsltCode><CVVRsltCode>M</CVVRsltCode><RefNbr>721912895025</RefNbr><CVVResultCodeAction>ACCEPT</CVVResultCodeAction><CardType>Visa</CardType><AVSRsltText>AVS Not Requested.</AVSRsltText><CVVRsltText>Match.</CVVRsltText></CreditSale></Transaction></Ver1.0></PosResponse></soap:Body></soap:Envelope>

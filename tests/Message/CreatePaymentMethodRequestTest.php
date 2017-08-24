@@ -103,6 +103,40 @@ class CreatePaymentMethodRequestTest extends TestCase
         $this->assertSame('b7981e65-9d06-4c30-a97f-6f220ab7a724', $responseData['paymentMethodKey']);        
     }
     
+    public function testCreatePaymentMethodWInvalidAPI()
+    {        
+        $request = $this->request->initialize(array(
+            'customerKey' =>    69138,
+            'nameOnAccount'  => 'John Doe',
+            'paymentToken'  => 'supt_ijY46jtn38lXhk77LSlafe79'
+        ));
+        $this->request->setSecretApiKey('test-api');
+
+        $this->setMockHttpResponse('CreatePaymentMethodFailure.txt');
+        $response = $this->request->send();
+        $this->assertSame('Unexpected response', $response->getMessage());        
+    }
+    
+    public function testCreatePaymentMethodWInvalidCredentials()
+    {        
+        $request = $this->request->initialize(array(
+            'customerKey' =>    69138,
+            'nameOnAccount'  => 'John Doe',
+            'paymentToken'  => 'supt_ijY46jtn38lXhk77LSlafe79',
+            'deviceId' => 1520053,
+            'licenseId' => 20903,
+            'password' => '$Test1234',
+            'siteId' => 20904,
+            'siteTrace' => "trace0001",
+            'username' => "777700004597",
+            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+        ));
+
+        $this->setMockHttpResponse('CreatePaymentMethodFailure.txt');
+        $response = $this->request->send();
+        $this->assertSame('Unexpected response', $response->getMessage());        
+    }
+    
     
     
     

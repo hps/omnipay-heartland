@@ -34,8 +34,8 @@ class PorticoResponse extends AbstractResponse
                 $this->responseData = $responseObject->$ver;
                 $this->processChargeGatewayResponse(); 
 
-                if($this->getReasonCode() === 0)
-                {
+                if($this->getReasonCode() == 0)
+                { 
                     $this->processChargeIssuerResponse();
                 }
                 break;
@@ -76,16 +76,7 @@ class PorticoResponse extends AbstractResponse
         }
 
         if ($gatewayRspCode == '30') {
-            $this->reversalRequired = true;
-            try {
-                $reverseRequest = new ReverseRequest($this->request->httpClient, $this->request->httpRequest);
-                $reverseRequest->initialize($this->request->getParameters());
-                $reverseResponse = $reverseRequest->send();
-            } catch (Exception $e) {
-                $this->heartlandResponseMessage = 'Error occurred while reversing a charge due to HPS gateway timeout';
-                $this->heartlandResponseReasonCode = HpsExceptionCodes::GATEWAY_TIMEOUT_REVERSAL_ERROR;
-                return;
-            }
+            $this->reversalRequired = true;            
         }
         $gatewayException = HpsGatewayResponseValidation::checkResponse(
             $this->responseData,

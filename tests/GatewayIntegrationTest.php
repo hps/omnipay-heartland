@@ -1066,10 +1066,10 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
 
         // createPaymentMethod
-        $customer = $response->getData();
+        $customer = $response;
 
         $request = $this->gateway->createPaymentMethod(array(
-            'customerKey' => $customer['customerKey'],
+            'customerReference' => $customer->getCustomerReference(),
             'paymentMethodType' => 'ACH',
             'achType' => 'Checking',
             'accountType' => 'Personal',
@@ -1087,12 +1087,12 @@ class GatewayIntegrationTest extends TestCase {
         $responseData = $response->getData();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
-        $this->assertNotNull($responseData['paymentMethodKey']);
+        $this->assertNotNull($response->getPaymentMethodReference());
         $this->assertSame($responseData['paymentStatus'], 'Active');
         
         // updatePaymentMethod
         $request = $this->gateway->updatePaymentMethod(array(
-            'paymentMethodKey' => $responseData['paymentMethodKey'],
+            'paymentMethodReference' => $response->getPaymentMethodReference(),
             'paymentStatus' => 'Inactive',
             'paymentMethodType' => 'ACH'
         ));
@@ -1117,10 +1117,10 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
 
         // createPaymentMethod
-        $customer = $response->getData();
+        $customer = $response;
 
         $request = $this->gateway->createPaymentMethod(array(
-            'customerKey' => $customer['customerKey'],
+            'customerReference' => $customer->getCustomerReference(),
             'nameOnAccount' => 'John Doe',
             'accountNumber' => '5473500000000014',
             'expirationDate' => '1225',
@@ -1128,15 +1128,15 @@ class GatewayIntegrationTest extends TestCase {
         ));
 
         $response = $request->send();
-        $paymentMethod = $response->getData();
+        $paymentMethod = $response;
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
-        $this->assertNotNull($paymentMethod['paymentMethodKey']);
+        $this->assertNotNull($paymentMethod->getPaymentMethodReference());
 
         //createSchedule
         $request = $this->gateway->createSchedule(array(
-            'customerKey' => $customer['customerKey'],
-            'paymentMethodKey' => $paymentMethod['paymentMethodKey'],
+            'customerReference' => $customer->getCustomerReference(),
+            'paymentMethodReference' => $paymentMethod->getPaymentMethodReference(),
             'scheduleIdentifier' => $this->createTestIdentifier(),
             'scheduleStatus' => 'Active',
             'subtotalAmount' => array(
@@ -1153,14 +1153,14 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
-        $this->assertNotNull($response->getData()['scheduleKey']);
+        $this->assertNotNull($response->getScheduleReference());
 
-        $scheduleKey = $response->getData()['scheduleKey'];
+        $scheduleKey = $response->getScheduleReference();
 
         // updateSchedule
 
         $request = $this->gateway->updateSchedule(array(
-            'scheduleKey' => $scheduleKey,
+            'scheduleReference' => $scheduleKey,
             'scheduleStatus' => 'Inactive',
             'scheduleStarted' => 'true'
         ));
@@ -1183,10 +1183,10 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
 
         // createPaymentMethod
-        $customer = $response->getData();
+        $customer = $response;
 
         $request = $this->gateway->createPaymentMethod(array(
-            'customerKey' => $customer['customerKey'],
+            'customerReference' => $customer->getCustomerReference(),
             'nameOnAccount' => 'John Doe',
             'accountNumber' => '5473500000000014',
             'expirationDate' => '1225',
@@ -1194,15 +1194,15 @@ class GatewayIntegrationTest extends TestCase {
         ));
 
         $response = $request->send();
-        $paymentMethod = $response->getData();
+        $paymentMethod = $response;
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
-        $this->assertNotNull($paymentMethod['paymentMethodKey']);
+        $this->assertNotNull($paymentMethod->getPaymentMethodReference());
 
         //createSchedule
         $request = $this->gateway->createSchedule(array(
-            'customerKey' => $customer['customerKey'],
-            'paymentMethodKey' => $paymentMethod['paymentMethodKey'],
+            'customerReference' => $customer->getCustomerReference(),
+            'paymentMethodReference' => $paymentMethod->getPaymentMethodReference(),
             'scheduleIdentifier' => $this->createTestIdentifier(),
             'scheduleStatus' => 'Active',
             'subtotalAmount' => array(
@@ -1219,14 +1219,14 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
-        $this->assertNotNull($response->getData()['scheduleKey']);
+        $this->assertNotNull($response->getScheduleReference());
 
-        $scheduleKey = $response->getData()['scheduleKey'];
+        $scheduleKey = $response->getScheduleReference();
 
         // updateSchedule
 
         $request = $this->gateway->updateSchedule(array(
-            'scheduleKey' => $scheduleKey,
+            'scheduleReference' => $scheduleKey,
             'scheduleStatus' => 'Inactive',
             'scheduleStarted' => 'false'
         ));
@@ -1235,5 +1235,4 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertSame($responseData['scheduleStatus'], 'Inactive');
     }
-    
 }

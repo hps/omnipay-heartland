@@ -14,7 +14,7 @@ class CreatePaymentMethodRequestTest extends TestCase
     public function testGetMethodsForCC()
     {
         $ccDetails = array(
-                'customerKey' => 66770,
+                'customerReference' => 66770,
                 'nameOnAccount' => 'John Doe',
                 'accountNumber' => '5473500000000014',
                 'expirationDate' => '1225',
@@ -34,7 +34,7 @@ class CreatePaymentMethodRequestTest extends TestCase
         $this->request->initialize($ccDetails);
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
         
-        $this->assertSame($this->request->getCustomerKey(), 66770);
+        $this->assertSame($this->request->getCustomerReference(), 66770);
         $this->assertSame($this->request->getNameOnAccount(), 'John Doe');
         $this->assertSame($this->request->getAccountNumber(), '5473500000000014');
         $this->assertSame($this->request->getExpirationDate(), '1225');
@@ -51,7 +51,7 @@ class CreatePaymentMethodRequestTest extends TestCase
     {
         $this->request->initialize(
             array(
-                'customerKey' => 66770,
+                'customerReference' => 66770,
                 'paymentMethodType' => 'ACH',
                 'achType' => 'Checking',
                 'accountType' => 'Personal',
@@ -88,7 +88,7 @@ class CreatePaymentMethodRequestTest extends TestCase
     public function testCreatePaymentMethodWithToken()
     {        
         $request = $this->request->initialize(array(
-            'customerKey' =>    69138,
+            'customerReference' =>    69138,
             'nameOnAccount'  => 'John Doe',
             'paymentToken'  => 'supt_ijY46jtn38lXhk77LSlafe79'
         ));
@@ -96,17 +96,16 @@ class CreatePaymentMethodRequestTest extends TestCase
 
         $this->setMockHttpResponse('CreatePaymentMethodSuccess.txt');
         $response = $this->request->send();
-        $responseData = $response->getData();
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
-        $this->assertNotNull($responseData['paymentMethodKey']);
-        $this->assertSame('b7981e65-9d06-4c30-a97f-6f220ab7a724', $responseData['paymentMethodKey']);        
+        $this->assertNotNull($response->getPaymentMethodReference());
+        $this->assertSame('b7981e65-9d06-4c30-a97f-6f220ab7a724', $response->getPaymentMethodReference());        
     }
     
     public function testCreatePaymentMethodWInvalidAPI()
     {        
         $request = $this->request->initialize(array(
-            'customerKey' =>    69138,
+            'customerReference' =>    69138,
             'nameOnAccount'  => 'John Doe',
             'paymentToken'  => 'supt_ijY46jtn38lXhk77LSlafe79'
         ));
@@ -120,7 +119,7 @@ class CreatePaymentMethodRequestTest extends TestCase
     public function testCreatePaymentMethodWInvalidCredentials()
     {        
         $request = $this->request->initialize(array(
-            'customerKey' =>    69138,
+            'customerReference' =>    69138,
             'nameOnAccount'  => 'John Doe',
             'paymentToken'  => 'supt_ijY46jtn38lXhk77LSlafe79',
             'deviceId' => 1520053,
@@ -136,8 +135,4 @@ class CreatePaymentMethodRequestTest extends TestCase
         $response = $this->request->send();
         $this->assertSame('Unexpected response', $response->getMessage());        
     }
-    
-    
-    
-    
 }

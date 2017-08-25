@@ -52,10 +52,10 @@ class CreateScheduleRequestTest extends TestCase
     {
         $data = array(
             'scheduleIdentifier' => "123456ABC",
-            'customerKey' => 71292,
+            'customerReference' => 71292,
             'scheduleName' => "",
             'scheduleStatus' => "Active",
-            'paymentMethodKey' => "ed595835-376c-4332-8fce-29f12084646e",
+            'paymentMethodReference' => "ed595835-376c-4332-8fce-29f12084646e",
             'subtotalAmount' => array(
                 'currency' => "USD",
                 'value' => "1200"
@@ -81,9 +81,9 @@ class CreateScheduleRequestTest extends TestCase
         $this->request->initialize($data);
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
 
-        $this->assertSame(71292, $this->request->getCustomerKey());
+        $this->assertSame(71292, $this->request->getCustomerReference());
         $this->assertSame('', $this->request->getScheduleName());
-        $this->assertSame('ed595835-376c-4332-8fce-29f12084646e', $this->request->getPaymentMethodKey());
+        $this->assertSame('ed595835-376c-4332-8fce-29f12084646e', $this->request->getPaymentMethodReference());
         $this->assertSame($data['subtotalAmount'], $this->request->getSubtotalAmount());
         $this->assertSame($data['taxAmount'], $this->request->getTaxAmount());
         $this->assertSame('02232015', $this->request->getStartDate());

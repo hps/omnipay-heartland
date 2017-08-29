@@ -72,32 +72,34 @@ class RefundRequest extends AbstractPorticoRequest
     public function getData()
     {
         parent::getData();
-        $this->validate('transactionReference', 'amount');
-
+        $this->validate('amount');
+        
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');
         $hpsCreditReturn = $xml->createElement('hps:' . $this->getTransactionType());
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
         $hpsBlock1->appendChild($xml->createElement('hps:AllowDup', 'Y'));
-        $hpsBlock1->appendChild($xml->createElement('hps:Amt', $this->getAmount()));
+        $hpsBlock1->appendChild($xml->createElement('hps:Amt', HpsInputValidation::checkAmount($this->getAmount())));
 
-        if ($this->getTransactionReference()) {
+        if ($this->getTransactionReference() !== null) {
             $hpsBlock1->appendChild($xml->createElement('hps:GatewayTxnId', $this->getTransactionReference()));
         } else {
             $cardData = $xml->createElement('hps:CardData');
-            if ($this->getToken()) {
+            $tokenRef = ($this->getToken() !== null) ? $this->getToken() : $this->getCardReference();
+            if ($tokenRef !== null) {
                 $cardData->appendChild($this->hydrateTokenData($xml));
             } else {
+                $this->validate('card');
                 $cardData->appendChild($this->hydrateManualEntry($xml));
             }
             $hpsBlock1->appendChild($cardData);
         }
 
-        if ($this->getCard()) {
+        if ($this->getCard() !== null) {
             $hpsBlock1->appendChild($this->hydrateCardHolderData($xml));
         }
-        if ($this->getTransactionId()) {
+        if ($this->getTransactionId() !== null) {
             $hpsBlock1->appendChild($this->hydrateAdditionalTxnFields($xml));
         }
 

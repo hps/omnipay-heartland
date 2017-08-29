@@ -10,7 +10,7 @@ class FetchScheduleRequestTest extends TestCase
     {
         $this->request = new FetchScheduleRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
-        $this->request->setScheduleKey('1234');
+        $this->request->setScheduleReference('1234');
     }
 
     public function testSendSuccess()

@@ -19,13 +19,11 @@ class HpsGatewayResponseValidation
     {
         $rspCode = $response->Header->GatewayRspCode;
         $rspText = $response->Header->GatewayRspMsg;
+        
         $e = HpsGatewayResponseValidation::getException($rspCode, $rspText, $response);
 
         if ($e != null) {
             return $e;
-        }
-        if (!isset($response->Transaction) || !isset($response->Transaction->$expectedType)) {
-            return 'Unexpected response from HPS gateway: '. HpsExceptionCodes::UNEXPECTED_GATEWAY_ERROR;
         }
     }
 
@@ -41,8 +39,6 @@ class HpsGatewayResponseValidation
         $e = null;
 
         switch ($responseCode) {
-            case '0':
-                break;
             case '-2':
                 $e = static::formResponseException(
                     'Authentication Error. Please double check your service configuration',

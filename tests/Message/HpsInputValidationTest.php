@@ -9,7 +9,20 @@ use Omnipay\Tests\TestCase;
  * Class HpsInputValidationTest
  */
 class HpsInputValidationTest extends TestCase
-{
+{    
+    public function testCheckAmountRounded(){
+        $amount = HpsInputValidation::checkAmount('10.555555');
+        $this->assertEquals('10.56', $amount);
+    }
+    
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage Amount must be greater than or equal to 0
+     */
+    public function testCheckInvalidAmount(){
+        $amount = HpsInputValidation::checkAmount('-5');
+    }       
+    
     /**
      * @test
      * Testing get exception when first name length is greater than 26

@@ -40,4 +40,25 @@ class PayPlanResponse extends AbstractResponse
     {
         return (array) $this->responseData;
     }
+
+    public function getCustomerReference()
+    {
+        return isset($this->responseData->customerKey)
+            ? $this->responseData->customerKey
+            : null;
+    }
+
+    public function getPaymentMethodReference()
+    {
+        return isset($this->responseData->paymentMethodKey)
+            ? $this->responseData->paymentMethodKey
+            : null;
+    }
+
+    public function getScheduleReference()
+    {
+        return isset($this->responseData->scheduleKey)
+            ? $this->responseData->scheduleKey
+            : null;
+    }
 }

@@ -137,11 +137,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $response = new \stdClass();
             $response->response = (string) $httpResponse->getBody();
             $response->status = $httpResponse->getStatusCode();
-
-            if ($response->status == 28) { //CURLE_OPERATION_TIMEOUTED
-                throw new InvalidResponseException("gateway_time-out");
-            }
-
+            
             if ($response->status == 35) { //CURLE_SSL_CONNECT_ERROR
                 $err_msg = 'PHP-SDK cURL TLS 1.2 handshake failed. If you have any questions, please contact '
                     . 'Heartland\'s Specialty Products Team at 866.802.9753.';
@@ -157,11 +153,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $gatewayResponse = new $this->responseType($this, $response, $this->getTransactionType());
 
             //perform reversal incase of gateway error
-            if ($gatewayResponse->getTransactionReference() != null && $gatewayResponse->reversalRequired === true) {
+            //CURLE_OPERATION_TIMEOUTED
+            if (in_array($this->getTransactionType(), array('CreditSale', 'CreditAuth')) &&
+                ($response->status == 28 || $gatewayResponse->reversalRequired === true)
+                ) {
                 try {
                     $reverseRequest = new ReverseRequest($this->httpClient, $this->httpRequest);
                     $reverseRequest->initialize($this->getParameters());
-                    $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
+                    if ($gatewayResponse->getTransactionReference() != null) {
+                        $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
+                    }
                     $reverseResponse = $reverseRequest->send();
                 } catch (\Exception $e) {
                     throw new InvalidResponseException(
@@ -170,6 +171,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                     );
                     return;
                 }
+                $gatewayResponse->reversalDataObject = $reverseResponse;
             }
 
             return $gatewayResponse;
@@ -496,5 +498,25 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function setServiceUri($value)
     {
         return $this->setParameter('serviceUri', $value);
+    }
+    
+    public function getCustomerReference()
+    {
+        return $this->getParameter('customerReference');
+    }
+   
+    public function setCustomerReference($value)
+    {
+        return $this->setParameter('customerReference', $value);
+    }
+    
+    public function getTransactionHistoryId()
+    {
+        return $this->getParameter('transactionHistoryId');
+    }
+   
+    public function setTransactionHistoryId($value)
+    {
+        return $this->setParameter('transactionHistoryId', $value);
     }
 }

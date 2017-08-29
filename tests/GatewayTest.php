@@ -163,12 +163,23 @@ class GatewayTest extends GatewayTestCase
         $this->assertInstanceOf('Omnipay\Heartland\Message\DeleteScheduleRequest', $request);
     }
 
+    public function testRecurringAuthorize()
+    {
+        $request = $this->gateway->recurringAuthorize(array(
+            'amount' => '10',
+            'currency' => 'usd',
+            'paymentMethodReference' => '12345678',
+        ));
+
+        $this->assertInstanceOf('\Omnipay\Heartland\Message\RecurringBillingAuthRequest', $request);
+    }
+
     public function testRecurring()
     {
         $request = $this->gateway->recurring(array(
             'amount' => '10',
             'currency' => 'usd',
-            'cardReference' => '12345678',
+            'paymentMethodReference' => '12345678',
         ));
 
         $this->assertInstanceOf('\Omnipay\Heartland\Message\RecurringBillingRequest', $request);

@@ -104,7 +104,18 @@ class AuthorizeRequest extends AbstractPorticoRequest
     {
         parent::getData();
 
-        $amount = $this->getAmount();
+        if ($this->getPaymentMethodReference()) {
+            $klass = __NAMESPACE__ . '\\' . ($this->getTransactionType() === 'CreditAuth'
+                ? 'RecurringBillingAuthRequest'
+                : 'RecurringBillingRequest');
+            $recurring = new $klass($this->httpClient, $this->httpRequest);
+            foreach ($this->getParameters() as $key => $value) {
+                $recurring->setParameter($key, $value);
+            }
+            return $recurring->getData();
+        }
+
+        $amount = HpsInputValidation::checkAmount($this->getAmount());
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');
         $hpsCreditAuth = $xml->createElement('hps:' . $this->getTransactionType());
@@ -137,5 +148,25 @@ class AuthorizeRequest extends AbstractPorticoRequest
         $hpsTransaction->appendChild($hpsCreditAuth);
 
         return $hpsTransaction;
+    }
+
+    public function setCustomerReference($value)
+    {
+        return $this->setParameter('customerReference', $value);
+    }
+
+    public function getCustomerReference()
+    {
+        return $this->getParameter('customerReference');
+    }
+
+    public function setPaymentMethodReference($value)
+    {
+        return $this->setParameter('paymentMethodKey', $value);
+    }
+
+    public function getPaymentMethodReference()
+    {
+        return $this->getParameter('paymentMethodKey');
     }
 }

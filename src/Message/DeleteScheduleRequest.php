@@ -35,19 +35,30 @@ class DeleteScheduleRequest extends AbstractPayPlanRequest
 
         return array(
           'http' => array(
-            'uri' => 'schedules/' . $this->getScheduleKey(),
+            'uri' => 'schedules/' . $this->getScheduleReference(),
             'verb' => 'DELETE'
           ),
         );
     }
 
-    public function getScheduleKey()
+    public function getScheduleReference()
     {
         return $this->getParameter('scheduleKey');
     }
 
-    public function setScheduleKey($value)
+    public function setScheduleReference($value)
     {
         return $this->setParameter('scheduleKey', $value);
+    }
+
+    public function setForceDelete($value)
+    {
+        $this->setParameter('forceDelete', $value);
+        return $this;
+    }
+
+    public function getForceDelete()
+    {
+        return $this->getParameter('forceDelete');
     }
 }

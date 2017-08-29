@@ -54,4 +54,66 @@ class PurchaseRequestTest extends TestCase
         $this->assertSame('1023524629', $response->getTransactionReference());
         $this->assertSame('Success', $response->getMessage());
     }
+    
+    public function testGatewayEmptyResponse()
+    {
+        /*
+        $this->setMockHttpResponse('PurchaseEmptyResponse.txt');
+        $response = $this->request->send();
+        
+        $this->assertTrue($response->isSuccessful());
+        $this->assertEmpty($response->getData());           
+         
+        */ 
+    }
+    
+    public function testErrorNoOpenBatch()
+    {
+        $this->setMockHttpResponse('PurchaseNoOpenBatch.txt');
+        $response = $this->request->send();
+
+        $this->assertSame($response->getReasonCode(), '8');
+        $this->assertSame('Transaction rejected because the referenced original transaction is invalid', $response->getMessage());                    
+    }
+    
+    public function testErrorInvalidCPCData()
+    {
+        $this->setMockHttpResponse('PurchaseInvalidCPCData.txt');
+        $response = $this->request->send();
+
+        $this->assertSame($response->getReasonCode(), '9');
+        $this->assertSame('Invalid CPC data', $response->getMessage());                    
+    }
+    
+    public function testErrorInvalidNumber()
+    {
+        $this->setMockHttpResponse('PurchaseInvalidNumber.txt');
+        $response = $this->request->send();
+
+        $this->assertSame($response->getReasonCode(), '11');
+        $this->assertSame('The card number is not valid', $response->getMessage());                    
+    }
+    
+    
+    public function testGatewayErrorReversal()
+    {
+        $this->setMockHttpResponse('PurchaseGatewayError.txt');
+        $response = $this->request->send(); 
+
+        $this->assertSame($response->getReasonCode(), '31');
+        $this->assertSame($response->getMessage(), 'Gateway timed out');
+        $this->assertNotNull($response->reversalDataObject->getData());
+    }
+    
+   
+    public function testGatewayTimeoutError()
+    {
+        $this->setMockHttpResponse('PurchaseGatewayTimeout.txt');
+        $response = $this->request->send();  
+        
+        $this->assertSame($response->getReasonCode(), '21');
+        $this->assertSame($response->getMessage(), 'The card issuer timed-out.');
+        $this->assertNotNull($response->reversalDataObject->getData());
+    }
+    
 }

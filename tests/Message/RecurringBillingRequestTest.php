@@ -13,7 +13,7 @@ class RecurringBillingRequestTest extends TestCase
             array(
                 'amount' => '12.00',
                 'currency' => 'USD',
-                'cardReference' => 'd0e7eba5-7cdd-47af-9992-9f732f56f5d7',
+                'paymentMethodReference' => 'd0e7eba5-7cdd-47af-9992-9f732f56f5d7',
                 'description' => 'Order #42'
             )
         );
@@ -23,6 +23,10 @@ class RecurringBillingRequestTest extends TestCase
     public function testSendSuccess()
     {
         $this->setMockHttpResponse('RecurringBillingSuccess.txt');
+        
+        $this->request->setOneTime(true);
+        $this->request->setTransactionId('123456');
+        
         $response = $this->request->send();
 
         $this->assertTrue($response->isSuccessful());

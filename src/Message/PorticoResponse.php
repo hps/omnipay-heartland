@@ -9,10 +9,11 @@ use DOMDocument;
  */
 class PorticoResponse extends AbstractResponse
 {
-    protected $heartlandResponseReasonCode = "";
+    protected $heartlandResponseReasonCode = 0;
     protected $heartlandTransactionId = "";
     protected $responseData = null;
     public $reversalRequired = false;
+    public $reversalDataObject = null;
 
     /**
      * Get the transfer reference from the response of CreateTransferRequest,
@@ -33,7 +34,10 @@ class PorticoResponse extends AbstractResponse
                 $ver = "Ver1.0";
                 $this->responseData = $responseObject->$ver;
                 $this->processChargeGatewayResponse();
-                $this->processChargeIssuerResponse();
+
+                if ($this->getReasonCode() == 0) {
+                    $this->processChargeIssuerResponse();
+                }
                 break;
             case '500':
                 $faultString = $this->XMLFault2String($this->response->response);
@@ -73,15 +77,6 @@ class PorticoResponse extends AbstractResponse
 
         if ($gatewayRspCode == '30') {
             $this->reversalRequired = true;
-            try {
-                $reverseRequest = new ReverseRequest($this->request->httpClient, $this->request->httpRequest);
-                $reverseRequest->initialize($this->request->getParameters());
-                $reverseResponse = $reverseRequest->send();
-            } catch (Exception $e) {
-                $this->heartlandResponseMessage = 'Error occurred while reversing a charge due to HPS gateway timeout';
-                $this->heartlandResponseReasonCode = HpsExceptionCodes::GATEWAY_TIMEOUT_REVERSAL_ERROR;
-                return;
-            }
         }
         $gatewayException = HpsGatewayResponseValidation::checkResponse(
             $this->responseData,
@@ -108,7 +103,7 @@ class PorticoResponse extends AbstractResponse
         if ($item != null) {
             $responseCode = (isset($item->RspCode) ? $item->RspCode : null);
             $responseText = (isset($item->RspText) ? $item->RspText : null);
-
+           
             if ($responseCode != null) {
                 // check if we need to do a reversal
                 if ($responseCode == '91') {
@@ -122,8 +117,8 @@ class PorticoResponse extends AbstractResponse
                 );
 
                 if ($gatewayException != null) {
-                    $this->heartlandResponseMessage .= $gatewayException->message;
-                    $this->heartlandResponseReasonCode .= $gatewayException->code;
+                    $this->heartlandResponseMessage = $gatewayException->message;
+                    $this->heartlandResponseReasonCode = $gatewayException->code;
                 }
             }
         }
@@ -136,10 +131,12 @@ class PorticoResponse extends AbstractResponse
      */
     private function XML2Array($xml)
     {
-        $envelope = simplexml_load_string($xml, "SimpleXMLElement", 0, 'http://schemas.xmlsoap.org/soap/envelope/');
-        foreach ($envelope->Body as $response) {
-            foreach ($response->children('http://Hps.Exchange.PosGateway') as $item) {
-                return $item;
+        if (!empty($xml)) {
+            $envelope = simplexml_load_string($xml, "SimpleXMLElement", 0, 'http://schemas.xmlsoap.org/soap/envelope/');
+            foreach ($envelope->Body as $response) {
+                foreach ($response->children('http://Hps.Exchange.PosGateway') as $item) {
+                    return $item;
+                }
             }
         }
         return null;

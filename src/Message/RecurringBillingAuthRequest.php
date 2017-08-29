@@ -64,13 +64,76 @@ use DOMDocument;
  * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-RecurringBilling.html
  * @codingStandardsIgnoreEnd
  */
-class RecurringBillingRequest extends RecurringBillingAuthRequest
+class RecurringBillingAuthRequest extends AbstractPorticoRequest
 {
     /**
      * @return string
      */
     public function getTransactionType()
     {
-        return 'RecurringBilling';
+        return 'RecurringBillingAuth';
+    }
+
+    public function getData()
+    {
+        parent::getData();
+
+        $amount = $this->getAmount();
+        $xml = new DOMDocument();
+        $hpsTransaction = $xml->createElement('hps:Transaction');
+        $hpsCreditAuth = $xml->createElement('hps:' . $this->getTransactionType());
+        $hpsBlock1 = $xml->createElement('hps:Block1');
+
+        $hpsBlock1->appendChild($xml->createElement('hps:AllowDup', 'Y'));
+        //$hpsBlock1->appendChild($xml->createElement('hps:AllowPartialAuth', ($allowPartialAuth ? 'Y' : 'N')));
+        $hpsBlock1->appendChild($xml->createElement('hps:Amt', $amount));
+        $hpsBlock1->appendChild($xml->createELement('hps:PaymentMethodKey', $this->getPaymentMethodReference()));
+
+        $hpsBlock1->appendChild($this->hydrateCardHolderData($xml));
+
+        if ($this->getTransactionId()) {
+            $hpsBlock1->appendChild($this->hydrateAdditionalTxnFields($xml));
+        }
+
+        if ($this->getOneTime()) {
+            $recurringData = $xml->createElement('hps:RecurringData');
+            $recurringData->appendChild($xml->createElement('hps:OneTime', $this->getOneTime()));
+            $hpsBlock1->appendChild($recurringData);
+        }
+
+        $hpsCreditAuth->appendChild($hpsBlock1);
+        $hpsTransaction->appendChild($hpsCreditAuth);
+
+        return $hpsTransaction;
+    }
+
+    public function getOneTime()
+    {
+        return (bool) $this->getParameter('oneTime');
+    }
+
+    public function setOneTime($value)
+    {
+        return $this->setParameter('oneTime', $value);
+    }
+
+    public function setCustomerReference($value)
+    {
+        return $this->setParameter('customerReference', $value);
+    }
+
+    public function getCustomerReference()
+    {
+        return $this->getParameter('customerReference');
+    }
+
+    public function setPaymentMethodReference($value)
+    {
+        return $this->setParameter('paymentMethodKey', $value);
+    }
+
+    public function getPaymentMethodReference()
+    {
+        return $this->getParameter('paymentMethodKey');
     }
 }

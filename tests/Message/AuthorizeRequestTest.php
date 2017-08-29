@@ -44,15 +44,14 @@ class AuthorizeRequestTest extends TestCase
         $this->assertSame('6', $response->getReasonCode());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     * @expectedExceptionMessage gateway_time-out
-     */
+    
     public function testSendGatewayError()
     {
         $this->setMockHttpResponse('AuthorizeFailureGatewayError.txt');
         $response = $this->request->send();
-    }
+        
+        $this->assertSame($response->getMessage(), 'Unexpected response');
+        $this->assertNotNull($response->reversalDataObject->getData());    }
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidRequestException

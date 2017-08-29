@@ -616,8 +616,18 @@ class Gateway extends AbstractGateway
     /**
      * @param array $parameters
      *
-     * @return \Omnipay\Heartland\Message\RecurringBillingRequest
+     * @return \Omnipay\Heartland\Message\RecurringBillingAuthRequest
      */
+    public function recurringAuthorize(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\RecurringBillingAuthRequest', $parameters);
+    }
+
+    /**
+        * @param array $parameters
+        *
+        * @return \Omnipay\Heartland\Message\RecurringBillingRequest
+        */
     public function recurring(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Heartland\Message\RecurringBillingRequest', $parameters);

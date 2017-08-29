@@ -11,7 +11,7 @@ class UpdateCustomerRequestTest extends TestCase
         $this->request = new UpdateCustomerRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
-                'customerKey' => '65697',
+                'customerReference' => '65697',
                 'customerStatus' => 'Inactive',
             )
         );

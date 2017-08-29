@@ -134,13 +134,13 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
         return $this->getParameter('paymentMethodType');
     }
 
-    public function setCustomerKey($value)
+    public function setCustomerReference($value)
     {
         $this->setParameter('customerKey', $value);
         return $this;
     }
 
-    public function getCustomerKey()
+    public function getCustomerReference()
     {
         return $this->getParameter('customerKey');
     }
@@ -180,127 +180,7 @@ class CreatePaymentMethodRequest extends AbstractPayPlanRequest
             : static::ACTIVE;
     }
 
-    public function setTitle($value)
-    {
-        $this->setParameter('title', $value);
-        return $this;
-    }
-
-    public function getTitle()
-    {
-        return $this->getParameter('title');
-    }
-
-    public function setDepartment($value)
-    {
-        $this->setParameter('department', $value);
-        return $this;
-    }
-
-    public function getDepartment()
-    {
-        return $this->getParameter('department');
-    }
-
-    public function setPrimaryEmail($value)
-    {
-        $this->setParameter('primaryEmail', $value);
-        return $this;
-    }
-
-    public function getPrimaryEmail()
-    {
-        return $this->getParameter('primaryEmail');
-    }
-
-    public function setSecondaryEmail($value)
-    {
-        $this->setParameter('secondaryEmail', $value);
-        return $this;
-    }
-
-    public function getSecondaryEmail()
-    {
-        return $this->getParameter('secondaryEmail');
-    }
-
-    public function setPhoneDay($value)
-    {
-        $this->setParameter('phoneDay', $value);
-        return $this;
-    }
-
-    public function getPhoneDay()
-    {
-        return $this->getParameter('phoneDay');
-    }
-
-    public function setPhoneDayExt($value)
-    {
-        $this->setParameter('phoneDayExt', $value);
-        return $this;
-    }
-
-    public function getPhoneDayExt()
-    {
-        return $this->getParameter('phoneDayExt');
-    }
-
-    public function setPhoneEvening($value)
-    {
-        $this->setParameter('phoneEvening', $value);
-        return $this;
-    }
-
-    public function getPhoneEvening()
-    {
-        return $this->getParameter('phoneEvening');
-    }
-
-    public function setPhoneEveningExt($value)
-    {
-        $this->setParameter('phoneEveningExt', $value);
-        return $this;
-    }
-
-    public function getPhoneEveningExt()
-    {
-        return $this->getParameter('phoneEveningExt');
-    }
-
-    public function setPhoneMobile($value)
-    {
-        $this->setParameter('phoneMobile', $value);
-        return $this;
-    }
-
-    public function getPhoneMobile()
-    {
-        return $this->getParameter('phoneMobile');
-    }
-
-    public function setPhoneMobileExt($value)
-    {
-        $this->setParameter('phoneMobileExt', $value);
-        return $this;
-    }
-
-    public function getPhoneMobileExt()
-    {
-        return $this->getParameter('phoneMobileExt');
-    }
-
-    public function setFax($value)
-    {
-        $this->setParameter('fax', $value);
-        return $this;
-    }
-
-    public function getFax()
-    {
-        return $this->getParameter('fax');
-    }
-
+    
     public function setAddressLine1($value)
     {
         $this->setParameter('addressLine1', $value);

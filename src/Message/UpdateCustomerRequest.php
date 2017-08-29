@@ -52,18 +52,18 @@ class UpdateCustomerRequest extends CreateCustomerRequest
 
         return array_merge($data, array(
             'http' => array(
-                'uri' => 'customers/' . $this->getCustomerKey(),
+                'uri' => 'customers/' . $this->getCustomerReference(),
                 'verb' => 'PUT',
             ),
         ));
     }
 
-    public function getCustomerKey()
+    public function getCustomerReference()
     {
         return $this->getParameter('customerKey');
     }
 
-    public function setCustomerKey($value)
+    public function setCustomerReference($value)
     {
         $this->setParameter('customerKey', $value);
         return $this;

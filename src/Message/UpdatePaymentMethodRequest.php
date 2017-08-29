@@ -69,7 +69,7 @@ class UpdatePaymentMethodRequest extends CreatePaymentMethodRequest
     {
         $data = [];
         $data['http'] = array(
-            'uri' => 'paymentMethodsCreditCard/' . $this->getPaymentMethodKey(),
+            'uri' => 'paymentMethodsCreditCard/' . $this->getPaymentMethodReference(),
             'verb' => 'PUT',
         );
         return $data;
@@ -79,19 +79,19 @@ class UpdatePaymentMethodRequest extends CreatePaymentMethodRequest
     {
         $data = [];
         $data['http'] = array(
-            'uri' => 'paymentMethodsACH/' . $this->getPaymentMethodKey(),
+            'uri' => 'paymentMethodsACH/' . $this->getPaymentMethodReference(),
             'verb' => 'PUT',
         );
         return $data;
     }
 
-    public function setPaymentMethodKey($value)
+    public function setPaymentMethodReference($value)
     {
         $this->setParameter('paymentMethodKey', $value);
         return $this;
     }
 
-    public function getPaymentMethodKey()
+    public function getPaymentMethodReference()
     {
         return $this->getParameter('paymentMethodKey');
     }

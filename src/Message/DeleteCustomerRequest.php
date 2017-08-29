@@ -35,19 +35,30 @@ class DeleteCustomerRequest extends AbstractPayPlanRequest
 
         return array(
           'http' => array(
-            'uri' => 'customers/' . $this->getCustomerKey(),
+            'uri' => 'customers/' . $this->getCustomerReference(),
             'verb' => 'DELETE'
           ),
         );
     }
 
-    public function getCustomerKey()
+    public function getCustomerReference()
     {
         return $this->getParameter('customerKey');
     }
 
-    public function setCustomerKey($value)
+    public function setCustomerReference($value)
     {
         return $this->setParameter('customerKey', $value);
+    }
+
+    public function setForceDelete($value)
+    {
+        $this->setParameter('forceDelete', $value);
+        return $this;
+    }
+
+    public function getForceDelete()
+    {
+        return $this->getParameter('forceDelete');
     }
 }

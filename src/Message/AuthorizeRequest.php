@@ -149,6 +149,13 @@ class AuthorizeRequest extends AbstractPorticoRequest
             $cardData->appendChild($this->hydrateManualEntry($xml));
         }
 
+        if ($this->getRequestCardReference()) {
+            $cardData->appendChild($xml->createElement(
+                'hps:TokenRequest',
+                $this->getRequestCardReference() === true ? 'Y' : 'N'
+            ));
+        }
+
         $hpsBlock1->appendChild($cardData);
 
         $hpsCreditAuth->appendChild($hpsBlock1);
@@ -225,5 +232,15 @@ class AuthorizeRequest extends AbstractPorticoRequest
     public function setTaxType($value)
     {
         return $this->setParameter('taxType', $value);
+    }
+
+    public function getRequestCardReference()
+    {
+        return $this->getParameter('requestCardReference');
+    }
+
+    public function setRequestCardReference($value)
+    {
+        return $this->setParameter('requestCardReference', $value);
     }
 }

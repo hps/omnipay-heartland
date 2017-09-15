@@ -12,6 +12,7 @@ class PorticoResponse extends AbstractResponse
     protected $heartlandResponseReasonCode = 0;
     protected $heartlandTransactionId = "";
     protected $responseData = null;
+    protected $purchaseCardResponse = null;
     public $reversalRequired = false;
     public $reversalDataObject = null;
 
@@ -48,6 +49,8 @@ class PorticoResponse extends AbstractResponse
                 $this->heartlandResponseMessage = 'Unexpected response';
                 break;
         }
+
+        $this->request->handleResponse($this);
     }
 
     public function getData()
@@ -55,6 +58,26 @@ class PorticoResponse extends AbstractResponse
         //convert the xml object as an array
         $serverResponseArray = $this->xmlObj2array($this->responseData);
         return $this->mergeResponse($serverResponseArray);
+    }
+
+    public function getPurchaseCardIndicator()
+    {
+        return isset($this->responseData->Transaction)
+            && isset($this->responseData->Transaction->{$this->request->getTransactionType()})
+            && isset($this->responseData->Transaction->{$this->request->getTransactionType()}->CPCInd)
+            ? $this->responseData->Transaction->{$this->request->getTransactionType()}->CPCInd
+            : null;
+    }
+
+    public function getPurchaseCardResponse()
+    {
+        return $this->purchaseCardResponse;
+    }
+
+    public function setPurchaseCardResponse($value)
+    {
+        $this->purchaseCardResponse = $value;
+        return $this;
     }
 
     private function processChargeGatewayResponse()
@@ -103,7 +126,7 @@ class PorticoResponse extends AbstractResponse
         if ($item != null) {
             $responseCode = (isset($item->RspCode) ? $item->RspCode : null);
             $responseText = (isset($item->RspText) ? $item->RspText : null);
-           
+
             if ($responseCode != null) {
                 // check if we need to do a reversal
                 if ($responseCode == '91') {

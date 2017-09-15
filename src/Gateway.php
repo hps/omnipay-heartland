@@ -612,6 +612,11 @@ class Gateway extends AbstractGateway
         return $this->verify($parameters);
     }
 
+    public function purchaseCardEdit(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\PurchaseCardEditRequest', $parameters);
+    }
+
     /**
      * @param array $parameters
      *

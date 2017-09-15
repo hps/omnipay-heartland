@@ -125,6 +125,13 @@ class AuthorizeRequest extends AbstractPorticoRequest
         //$hpsBlock1->appendChild($xml->createElement('hps:AllowPartialAuth', ($allowPartialAuth ? 'Y' : 'N')));
         $hpsBlock1->appendChild($xml->createElement('hps:Amt', $amount));
 
+        if ($this->getPurchaseCardRequest()) {
+            $hpsBlock1->appendChild($xml->createElement(
+                'hps:CPCReq',
+                $this->getPurchaseCardRequest() === true ? 'Y' : 'N'
+            ));
+        }
+
         $hpsBlock1->appendChild($this->hydrateCardHolderData($xml));
 
         if ($this->getTransactionId()) {
@@ -150,6 +157,19 @@ class AuthorizeRequest extends AbstractPorticoRequest
         return $hpsTransaction;
     }
 
+    public function handleResponse($response)
+    {
+        if ($this->getPurchaseCardRequest() && $response->getPurchaseCardIndicator()) {
+            $cpcEdit = new PurchaseCardEditRequest($this->httpClient, $this->httpRequest);
+            foreach ($this->getParameters() as $key => $value) {
+                $cpcEdit->setParameter($key, $value);
+            }
+            $cpcEdit->setTransactionReference($response->getTransactionReference());
+            $response->setPurchaseCardResponse($cpcEdit->send());
+        }
+        return $response;
+    }
+
     public function setCustomerReference($value)
     {
         return $this->setParameter('customerReference', $value);
@@ -168,5 +188,42 @@ class AuthorizeRequest extends AbstractPorticoRequest
     public function getPaymentMethodReference()
     {
         return $this->getParameter('paymentMethodKey');
+    }
+
+    public function getPurchaseCardRequest()
+    {
+        return $this->getCardHolderPONumber()
+            || $this->getTaxAmount()
+            || $this->getTaxType();
+    }
+
+    public function getCardHolderPONumber()
+    {
+        return $this->getParameter('cardHolderPONumber');
+    }
+
+    public function setCardHolderPONumber($value)
+    {
+        return $this->setParameter('cardHolderPONumber', $value);
+    }
+
+    public function getTaxAmount()
+    {
+        return $this->getParameter('taxAmount');
+    }
+
+    public function setTaxAmount($value)
+    {
+        return $this->setParameter('taxAmount', $value);
+    }
+
+    public function getTaxType()
+    {
+        return $this->getParameter('taxType');
+    }
+
+    public function setTaxType($value)
+    {
+        return $this->setParameter('taxType', $value);
     }
 }

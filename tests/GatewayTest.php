@@ -86,6 +86,13 @@ class GatewayTest extends GatewayTestCase
         $this->assertTrue($request->getRequestCardReference());
     }
 
+    public function testPurchaseCardEdit()
+    {
+        $request = $this->gateway->purchaseCardEdit();
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\PurchaseCardEditRequest', $request);
+    }
+
     // Recurring (PayPlan)
 
     public function testCreateCustomer()

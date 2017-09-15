@@ -4,34 +4,35 @@ namespace Omnipay\Heartland\Message;
 
 use Omnipay\Tests\TestCase;
 
-class VoidRequestTest extends TestCase
+class VerifyRequestTest extends TestCase
 {
     public function setUp()
     {
-        $this->request = new VoidRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new VerifyRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request->initialize(array(
+            'card' => $this->getValidCard(),
+        ));
         $this->request->setSecretApiKey('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ');
-        $this->request->setTransactionReference('1023522834')
-            ->setAmount('10.00');
     }
 
     public function testSendSuccess()
     {
-        $this->setMockHttpResponse('VoidSuccess.txt');
+        $this->setMockHttpResponse('VerifySuccess.txt');
         $response = $this->request->send();
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('1023548675', $response->getTransactionReference());
+        $this->assertSame('1024868463', $response->getTransactionReference());
         $this->assertSame('Success', $response->getMessage());
     }
 
-    public function testSendError()
+    public function testSendErrorInvalidCard()
     {
-        $this->setMockHttpResponse('VoidFailure.txt');
+        $this->setMockHttpResponse('VerifyFailureInvalidCard.txt');
         $response = $this->request->send();
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('Transaction rejected because the referenced original transaction is invalid. Subject \'1023548675\'.  Original transaction not found.', $response->getMessage());
+        $this->assertSame('The card number is not valid', $response->getMessage());
     }
 }

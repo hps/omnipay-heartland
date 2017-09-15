@@ -15,10 +15,12 @@
     <testsuites>
         <testsuite name="integration">
             <file>./tests/GatewayIntegrationTest.php</file>
+            <directory>./tests/Certifications/</directory>
         </testsuite>
         <testsuite name="unit">
             <directory>./tests/</directory>
             <exclude>./tests/GatewayIntegrationTest.php</exclude>
+            <exclude>./tests/Certifications/</exclude>
         </testsuite>
     </testsuites>
     <listeners>

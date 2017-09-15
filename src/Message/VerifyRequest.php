@@ -38,7 +38,7 @@ class VerifyRequest extends AbstractPorticoRequest
         }
 
         if ($this->getRequestCardReference()) {
-            $cardData->appendChilde($xml->createElement(
+            $cardData->appendChild($xml->createElement(
                 'hps:TokenRequest',
                 $this->getRequestCardReference() === true ? 'Y' : 'N'
             ));

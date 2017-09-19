@@ -41,7 +41,10 @@ class EcommerceTest extends TestCase
 
         if ($secretAPIKey) {
             $this->gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest());
-            $this->gateway->setSecretApiKey($secretAPIKey);
+            $this->gateway
+                ->setSecretApiKey($secretAPIKey)
+                ->setDeveloperId('002914')
+                ->setVersionNumber('2778');
         } else {
             // No credentials were found, so skip this test
             $this->markTestSkipped();

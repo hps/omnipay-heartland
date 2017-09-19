@@ -674,6 +674,16 @@ class Gateway extends AbstractGateway
     /**
      * @param array $parameters
      *
+     * @return \Omnipay\Heartland\Message\SearchCustomersRequest
+     */
+    public function searchCustomers(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\SearchCustomersRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
      * @return \Omnipay\Heartland\Message\FetchCustomerRequest
      */
     public function fetchCustomer(array $parameters = array())
@@ -713,6 +723,16 @@ class Gateway extends AbstractGateway
     public function createPaymentMethod(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Heartland\Message\CreatePaymentMethodRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\SearchPaymentMethodsRequest
+     */
+    public function searchPaymentMethods(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\SearchPaymentMethodsRequest', $parameters);
     }
 
     /**

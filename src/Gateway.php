@@ -601,6 +601,22 @@ class Gateway extends AbstractGateway
         return $this->createRequest('\Omnipay\Heartland\Message\ReverseRequest', $parameters);
     }
 
+    public function verify(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\VerifyRequest', $parameters);
+    }
+
+    public function createCard(array $parameters = array())
+    {
+        $parameters['requestCardReference'] = true;
+        return $this->verify($parameters);
+    }
+
+    public function purchaseCardEdit(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\PurchaseCardEditRequest', $parameters);
+    }
+
     /**
      * @param array $parameters
      *
@@ -658,6 +674,16 @@ class Gateway extends AbstractGateway
     /**
      * @param array $parameters
      *
+     * @return \Omnipay\Heartland\Message\SearchCustomersRequest
+     */
+    public function searchCustomers(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\SearchCustomersRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
      * @return \Omnipay\Heartland\Message\FetchCustomerRequest
      */
     public function fetchCustomer(array $parameters = array())
@@ -697,6 +723,16 @@ class Gateway extends AbstractGateway
     public function createPaymentMethod(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Heartland\Message\CreatePaymentMethodRequest', $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\SearchPaymentMethodsRequest
+     */
+    public function searchPaymentMethods(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\SearchPaymentMethodsRequest', $parameters);
     }
 
     /**

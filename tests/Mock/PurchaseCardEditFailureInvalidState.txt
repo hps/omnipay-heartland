@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Cache-Control: private, max-age=0
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/7.5
+X-dynaTrace: PT=266174;PA=-27474691;SP=Gateway Cert;PS=1926692524
+dynaTrace: PT=266174;PA=-27474691;SP=Gateway Cert;PS=1926692524
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Date: Fri, 15 Sep 2017 18:21:12 GMT
+Content-Length: 792
+
+<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><PosResponse rootUrl="https://posgateway.cert.secureexchange.net/Hps.Exchange.PosGateway" xmlns="http://Hps.Exchange.PosGateway"><Ver1.0><Header><LicenseId>95878</LicenseId><SiteId>95881</SiteId><DeviceId>2409000</DeviceId><GatewayTxnId>1024874536</GatewayTxnId><GatewayRspCode>3</GatewayRspCode><GatewayRspMsg>Transaction rejected because the referenced original transaction is invalid. Subject '1024868871'.  Original transaction is not in a valid state.</GatewayRspMsg><RspDT>2017-09-15T13:21:12.6465147</RspDT></Header></Ver1.0></PosResponse></soap:Body></soap:Envelope>

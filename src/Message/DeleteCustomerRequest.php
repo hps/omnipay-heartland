@@ -33,12 +33,16 @@ class DeleteCustomerRequest extends AbstractPayPlanRequest
     {
         parent::getData();
 
-        return array(
+        $data = array(
+            'forceDelete' => $this->getForceDelete() === true,
+        );
+
+        return array_merge($data, array(
           'http' => array(
             'uri' => 'customers/' . $this->getCustomerReference(),
             'verb' => 'DELETE'
           ),
-        );
+        ));
     }
 
     public function getCustomerReference()

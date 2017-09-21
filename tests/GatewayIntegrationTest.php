@@ -40,10 +40,10 @@ class GatewayIntegrationTest extends TestCase {
         ));
         $response = $request->send();
         $responseData = $response->getData();
-        
+
         $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
         $this->assertNotNull($responseData['GatewayTxnId']);
-        
+
         $transactionRef = $response->getTransactionReference();
 
         // Capture
@@ -207,6 +207,22 @@ class GatewayIntegrationTest extends TestCase {
 
         $this->assertTrue($response->isSuccessful(), 'Purchase should succeed');
         $transactionRef = $response->getTransactionReference();
+    }
+
+    public function testPurchaseCardEdit()
+    {
+        $request = $this->gateway->authorize(array(
+            'amount' => '112.34',
+            'card' => $this->getValidCard(),
+            'taxAmount' => '1.00',
+            'taxType' => 'SALESTAX',
+        ));
+        $response = $request->send();
+        $responseData = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
+        $this->assertNotNull($responseData['GatewayTxnId']);
+        $this->assertNotNull($response->getPurchaseCardResponse());
     }
 
     /// Recurring Payments (PayPlan)
@@ -560,7 +576,7 @@ class GatewayIntegrationTest extends TestCase {
 
         $response = $request->send();
 
-        $this->assertTrue($response->isSuccessful(), $response->getMessage());        
+        $this->assertTrue($response->isSuccessful(), $response->getMessage());
     }
 
     public function testDeletePaymentMethod()
@@ -598,7 +614,7 @@ class GatewayIntegrationTest extends TestCase {
             'forceDelete' => true,
         ));
 
-        $this->assertTrue($request->getForceDelete());            
+        $this->assertTrue($request->getForceDelete());
         $response = $request->send();
         $responseData = $response;
 
@@ -927,7 +943,7 @@ class GatewayIntegrationTest extends TestCase {
     {
         return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 1, 50);
     }
-        
+
     public function testRefundBycard() {
         // Purchase
         $request = $this->gateway->purchase(array(
@@ -969,7 +985,7 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
         $this->assertTrue($response->isSuccessful(), 'Reversal should succeed');
     }
-    
+
     public function testReversalByToken() {
         // Authorize
         $request = $this->gateway->authorize(array(
@@ -1010,7 +1026,7 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Invalid card data', $response->getMessage());
     }
-    
+
     public function testPurchaseWithSiteId() {
         // Purchase
         $this->gateway->setSecretApiKey(null);
@@ -1031,7 +1047,7 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertNotNull($response->getTransactionReference());
     }
-        
+
     public function testPurchaseWithInvalidCredentials() {
         // Purchase
         $this->gateway->setSecretApiKey(null);
@@ -1052,7 +1068,7 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Authentication Error. Please double check your service configuration', $response->getMessage());
     }
-    
+
     public function testUpdatePaymentMethodACH()
     {
         // createCustomer
@@ -1089,7 +1105,7 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertNotNull($response->getPaymentMethodReference());
         $this->assertSame($responseData['paymentStatus'], 'Active');
-        
+
         // updatePaymentMethod
         $request = $this->gateway->updatePaymentMethod(array(
             'paymentMethodReference' => $response->getPaymentMethodReference(),
@@ -1099,11 +1115,11 @@ class GatewayIntegrationTest extends TestCase {
 
         $response = $request->send();
         $responseData = $response->getData();
-        
+
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertSame($responseData['paymentStatus'], 'Inactive');
     }
-    
+
     public function testUpdateScheduleWhenStarted()
     {
         // createCustomer
@@ -1164,12 +1180,12 @@ class GatewayIntegrationTest extends TestCase {
             'scheduleStatus' => 'Inactive',
             'scheduleStarted' => 'true'
         ));
-        $response = $request->send();        
+        $response = $request->send();
         $responseData = $response->getData();
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertSame($responseData['scheduleStatus'], 'Inactive');
     }
-    
+
     public function testUpdateScheduleWhenNotStarted()
     {
         // createCustomer
@@ -1230,7 +1246,7 @@ class GatewayIntegrationTest extends TestCase {
             'scheduleStatus' => 'Inactive',
             'scheduleStarted' => 'false'
         ));
-        $response = $request->send();        
+        $response = $request->send();
         $responseData = $response->getData();
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertSame($responseData['scheduleStatus'], 'Inactive');

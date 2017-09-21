@@ -125,6 +125,13 @@ class AuthorizeRequest extends AbstractPorticoRequest
         //$hpsBlock1->appendChild($xml->createElement('hps:AllowPartialAuth', ($allowPartialAuth ? 'Y' : 'N')));
         $hpsBlock1->appendChild($xml->createElement('hps:Amt', $amount));
 
+        if ($this->getPurchaseCardRequest()) {
+            $hpsBlock1->appendChild($xml->createElement(
+                'hps:CPCReq',
+                $this->getPurchaseCardRequest() === true ? 'Y' : 'N'
+            ));
+        }
+
         $hpsBlock1->appendChild($this->hydrateCardHolderData($xml));
 
         if ($this->getTransactionId()) {
@@ -142,12 +149,32 @@ class AuthorizeRequest extends AbstractPorticoRequest
             $cardData->appendChild($this->hydrateManualEntry($xml));
         }
 
+        if ($this->getRequestCardReference()) {
+            $cardData->appendChild($xml->createElement(
+                'hps:TokenRequest',
+                $this->getRequestCardReference() === true ? 'Y' : 'N'
+            ));
+        }
+
         $hpsBlock1->appendChild($cardData);
 
         $hpsCreditAuth->appendChild($hpsBlock1);
         $hpsTransaction->appendChild($hpsCreditAuth);
 
         return $hpsTransaction;
+    }
+
+    public function handleResponse($response)
+    {
+        if ($this->getPurchaseCardRequest() && $response->getPurchaseCardIndicator()) {
+            $cpcEdit = new PurchaseCardEditRequest($this->httpClient, $this->httpRequest);
+            foreach ($this->getParameters() as $key => $value) {
+                $cpcEdit->setParameter($key, $value);
+            }
+            $cpcEdit->setTransactionReference($response->getTransactionReference());
+            $response->setPurchaseCardResponse($cpcEdit->send());
+        }
+        return $response;
     }
 
     public function setCustomerReference($value)
@@ -168,5 +195,52 @@ class AuthorizeRequest extends AbstractPorticoRequest
     public function getPaymentMethodReference()
     {
         return $this->getParameter('paymentMethodKey');
+    }
+
+    public function getPurchaseCardRequest()
+    {
+        return $this->getCardHolderPONumber()
+            || $this->getTaxAmount()
+            || $this->getTaxType();
+    }
+
+    public function getCardHolderPONumber()
+    {
+        return $this->getParameter('cardHolderPONumber');
+    }
+
+    public function setCardHolderPONumber($value)
+    {
+        return $this->setParameter('cardHolderPONumber', $value);
+    }
+
+    public function getTaxAmount()
+    {
+        return $this->getParameter('taxAmount');
+    }
+
+    public function setTaxAmount($value)
+    {
+        return $this->setParameter('taxAmount', $value);
+    }
+
+    public function getTaxType()
+    {
+        return $this->getParameter('taxType');
+    }
+
+    public function setTaxType($value)
+    {
+        return $this->setParameter('taxType', $value);
+    }
+
+    public function getRequestCardReference()
+    {
+        return $this->getParameter('requestCardReference');
+    }
+
+    public function setRequestCardReference($value)
+    {
+        return $this->setParameter('requestCardReference', $value);
     }
 }

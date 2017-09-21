@@ -74,6 +74,12 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
             $headers['HPS-Identity'] = implode(',', $identity);
         }
 
+        $developerId = $this->getDeveloperId();
+        $versionNumber = $this->getVersionNumber();
+        if (!empty($developerId) || !empty($versionNumber)) {
+            $headers['HPS-Integration'] = sprintf('DeveloperId=%s,VersionNbr=%s', $developerId, $versionNumber);
+        }
+
         return $this->submitRequest(array(
             'body' => json_encode($data === array() ? (object) array() : $data),
             'headers' => $headers,

@@ -76,6 +76,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         // TODO: Build correct validations based on request type.
     }
 
+    public function handleResponse($response)
+    {
+    }
+
     /**
      * Submits the request to the configured HTTP client
      *
@@ -137,7 +141,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $response = new \stdClass();
             $response->response = (string) $httpResponse->getBody();
             $response->status = $httpResponse->getStatusCode();
-            
+
             if ($response->status == 35) { //CURLE_SSL_CONNECT_ERROR
                 $err_msg = 'PHP-SDK cURL TLS 1.2 handshake failed. If you have any questions, please contact '
                     . 'Heartland\'s Specialty Products Team at 866.802.9753.';
@@ -499,22 +503,22 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return $this->setParameter('serviceUri', $value);
     }
-    
+
     public function getCustomerReference()
     {
         return $this->getParameter('customerReference');
     }
-   
+
     public function setCustomerReference($value)
     {
         return $this->setParameter('customerReference', $value);
     }
-    
+
     public function getTransactionHistoryId()
     {
         return $this->getParameter('transactionHistoryId');
     }
-   
+
     public function setTransactionHistoryId($value)
     {
         return $this->setParameter('transactionHistoryId', $value);

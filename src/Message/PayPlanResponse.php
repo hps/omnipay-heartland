@@ -34,6 +34,8 @@ class PayPlanResponse extends AbstractResponse
                 $this->heartlandResponseMessage = 'Unexpected response';
                 break;
         }
+
+        $this->request->handleResponse($this);
     }
 
     public function getData()

@@ -58,7 +58,13 @@ abstract class AbstractPorticoRequest extends AbstractRequest
     // region Heartland Soap Building
     public function getData()
     {
-        $cardNotRequired = array('CreditAddToBatch', 'CreditVoid', 'CreditReturn', 'CreditReversal');
+        $cardNotRequired = array(
+            'CreditAddToBatch',
+            'CreditVoid',
+            'CreditReturn',
+            'CreditReversal',
+            'CreditCPCEdit',
+        );
         if (in_array($this->getTransactionType(), $cardNotRequired) === false) {
             //check the token value in card reference
             if ($this->getToken() == null && $this->getCardReference() != null) {

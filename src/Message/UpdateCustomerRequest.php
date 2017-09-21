@@ -45,10 +45,10 @@ class UpdateCustomerRequest extends CreateCustomerRequest
 
     public function getData()
     {
-        $data = parent::getData();
+        parent::getData();
         $this->validate('customerKey');
 
-        $data = array_intersect_key($data, array_flip($this->allowedFields));
+        $data = array_intersect_key($this->getParameters(), array_flip($this->allowedFields));
 
         return array_merge($data, array(
             'http' => array(

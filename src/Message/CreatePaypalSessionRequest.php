@@ -9,7 +9,7 @@ namespace Omnipay\Heartland\Message;
 use DOMDocument;
 
 /**
- * Heartland Authorize Request.
+ * Heartland Create Paypal session Request.
  *
  * An Authorize request is similar to a purchase request but the
  * charge issues an authorization (or pre-authorization), and no money
@@ -125,6 +125,12 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
         $createSession->appendChild($xml->createElement('hps:TransactionType', $this->getAltPaymentTransactionType()));
         $createSession->appendChild($this->hydrateBuyerData($xml));
         $createSession->appendChild($xml->createElement('hps:Amt', $amount));
+        
+        //paypal payment sale using session
+        if($this->getTransactionType() == 'AltPaymentSale'){ 
+            $createSession->appendChild($xml->createElement('hps:SessionId', $this->getPaypalSessionId()));
+        }
+        
         $createSession->appendChild($this->hydratePaymentData($xml));
         if ($shippingAddress != null) {
             $createSession->appendChild($this->hydrateShippingData($xml));
@@ -133,7 +139,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
             $createSession->appendChild($this->hydrateLineItems($xml));
         }
 
-        $hpsTransaction->appendChild($createSession);
+        $hpsTransaction->appendChild($createSession); 
 
         return $hpsTransaction;
     }

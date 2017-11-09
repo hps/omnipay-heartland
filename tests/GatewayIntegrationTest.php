@@ -1300,4 +1300,40 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send(); print_r($response->getData());
         $this->assertTrue($response->isSuccessful(), 'Fetch session info should succeed');        
     }
+    
+    public function testPaypalSessionSale() {
+        
+        $buyer = array(
+            'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
+            'cancelUrl' => 'https://developer.heartlandpaymentsystems.com'
+        );
+
+        $payment = array(
+            'subtotal' => '10.00',
+            'shippingAmount' => '0',
+            'taxAmount' => '0',
+            'paymentType' => 'Sale'
+        );
+        
+        $lineItems = array();
+        $lineItem = array(
+            'number' => '1',
+            'quantity' => '1',
+            'name' => 'Name with special',
+            'description' => 'Description with special',
+            'amount' => '10.00'
+        );
+        $lineItems[] = $lineItem;
+
+        $request = $this->gateway->paypalSessionSale(array(
+            'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
+            'buyerDetails' => $buyer,
+            'shippingDetails' => $payment,
+            'itemDetails' => $lineItems,
+            'paypalSessionId' => 'sdsdsd'
+        ));
+        
+        $response = $request->send(); print_r($response->getData());
+        $this->assertTrue($response->isSuccessful(), 'Fetch session info should succeed');        
+    }
 }

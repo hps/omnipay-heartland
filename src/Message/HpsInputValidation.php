@@ -39,6 +39,16 @@ class HpsInputValidation
     }
     
     /**
+     * @param $text
+     *
+     * @return mixed
+     */
+    public static function cleanAscii($text)
+    {
+        return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $text);
+    }
+    
+    /**
      * @param $number
      *
      * @return mixed

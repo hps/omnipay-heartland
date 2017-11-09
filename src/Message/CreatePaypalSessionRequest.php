@@ -41,45 +41,50 @@ use DOMDocument;
  *
  *   ));
  *
- *   // By using card details
- *
- *   // Create a credit card object
- *   // This card can be used for testing.
- *   $card = new CreditCard(array(
- *      'firstName'    => 'Example',
- *      'lastName'     => 'Customer',
- *      'number'       => '4242424242424242',
- *      'expiryMonth'  => '01',
- *      'expiryYear'   => '2020',
- *      'cvv'          => '123',
- *      'email'                 => 'customer@example.com',
- *      'billingAddress1'       => '1 Scrubby Creek Road',
- *      'billingCountry'        => 'AU',
- *      'billingCity'           => 'Scrubby Creek',
- *      'billingPostcode'       => '4999',
- *      'billingState'          => 'QLD',
- *   ));
- *
- *   // Do an authorize transaction on the gateway
- *   $transaction = $gateway->authorize(array(
- *       'amount'                   => '10.00',
- *       'currency'                 => 'USD',
- *       'description'              => 'This is a test authorize transaction.',
- *       'card'                     => $card,
- *   ));
- *
- *   //By using token details
- *   $transaction = $gateway->authorize(array(
- *       'amount'                   => '10.00',
- *       'currency'                 => 'USD',
- *       'description'              => 'This is a test authorize transaction.'
- *   ));
- *
- *   $transaction->setToken('abc-123');
+ *	$buyer = array(
+*		'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
+*		'cancelUrl' => 'https://developer.heartlandpaymentsystems.com'
+*	);
+*
+*	$payment = array(
+*		'subtotal' => '10.00',
+*		'shippingAmount' => '0',
+*		'taxAmount' => '0',
+*		'paymentType' => 'Sale'
+*	);
+*
+*	$lineItems = array();
+* 
+*	$lineItem = array(
+*		'number' => '1',
+*		'quantity' => '1',
+*		'name' => 'Name with special',
+*		'description' => 'Description with special',
+*		'amount' => '10.00'
+*	);
+* 
+*   $lineItem1 = array(
+*		'number' => '1',
+*		'quantity' => '1',
+*		'name' => 'Name with special',
+*		'description' => 'Description with special',
+*		'amount' => '10.00'
+*	);
+*
+*	$lineItems[] = $lineItem;
+*   $lineItems[] = $lineItem1;
+*
+*	$request = $gateway->createPaypalSession(array(
+*		'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
+*		'buyerDetails' => $buyer,
+*		'shippingDetails' => $payment,
+*		'itemDetails' => $lineItems
+*	));
  *
  *   $response = $transaction->send();
+ * 
  *   if ($response->isSuccessful()) {
- *       echo "Authorize transaction was successful!\n";
+ *       echo "Paypal session creation  successful!\n";
  *       $sale_id = $response->getTransactionReference();
  *       echo "Transaction reference = " . $sale_id . "\n";
  *   }
@@ -107,8 +112,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     {
         return 'PAYPAL';
     }
-
-
+    
     public function getData()
     {
         parent::getData();
@@ -298,5 +302,6 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     {
         return $this->setParameter('paymentDetails', $value);
     }   
+    
     
 }

@@ -818,4 +818,28 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\Heartland\Message\DeleteScheduleRequest', $parameters);
     }
+    
+    //
+    // Paypal Credit
+    //
+    
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\CreatePaypalSessionRequest
+     */
+    public function createPaypalSession(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\CreatePaypalSessionRequest', $parameters);
+    }
+    
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\FetchPaypalSessionInfo
+     */
+    public function fetchPaypalSessionInfo(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\FetchPaypalSessionInfoRequest', $parameters);
+    }
 }

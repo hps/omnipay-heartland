@@ -20,7 +20,7 @@ class GatewayIntegrationTest extends TestCase {
     public function setUp() {
         parent::setUp();
 
-        $secretAPIKey = 'skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A';
+        $secretAPIKey = 'skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ';
 
         if ($secretAPIKey) {
             $this->gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest());
@@ -1250,5 +1250,54 @@ class GatewayIntegrationTest extends TestCase {
         $responseData = $response->getData();
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertSame($responseData['scheduleStatus'], 'Inactive');
+    }
+    
+    //
+    // Paypal Credit
+    //
+    
+    public function testPaypalCreateSession() {
+        // createPaypalSession        
+        $buyer = array(
+            'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
+            'cancelUrl' => 'https://developer.heartlandpaymentsystems.com'
+        );
+
+        $payment = array(
+            'subtotal' => '10.00',
+            'shippingAmount' => '0',
+            'taxAmount' => '0',
+            'paymentType' => 'Sale'
+        );
+        
+        $lineItems = array();
+        $lineItem = array(
+            'number' => '1',
+            'quantity' => '1',
+            'name' => 'Name with special',
+            'description' => 'Description with special',
+            'amount' => '10.00'
+        );
+        $lineItems[] = $lineItem;
+
+        $request = $this->gateway->createPaypalSession(array(
+            'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
+            'buyerDetails' => $buyer,
+            'shippingDetails' => $payment,
+            'itemDetails' => $lineItems
+        ));
+        
+        $response = $request->send(); 
+        $this->assertTrue($response->isSuccessful(), 'Create paypal session should succeed');        
+    }
+    
+    public function testFetchPaypalSession() {
+        
+        $request = $this->gateway->fetchPaypalSessionInfo(array(
+            'paypalSessionId' => 'sdsdsd'
+        ));
+        
+        $response = $request->send(); print_r($response->getData());
+        $this->assertTrue($response->isSuccessful(), 'Fetch session info should succeed');        
     }
 }

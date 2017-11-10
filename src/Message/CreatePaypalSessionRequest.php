@@ -1,9 +1,7 @@
 <?php
-
 /**
  * Heartland Authorize Request.
  */
-
 namespace Omnipay\Heartland\Message;
 
 use DOMDocument;
@@ -41,45 +39,45 @@ use DOMDocument;
  *
  *   ));
  *
- *	$buyer = array(
-*		'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
-*		'cancelUrl' => 'https://developer.heartlandpaymentsystems.com'
-*	);
-*
-*	$payment = array(
-*		'subtotal' => '10.00',
-*		'shippingAmount' => '0',
-*		'taxAmount' => '0',
-*		'paymentType' => 'Sale'
-*	);
-*
-*	$lineItems = array();
-* 
-*	$lineItem = array(
-*		'number' => '1',
-*		'quantity' => '1',
-*		'name' => 'Name with special',
-*		'description' => 'Description with special',
-*		'amount' => '10.00'
-*	);
-* 
-*   $lineItem1 = array(
-*		'number' => '1',
-*		'quantity' => '1',
-*		'name' => 'Name with special',
-*		'description' => 'Description with special',
-*		'amount' => '10.00'
-*	);
-*
-*	$lineItems[] = $lineItem;
-*   $lineItems[] = $lineItem1;
-*
-*	$request = $gateway->createPaypalSession(array(
-*		'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
-*		'buyerDetails' => $buyer,
-*		'shippingDetails' => $payment,
-*		'itemDetails' => $lineItems
-*	));
+ * 	$buyer = array(
+ * 		'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
+ * 		'cancelUrl' => 'https://developer.heartlandpaymentsystems.com'
+ * 	);
+ *
+ * 	$payment = array(
+ * 		'subtotal' => '10.00',
+ * 		'shippingAmount' => '0',
+ * 		'taxAmount' => '0',
+ * 		'paymentType' => 'Sale'
+ * 	);
+ *
+ * 	$lineItems = array();
+ * 
+ * 	$lineItem = array(
+ * 		'number' => '1',
+ * 		'quantity' => '1',
+ * 		'name' => 'Name with special',
+ * 		'description' => 'Description with special',
+ * 		'amount' => '10.00'
+ * 	);
+ * 
+ *   $lineItem1 = array(
+ * 		'number' => '1',
+ * 		'quantity' => '1',
+ * 		'name' => 'Name with special',
+ * 		'description' => 'Description with special',
+ * 		'amount' => '10.00'
+ * 	);
+ *
+ * 	$lineItems[] = $lineItem;
+ *   $lineItems[] = $lineItem1;
+ *
+ * 	$request = $gateway->createPaypalSession(array(
+ * 		'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
+ * 		'buyerDetails' => $buyer,
+ * 		'shippingDetails' => $payment,
+ * 		'itemDetails' => $lineItems
+ * 	));
  *
  *   $response = $transaction->send();
  * 
@@ -97,6 +95,7 @@ use DOMDocument;
  */
 class CreatePaypalSessionRequest extends AbstractPorticoRequest
 {
+
     /**
      * @return string
      */
@@ -104,7 +103,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     {
         return 'AltPaymentCreateSession';
     }
-    
+
     /**
      * @return string
      */
@@ -112,34 +111,38 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     {
         return 'PAYPAL';
     }
-    
+
     public function getData()
     {
         parent::getData();
+
+        if (($this->getSecretApiKey() != null && $this->getSecretApiKey() != "") || strpos($this->getSecretApiKey(), '_cert_') !== false) {
+            $this->validate('username', 'password', 'deviceId', 'licenseId', 'siteId', 'serviceUri');
+        }
 
         $amount = HpsInputValidation::checkAmount($this->getAmount());
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');
         $createSession = $xml->createElement('hps:' . $this->getTransactionType());
-        
+
         $createSession->appendChild($xml->createElement('hps:TransactionType', $this->getAltPaymentTransactionType()));
         $createSession->appendChild($this->hydrateBuyerData($xml));
         $createSession->appendChild($xml->createElement('hps:Amt', $amount));
-        
+
         //paypal payment sale using session
-        if($this->getTransactionType() == 'AltPaymentSale'){ 
+        if ($this->getTransactionType() == 'AltPaymentSale') {
             $createSession->appendChild($xml->createElement('hps:SessionId', $this->getPaypalSessionId()));
         }
-        
+
         $createSession->appendChild($this->hydratePaymentData($xml));
-        if ($shippingAddress != null) {
+        if ($this->getShippingDetails() != null) {
             $createSession->appendChild($this->hydrateShippingData($xml));
         }
         if ($lineItems != null) {
             $createSession->appendChild($this->hydrateLineItems($xml));
         }
 
-        $hpsTransaction->appendChild($createSession); 
+        $hpsTransaction->appendChild($createSession);
 
         return $hpsTransaction;
     }
@@ -153,7 +156,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     {
         $buyer = (object) $this->getBuyerDetails();
         $data = $xml->createElement('hps:Buyer');
-        
+
         if (isset($buyer->returnUrl)) {
             $data->appendChild($this->hydrateNameValuePair('ReturnUrl', $buyer->returnUrl, $xml));
         }
@@ -171,6 +174,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
         }
         return $data;
     }
+
     /**
      * @param \DOMDocument $xml
      *
@@ -207,6 +211,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
         }
         return $lineItems;
     }
+
     /**
      * @param              $name
      * @param              $value
@@ -221,6 +226,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
         $nvp->appendChild($xml->createElement('hps:Value', HpsInputValidation::cleanAscii($value)));
         return $nvp;
     }
+
     /**
      * @param \DOMDocument    $xml
      *
@@ -229,7 +235,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     private function hydratePaymentData(DOMDocument $xml)
     {
         $payment = (object) $this->getPaymentDetails();
-        
+
         $data = $xml->createElement('hps:Payment');
         $data->appendChild($this->hydrateNameValuePair('ItemAmount', $payment->subtotal, $xml));
         if (isset($payment->shippingAmount)) {
@@ -246,6 +252,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
         }
         return $data;
     }
+
     /**
      * @param \HpsShippingInfo $info
      * @param \DOMDocument     $xml
@@ -255,20 +262,20 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     private function hydrateShippingData(DOMDocument $xml)
     {
         $info = (object) $this->getShippingDetails();
-        
+
         $shipping = $xml->createElement('hps:Shipping');
         $address = $xml->createElement('hps:Address');
         $address->appendChild($this->hydrateNameValuePair('AllowAddressOverride', 'false', $xml));
         $address->appendChild($this->hydrateNameValuePair('ShipName', $info->name, $xml));
-        $address->appendChild($this->hydrateNameValuePair('ShipAddress', $info->address->address, $xml));
-        $address->appendChild($this->hydrateNameValuePair('ShipCity', $info->address->city, $xml));
-        $address->appendChild($this->hydrateNameValuePair('ShipState', $info->address->state, $xml));
-        $address->appendChild($this->hydrateNameValuePair('ShipZip', $info->address->zip, $xml));
-        $address->appendChild($this->hydrateNameValuePair('ShipCountryCode', $info->address->country, $xml));
+        $address->appendChild($this->hydrateNameValuePair('ShipAddress', $info->address, $xml));
+        $address->appendChild($this->hydrateNameValuePair('ShipCity', $info->city, $xml));
+        $address->appendChild($this->hydrateNameValuePair('ShipState', $info->state, $xml));
+        $address->appendChild($this->hydrateNameValuePair('ShipZip', $info->zip, $xml));
+        $address->appendChild($this->hydrateNameValuePair('ShipCountryCode', $info->country, $xml));
         $shipping->appendChild($address);
         return $shipping;
     }
-    
+
     public function getBuyerDetails()
     {
         return $this->getParameter('buyerDetails');
@@ -278,27 +285,27 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     {
         return $this->setParameter('buyerDetails', $value);
     }
-    
+
     public function getShippingDetails()
     {
         return $this->getParameter('shippingDetails');
     }
-    
+
     public function setShippingDetails($value)
     {
         return $this->setParameter('shippingDetails', $value);
     }
-    
+
     public function setItemDetails($value)
     {
         return $this->setParameter('itemDetails', $value);
     }
-    
+
     public function getItemDetails($value)
     {
         return $this->getParameter('itemDetails', $value);
     }
-    
+
     public function getPaymentDetails()
     {
         return $this->getParameter('paymentDetails');
@@ -307,7 +314,5 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
     public function setPaymentDetails($value)
     {
         return $this->setParameter('paymentDetails', $value);
-    }   
-    
-    
+    }
 }

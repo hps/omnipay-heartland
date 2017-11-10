@@ -1279,15 +1279,32 @@ class GatewayIntegrationTest extends TestCase {
             'amount' => '10.00'
         );
         $lineItems[] = $lineItem;
+        
+        $shippingDetails = array(
+            'name' => 'Joe Tester',
+            'address' => '1 heartland way',
+            'city' => 'Jeffersonville',
+            'state' => 'IN',
+            'zip' => '47130',
+            'country' => 'US',
+        );
 
+        $this->gateway->setSecretApiKey(null);
         $request = $this->gateway->createPaypalSession(array(
             'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
             'buyerDetails' => $buyer,
-            'shippingDetails' => $payment,
-            'itemDetails' => $lineItems
+            'paymentDetails' => $payment,
+            'itemDetails' => $lineItems,
+            'shippingDetails' => $shippingDetails,
+            'username' =>'30360021',
+            'password' =>'$Test1234',
+            'deviceId' =>'90911395',
+            'licenseId' =>'20527',
+            'siteId' =>'20518',
+            'serviceUri' =>'https://api-uat.heartlandportico.com/paymentserver.v1/PosGatewayService.asmx?wsdl'
         ));
         
-        $response = $request->send(); 
+        $response = $request->send();  print_r($response->getData());
         $this->assertTrue($response->isSuccessful(), 'Create paypal session should succeed');        
     }
     

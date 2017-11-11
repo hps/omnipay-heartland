@@ -1257,6 +1257,15 @@ class GatewayIntegrationTest extends TestCase {
     //
     
     public function testPaypalCreateSession() {
+        //change settings
+        $this->gateway->setSecretApiKey(null);
+        $this->gateway->setUsername('30360021');
+        $this->gateway->setPassword('$Test1234');
+        $this->gateway->setDeviceId('90911395');
+        $this->gateway->setLicenseId('20527');
+        $this->gateway->setSiteId('20518');
+        $this->gateway->setServiceUri('https://api-uat.heartlandportico.com/paymentserver.v1/PosGatewayService.asmx?wsdl');
+                        
         // createPaypalSession        
         $buyer = array(
             'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
@@ -1289,37 +1298,32 @@ class GatewayIntegrationTest extends TestCase {
             'country' => 'US',
         );
 
-        $this->gateway->setSecretApiKey(null);
         $request = $this->gateway->createPaypalSession(array(
             'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
             'buyerDetails' => $buyer,
             'paymentDetails' => $payment,
             'itemDetails' => $lineItems,
-            'shippingDetails' => $shippingDetails,
-            'username' =>'30360021',
-            'password' =>'$Test1234',
-            'deviceId' =>'90911395',
-            'licenseId' =>'20527',
-            'siteId' =>'20518',
-            'serviceUri' =>'https://api-uat.heartlandportico.com/paymentserver.v1/PosGatewayService.asmx?wsdl'
+            'shippingDetails' => $shippingDetails
         ));
         
-        $response = $request->send();  print_r($response->getData());
-        $this->assertTrue($response->isSuccessful(), 'Create paypal session should succeed');        
+        $response = $request->send();   
+        $paypalSessionResponse = $response->getData();
+        $this->assertTrue($response->isSuccessful(), 'Create paypal session should succeed');  
+        $this->assertNotNull($paypalSessionResponse['SessionId']);
+        $this->assertNotNull($paypalSessionResponse['RedirectUrl']);
     }
     
     public function testFetchPaypalSession() {
-        
-        $request = $this->gateway->fetchPaypalSessionInfo(array(
-            'paypalSessionId' => 'sdsdsd'
-        ));
-        
-        $response = $request->send(); print_r($response->getData());
-        $this->assertTrue($response->isSuccessful(), 'Fetch session info should succeed');        
-    }
-    
-    public function testPaypalSessionSale() {
-        
+        //change settings
+        $this->gateway->setSecretApiKey(null);
+        $this->gateway->setUsername('30360021');
+        $this->gateway->setPassword('$Test1234');
+        $this->gateway->setDeviceId('90911395');
+        $this->gateway->setLicenseId('20527');
+        $this->gateway->setSiteId('20518');
+        $this->gateway->setServiceUri('https://api-uat.heartlandportico.com/paymentserver.v1/PosGatewayService.asmx?wsdl');
+            
+        // createPaypalSession        
         $buyer = array(
             'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
             'cancelUrl' => 'https://developer.heartlandpaymentsystems.com'
@@ -1341,16 +1345,113 @@ class GatewayIntegrationTest extends TestCase {
             'amount' => '10.00'
         );
         $lineItems[] = $lineItem;
-
-        $request = $this->gateway->paypalSessionSale(array(
+        
+        $shippingDetails = array(
+            'name' => 'Joe Tester',
+            'address' => '1 heartland way',
+            'city' => 'Jeffersonville',
+            'state' => 'IN',
+            'zip' => '47130',
+            'country' => 'US',
+        );
+        
+        $request = $this->gateway->createPaypalSession(array(
             'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
             'buyerDetails' => $buyer,
-            'shippingDetails' => $payment,
+            'paymentDetails' => $payment,
             'itemDetails' => $lineItems,
-            'paypalSessionId' => 'sdsdsd'
+            'shippingDetails' => $shippingDetails
         ));
         
-        $response = $request->send(); print_r($response->getData());
-        $this->assertTrue($response->isSuccessful(), 'Fetch session info should succeed');        
+        $response = $request->send();  
+        $paypalSessionResponse = $response->getData();
+        $this->assertTrue($response->isSuccessful(), 'Create paypal session should succeed');  
+        $this->assertNotNull($paypalSessionResponse['SessionId']);
+        $this->assertNotNull($paypalSessionResponse['RedirectUrl']);
+        
+        //fetch Session info
+        $request = $this->gateway->fetchPaypalSessionInfo(array(
+            'paypalSessionId' => $paypalSessionResponse['SessionId']
+        ));
+        
+        $response = $request->send(); 
+        $respData = $response->getData();
+        $this->assertTrue($response->isSuccessful(), 'Fetch session info should succeed');
+        $this->assertNotNull($response->getTransactionReference());
+        $this->assertSame($respData['Amt'], '10.00');
+        $this->assertSame($respData['ShippingAmount'], '0.00');     
+        $this->assertSame($respData['TaxAmount'], '0.00');     
+    }
+    
+    public function testPaypalSessionSale() {
+        //change settings
+        $this->gateway->setSecretApiKey(null);
+        $this->gateway->setUsername('30360021');
+        $this->gateway->setPassword('$Test1234');
+        $this->gateway->setDeviceId('90911395');
+        $this->gateway->setLicenseId('20527');
+        $this->gateway->setSiteId('20518');
+        $this->gateway->setServiceUri('https://api-uat.heartlandportico.com/paymentserver.v1/PosGatewayService.asmx?wsdl');
+            
+        // createPaypalSession        
+        $buyer = array(
+            'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
+            'cancelUrl' => 'https://developer.heartlandpaymentsystems.com'
+        );
+
+        $payment = array(
+            'subtotal' => '10.00',
+            'shippingAmount' => '0',
+            'taxAmount' => '0',
+            'paymentType' => 'Sale'
+        );
+        
+        $lineItems = array();
+        $lineItem = array(
+            'number' => '1',
+            'quantity' => '1',
+            'name' => 'Name with special',
+            'description' => 'Description with special',
+            'amount' => '10.00'
+        );
+        $lineItems[] = $lineItem;
+        
+        $shippingDetails = array(
+            'name' => 'Joe Tester',
+            'address' => '1 heartland way',
+            'city' => 'Jeffersonville',
+            'state' => 'IN',
+            'zip' => '47130',
+            'country' => 'US',
+        );
+        
+        $request = $this->gateway->createPaypalSession(array(
+            'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
+            'buyerDetails' => $buyer,
+            'paymentDetails' => $payment,
+            'itemDetails' => $lineItems,
+            'shippingDetails' => $shippingDetails
+        ));
+        
+        $response = $request->send();  
+        $paypalSessionResponse = $response->getData();
+        $this->assertTrue($response->isSuccessful(), 'Create paypal session should succeed');  
+        $this->assertNotNull($paypalSessionResponse['SessionId']);
+        $this->assertNotNull($paypalSessionResponse['RedirectUrl']);
+        
+        //fetch Session info
+        $request = $this->gateway->paypalSessionSale(array(
+            'paypalSessionId' => $paypalSessionResponse['SessionId'],
+            'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
+            'buyerDetails' => $buyer,
+            'paymentDetails' => $payment,
+            'itemDetails' => $lineItems,
+            'shippingDetails' => $shippingDetails            
+        ));
+        
+        $response = $request->send(); 
+        $respData = $response->getData(); 
+        $this->assertTrue($response->isSuccessful(), 'Paypa session sale should succeed');
+        $this->assertNotNull($response->getTransactionReference());         
     }
 }

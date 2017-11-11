@@ -56,8 +56,21 @@ class PorticoResponse extends AbstractResponse
     public function getData()
     {
         //convert the xml object as an array
-        $serverResponseArray = $this->xmlObj2array($this->responseData);
-        return $this->mergeResponse($serverResponseArray);
+        $serverResponseArray = $this->xmlObj2array($this->responseData); 
+        $porticoResponse = $this->mergeResponse($serverResponseArray);
+        
+        //handle name value pair
+        $nameValueDetails = array();
+        //convert the xml object as an array 
+        if(!empty($porticoResponse)){
+            foreach ($porticoResponse as $index => $node) {
+                if(is_numeric($index) && is_object($node) && !empty($node->Name) && !empty($node->Value)){
+                    $porticoResponse[trim($node->Name)] = trim($node->Value);
+                    unset($porticoResponse[$index]);
+                }                 
+            }
+        }
+        return $porticoResponse;
     }
 
     public function getPurchaseCardIndicator()

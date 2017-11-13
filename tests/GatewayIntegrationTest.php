@@ -1424,7 +1424,7 @@ class GatewayIntegrationTest extends TestCase {
             'zip' => '47130',
             'country' => 'US',
         );
-        
+        /*
         $request = $this->gateway->createPaypalSession(array(
             'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
             'buyerDetails' => $buyer,
@@ -1438,10 +1438,11 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), 'Create paypal session should succeed');  
         $this->assertNotNull($paypalSessionResponse['SessionId']);
         $this->assertNotNull($paypalSessionResponse['RedirectUrl']);
-        
+        */
         //fetch Session info
+        $buyer['payerId'] = 'YCPTVT5G6UYTU';
         $request = $this->gateway->paypalSessionSale(array(
-            'paypalSessionId' => $paypalSessionResponse['SessionId'],
+            'paypalSessionId' => 'EC-2FW92388JL3992835',// $paypalSessionResponse['SessionId'],
             'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
             'buyerDetails' => $buyer,
             'paymentDetails' => $payment,
@@ -1450,8 +1451,8 @@ class GatewayIntegrationTest extends TestCase {
         ));
         
         $response = $request->send(); 
-        $respData = $response->getData(); 
-        $this->assertTrue($response->isSuccessful(), 'Paypa session sale should succeed');
-        $this->assertNotNull($response->getTransactionReference());         
+        $respData = $response->getData();   
+        $this->assertTrue($response->isSuccessful(), 'Paypal session sale should succeed');
+        $this->assertNotNull($response->getTransactionReference());
     }
 }

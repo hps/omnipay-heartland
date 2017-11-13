@@ -15,6 +15,7 @@ class PorticoResponse extends AbstractResponse
     protected $purchaseCardResponse = null;
     public $reversalRequired = false;
     public $reversalDataObject = null;
+    public $heartlandParseResponse = null;
 
     /**
      * Get the transfer reference from the response of CreateTransferRequest,
@@ -55,24 +56,18 @@ class PorticoResponse extends AbstractResponse
 
     public function getData()
     {
-        //convert the xml object as an array
+        //convert the xml object as an array        
         $serverResponseArray = $this->xmlObj2array($this->responseData); 
-        $porticoResponse = $this->mergeResponse($serverResponseArray);
+        $this->heartlandParseResponse = $this->mergeResponse($serverResponseArray);
         
-        //handle name value pair
-        $nameValueDetails = array();
-        //convert the xml object as an array 
-        if(!empty($porticoResponse)){
-            foreach ($porticoResponse as $index => $node) {
-                if(is_numeric($index) && is_object($node) && !empty($node->Name) && !empty($node->Value)){
-                    $porticoResponse[trim($node->Name)] = trim($node->Value);
-                    unset($porticoResponse[$index]);
-                }                 
-            }
+        //handle name value pair for paypal sessions
+        if (in_array($this->request->getTransactionType(), array('AltPaymentCreateSession', 'AltPaymentSessionInfo', 'AltPaymentSale'))) {
+            $this->parsePaypalResponse();
         }
-        return $porticoResponse;
+        return $this->heartlandParseResponse;
     }
-
+    
+    
     public function getPurchaseCardIndicator()
     {
         return isset($this->responseData->Transaction)
@@ -220,12 +215,42 @@ class PorticoResponse extends AbstractResponse
         $return = array();
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $return = array_merge($return, $this->mergeResponse($value));
+                $return = array_merge($return, $this->mergeResponse($value));      
             } else {
                 $return[$key] = $value;
             }
         }
 
         return $return;
+    }
+    
+    private function parsePaypalResponse()
+    {
+        //convert the xml object as an array 
+        foreach ($this->heartlandParseResponse as $index => $node) {
+            if (is_object($node)) {
+                if (!empty($node->Name) && !empty($node->Value)) {
+                    $this->heartlandParseResponse[trim($node->Name)] = trim($node->Value);
+                    unset($this->heartlandParseResponse[$index]);
+                } else if (!empty($node->NameValuePair)) {
+                    foreach ($node->NameValuePair as $innerIndex => $innerNode) {
+                        $this->heartlandParseResponse['RspMessageDetails'][$index][trim($innerNode->Name)] = trim($innerNode->Value);
+                    }
+                    unset($this->heartlandParseResponse[$index]);
+                }
+            }
+        }
+
+        //set status as failure pass messages. error messages will be set as RspMessageDetails or Message base on number of errors
+        if ($this->heartlandParseResponse['RspMessage'] != 'Success') {
+            $this->setStatusOK(false);
+            if (!empty($this->heartlandParseResponse['RspMessageDetails'])) {
+                foreach ($this->heartlandParseResponse['RspMessageDetails'] as $details) {
+                    $this->heartlandResponseMessage .= $details['Message'] . ' ';
+                }
+            } else if (!empty($this->heartlandParseResponse['Message'])){
+                $this->heartlandResponseMessage .= $this->heartlandParseResponse['Message'];
+            }
+        }
     }
 }

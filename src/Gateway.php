@@ -160,6 +160,8 @@ class Gateway extends AbstractGateway
     {
         return array(
             'secretApiKey' => '',
+            'publicApiKey' => '',
+            'testMode' => '',
             'siteId' => '',
             'deviceId' => '',
             'licenseId' => '',
@@ -170,6 +172,26 @@ class Gateway extends AbstractGateway
             'versionNumber' => '',
             'siteTrace' => ''
         );
+    }
+    
+    public function getPublicApiKey()
+    {
+        return $this->getParameter('publicApiKey');
+    }
+    
+    public function setPublicApiKey($value)
+    {
+        return $this->setParameter('publicApiKey', $value);
+    }
+    
+    public function getTestMode()
+    {
+        return $this->getParameter('testMode');
+    }
+    
+    public function setTestMode($value)
+    {
+        return $this->setParameter('testMode', $value);
     }
 
     /**

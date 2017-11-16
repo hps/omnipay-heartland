@@ -138,7 +138,7 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
         if ($this->getShippingDetails() != null) {
             $createSession->appendChild($this->hydrateShippingData($xml));
         }
-        if ($lineItems != null) {
+        if ($this->getItemDetails() != null) {
             $createSession->appendChild($this->hydrateLineItems($xml));
         }
 
@@ -301,9 +301,9 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
         return $this->setParameter('itemDetails', $value);
     }
 
-    public function getItemDetails($value)
+    public function getItemDetails()
     {
-        return $this->getParameter('itemDetails', $value);
+        return $this->getParameter('itemDetails');
     }
 
     public function getPaymentDetails()

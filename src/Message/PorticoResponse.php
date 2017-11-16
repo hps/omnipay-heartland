@@ -242,7 +242,7 @@ class PorticoResponse extends AbstractResponse
         }
 
         //set status as failure pass messages. error messages will be set as RspMessageDetails or Message base on number of errors
-        if ($this->heartlandParseResponse['RspMessage'] != 'Success') {
+        if (!empty($this->heartlandParseResponse['RspMessage']) && $this->heartlandParseResponse['RspMessage'] != 'Success') {
             $this->setStatusOK(false);
             if (!empty($this->heartlandParseResponse['RspMessageDetails'])) {
                 foreach ($this->heartlandParseResponse['RspMessageDetails'] as $details) {

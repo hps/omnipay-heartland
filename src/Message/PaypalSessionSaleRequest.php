@@ -9,16 +9,10 @@ namespace Omnipay\Heartland\Message;
 use DOMDocument;
 
 /**
- * Heartland Paypal Session Sale Request.
+ * Heartland Paypal session Sale Request.
  *
- * An Authorize request is similar to a purchase request but the
- * charge issues an authorization (or pre-authorization), and no money
- * is transferred.  The transaction will need to be captured later
- * in order to effect payment. Uncaptured charges expire in 7 days.
- *
- * Either a payment token or a card is required.  Token is like the ones returned by
- * securesubmit.js, or a dictionary containing a user's credit card details.
- * Either token / cardReference parameters can be used to pass the token
+ * This request is used to creates a unique Session for Electronic Commerce Alternate Payment Processing. 
+ * This service must be called first to perform Alternate payment processing.
  *
  * Example:
  *
@@ -41,19 +35,52 @@ use DOMDocument;
  *
  *   ));
  *
- *   
- *   //By using token details
- *   $transaction = $gateway->authorize(array(
- *       'amount'                   => '10.00',
- *       'currency'                 => 'USD',
- *       'description'              => 'This is a test authorize transaction.'
- *   ));
+ * 	$buyer = array(
+ * 		'returnUrl' => 'https://developer.heartlandpaymentsystems.com',
+ * 		'cancelUrl' => 'https://developer.heartlandpaymentsystems.com',
+ *      'payerId' => 'Your Paypal Payer Id'
+ * 	);
  *
- *   $transaction->setToken('abc-123');
+ * 	$payment = array(
+ * 		'subtotal' => '10.00',
+ * 		'shippingAmount' => '0',
+ * 		'taxAmount' => '0',
+ * 		'paymentType' => 'Sale'
+ * 	);
+ *
+ * 	$lineItems = array();
+ * 
+ * 	$lineItem = array(
+ * 		'number' => '1',
+ * 		'quantity' => '1',
+ * 		'name' => 'Name with special',
+ * 		'description' => 'Description with special',
+ * 		'amount' => '10.00'
+ * 	);
+ * 
+ *   $lineItem1 = array(
+ * 		'number' => '1',
+ * 		'quantity' => '1',
+ * 		'name' => 'Name with special',
+ * 		'description' => 'Description with special',
+ * 		'amount' => '10.00'
+ * 	);
+ *
+ * 	$lineItems[] = $lineItem;
+ *  $lineItems[] = $lineItem1;
+ *
+ * 	$request = $gateway->createPaypalSession(array(
+ *      'paypalSessionId' => 'Your Paypal Session Id',
+ * 		'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
+ * 		'buyerDetails' => $buyer,
+ * 		'shippingDetails' => $payment,
+ * 		'itemDetails' => $lineItems
+ * 	));
  *
  *   $response = $transaction->send();
+ * 
  *   if ($response->isSuccessful()) {
- *       echo "Authorize transaction was successful!\n";
+ *       echo "Paypal sale completed  successful!\n";
  *       $sale_id = $response->getTransactionReference();
  *       echo "Transaction reference = " . $sale_id . "\n";
  *   }
@@ -61,7 +88,7 @@ use DOMDocument;
  *
  * @see  \Omnipay\Heartland\Gateway
  * @codingStandardsIgnoreStart
- * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAuth.html
+ * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-AltPaymentCreateSession.html
  * @codingStandardsIgnoreEnd
  */
 class PaypalSessionSaleRequest extends CreatePaypalSessionRequest

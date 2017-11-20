@@ -30,8 +30,8 @@ class PorticoResponse extends AbstractResponse
 
     protected function parseResponse()
     {
-        switch ($this->response->status) {
-            case '200':
+        switch ($this->response->status) { 
+            case '200': 
                 $responseObject = $this->XML2Array($this->response->response);
                 $ver = "Ver1.0";
                 $this->responseData = $responseObject->$ver;

@@ -84,6 +84,9 @@ class FetchPaypalSessionInfoRequest extends AbstractPorticoRequest
     
     public function getData()
     {
+        if (strpos($this->getSecretApiKey(), '_cert_') !== false) {
+            $this->setSecretApiKey(null);
+        }
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');
         $info = $xml->createElement('hps:' . $this->getTransactionType());

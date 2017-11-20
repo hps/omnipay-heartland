@@ -9,14 +9,8 @@ use DOMDocument;
 /**
  * Heartland Create Paypal session Request.
  *
- * An Authorize request is similar to a purchase request but the
- * charge issues an authorization (or pre-authorization), and no money
- * is transferred.  The transaction will need to be captured later
- * in order to effect payment. Uncaptured charges expire in 7 days.
- *
- * Either a payment token or a card is required.  Token is like the ones returned by
- * securesubmit.js, or a dictionary containing a user's credit card details.
- * Either token / cardReference parameters can be used to pass the token
+ * This request is used to creates a unique Session for Electronic Commerce Alternate Payment Processing. 
+ * This service must be called first to perform Alternate payment processing.
  *
  * Example:
  *
@@ -70,7 +64,7 @@ use DOMDocument;
  * 	);
  *
  * 	$lineItems[] = $lineItem;
- *   $lineItems[] = $lineItem1;
+ *  $lineItems[] = $lineItem1;
  *
  * 	$request = $gateway->createPaypalSession(array(
  * 		'amount' => $payment['subtotal'] + $payment['shippingAmount'] + $payment['taxAmount'],
@@ -90,7 +84,7 @@ use DOMDocument;
  *
  * @see  \Omnipay\Heartland\Gateway
  * @codingStandardsIgnoreStart
- * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAuth.html
+ * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-AltPaymentCreateSession.html
  * @codingStandardsIgnoreEnd
  */
 class CreatePaypalSessionRequest extends AbstractPorticoRequest
@@ -114,6 +108,9 @@ class CreatePaypalSessionRequest extends AbstractPorticoRequest
 
     public function getData()
     {
+        if (strpos($this->getSecretApiKey(), '_cert_') !== false) {
+            $this->setSecretApiKey(null);
+        }
         parent::getData();
 
         if (($this->getSecretApiKey() != null && $this->getSecretApiKey() != "") || strpos($this->getSecretApiKey(), '_cert_') !== false) {

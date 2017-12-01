@@ -80,6 +80,7 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
 
         $this->assertFalse($response->isSuccessful(), 'Authorization should fail');
+        $this->assertFalse($response->isRedirect());
         $this->assertTrue($response->isDecline());
         $this->assertNotNull($response->getTransactionReference());
         $this->assertEquals('05', $response->getCode());
@@ -100,6 +101,7 @@ class GatewayIntegrationTest extends TestCase {
         $response = $request->send();
 
         $this->assertFalse($response->isSuccessful(), 'Authorization should fail');
+        $this->assertFalse($response->isRedirect());
         $this->assertTrue($response->isDecline());
         $this->assertNotNull($response->getTransactionReference());
         $this->assertEquals('04', $response->getCode());

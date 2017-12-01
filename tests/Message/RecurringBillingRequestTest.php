@@ -23,17 +23,17 @@ class RecurringBillingRequestTest extends TestCase
     public function testSendSuccess()
     {
         $this->setMockHttpResponse('RecurringBillingSuccess.txt');
-        
+
         $this->request->setOneTime(true);
         $this->request->setTransactionId('123456');
-        
+
         $response = $this->request->send();
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('1023609819', $response->getTransactionReference());
         $this->assertSame('Success', $response->getMessage());
-        $this->assertSame('200', $response->getCode());
+        $this->assertSame('00', $response->getCode());
     }
 
     public function testSendFailureInvalidPaymentMethodKey()
@@ -46,7 +46,7 @@ class RecurringBillingRequestTest extends TestCase
         $this->assertFalse($response->isRedirect());
         $this->assertSame('1023607706', $response->getTransactionReference());
         $this->assertSame('Invalid card data', $response->getMessage());
-        $this->assertSame('200', $response->getCode());
+        $this->assertSame('34', $response->getCode());
     }
 
     /**

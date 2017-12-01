@@ -10,11 +10,16 @@ use DOMDocument;
 class PorticoResponse extends AbstractResponse
 {
     protected $heartlandResponseReasonCode = 0;
-    protected $heartlandTransactionId = "";
+    protected $transactionId = "";
     protected $responseData = null;
     protected $purchaseCardResponse = null;
     public $reversalRequired = false;
     public $reversalDataObject = null;
+
+    protected $issuerResponseCode = null;
+    protected $issuerResponseMessage = null;
+    protected $gatewayResponseCode = null;
+    protected $gatewayResponseMessage = null;
 
     /**
      * Get the transfer reference from the response of CreateTransferRequest,
@@ -24,7 +29,20 @@ class PorticoResponse extends AbstractResponse
      */
     public function getTransactionReference()
     {
-        return (string) $this->heartlandTransactionId;
+        return (string) $this->transactionId;
+    }
+
+    public function getCode()
+    {
+        if ($this->issuerResponseCode) {
+            return $this->issuerResponseCode;
+        }
+
+        if ($this->gatewayResponseCode) {
+            return $this->gatewayResponseCode;
+        }
+
+        return (string) $this->response->status;
     }
 
     protected function parseResponse()
@@ -34,6 +52,7 @@ class PorticoResponse extends AbstractResponse
                 $responseObject = $this->XML2Array($this->response->response);
                 $ver = "Ver1.0";
                 $this->responseData = $responseObject->$ver;
+                $this->setStatusOk(true);
                 $this->processChargeGatewayResponse();
 
                 if ($this->getReasonCode() == 0) {
@@ -82,23 +101,25 @@ class PorticoResponse extends AbstractResponse
 
     private function processChargeGatewayResponse()
     {
-        $this->heartlandTransactionId = isset($this->responseData->Header->GatewayTxnId)
-            ? $this->responseData->Header->GatewayTxnId
+        $this->transactionId = isset($this->responseData->Header->GatewayTxnId)
+            ? (string)$this->responseData->Header->GatewayTxnId
             : null;
-        $gatewayRspCode = isset($this->responseData->Header->GatewayRspCode)
-            ? $this->responseData->Header->GatewayRspCode
+        $this->gatewayResponseCode = isset($this->responseData->Header->GatewayRspCode)
+            ? (string)$this->responseData->Header->GatewayRspCode
             : null;
-        $this->heartlandResponseMessage = isset($this->responseData->Header->GatewayRspMsg)
-            ? $this->responseData->Header->GatewayRspMsg
+        $this->gatewayResponseMessage = isset($this->responseData->Header->GatewayRspMsg)
+            ? (string)$this->responseData->Header->GatewayRspMsg
             : null;
 
-        $this->setStatusOK($gatewayRspCode == 0);
+        $this->setStatusOK($this->gatewayResponseCode == '0');
 
-        if ($gatewayRspCode == '0') {
+        if ($this->gatewayResponseCode == '0') {
             return;
         }
 
-        if ($gatewayRspCode == '30') {
+        $this->setStatusOk(false);
+
+        if ($this->gatewayResponseCode == '30') {
             $this->reversalRequired = true;
         }
         $gatewayException = HpsGatewayResponseValidation::checkResponse(
@@ -118,28 +139,26 @@ class PorticoResponse extends AbstractResponse
     private function processChargeIssuerResponse()
     {
         $expectedType = $this->heartlandTransactionType;
-        $transactionId = isset($this->responseData->Header->GatewayTxnId)
-            ? $this->responseData->Header->GatewayTxnId
-            : null;
         $item = $this->responseData->Transaction->$expectedType;
 
         if ($item != null) {
-            $responseCode = (isset($item->RspCode) ? $item->RspCode : null);
-            $responseText = (isset($item->RspText) ? $item->RspText : null);
+            $this->issuerResponseCode = (isset($item->RspCode) ? (string)$item->RspCode : null);
+            $this->issuerResponseMessage = (isset($item->RspText) ? (string)$item->RspText : null);
 
-            if ($responseCode != null) {
+            if ($this->issuerResponseCode != null) {
                 // check if we need to do a reversal
-                if ($responseCode == '91') {
+                if ($this->issuerResponseCode == '91') {
                     $this->reversalRequired = true;
                 }
                 //concat earlier messages
                 $gatewayException = HpsIssuerResponseValidation::checkResponse(
-                    $transactionId,
-                    $responseCode,
-                    $responseText
+                    $this->transactionId,
+                    $this->issuerResponseCode,
+                    $this->issuerResponseMessage
                 );
 
                 if ($gatewayException != null) {
+                    $this->setStatusOk(false);
                     $this->heartlandResponseMessage = $gatewayException->message;
                     $this->heartlandResponseReasonCode = $gatewayException->code;
                 }

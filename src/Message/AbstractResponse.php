@@ -48,6 +48,11 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
         return $this->statusOK;
     }
 
+    public function isDecline()
+    {
+        return !$this->isSuccessful();
+    }
+
     protected function setStatusOK($value)
     {
         $this->statusOK = $value;

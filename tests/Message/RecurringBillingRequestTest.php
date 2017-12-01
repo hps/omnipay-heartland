@@ -49,6 +49,19 @@ class RecurringBillingRequestTest extends TestCase
         $this->assertSame('34', $response->getCode());
     }
 
+    public function testSendFailureIssuerDecline()
+    {
+        $this->setMockHttpResponse('RecurringBillingFailureIssuerDecline.txt');
+        $response = $this->request->send();
+
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('1030206990', $response->getTransactionReference());
+        $this->assertSame('The card was declined.', $response->getMessage());
+        $this->assertSame('05', $response->getCode());
+    }
+
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      * @expectedExceptionMessage Internal Server Error

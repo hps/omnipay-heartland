@@ -30,7 +30,7 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     /**
      * @var string
      */
-    protected $heartlandResponseMessage = "";
+    protected $heartlandResponseMessage = "Success";
 
     public function __construct($request, $response, $txnType)
     {
@@ -46,6 +46,11 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     public function isSuccessful()
     {
         return $this->statusOK;
+    }
+
+    public function isDecline()
+    {
+        return !$this->isSuccessful();
     }
 
     protected function setStatusOK($value)

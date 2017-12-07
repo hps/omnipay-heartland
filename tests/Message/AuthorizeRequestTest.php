@@ -29,7 +29,7 @@ class AuthorizeRequestTest extends TestCase
         $this->assertFalse($response->isRedirect());
         $this->assertSame('1023514041', $response->getTransactionReference());
         $this->assertSame('Success', $response->getMessage());
-        $this->assertSame('200', $response->getCode());
+        $this->assertSame('00', $response->getCode());
     }
 
     public function testSendError()
@@ -44,12 +44,12 @@ class AuthorizeRequestTest extends TestCase
         $this->assertSame('6', $response->getReasonCode());
     }
 
-    
+
     public function testSendGatewayError()
     {
         $this->setMockHttpResponse('AuthorizeFailureGatewayError.txt');
         $response = $this->request->send();
-        
+
         $this->assertSame($response->getMessage(), 'Unexpected response');
         $this->assertNotNull($response->reversalDataObject->getData());    }
 

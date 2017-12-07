@@ -65,6 +65,48 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), 'Void should succeed');
     }
 
+    public function testAuthDecline05()
+    {
+        // Authorize
+        $request = $this->gateway->authorize(array(
+            'amount' => '10.25',
+            'card' => array(
+                'number' => 4111111111111111,
+                'expiryMonth' => 7,
+                'expiryYear' => 2018,
+                'cvv' => 560,
+            ),
+        ));
+        $response = $request->send();
+
+        $this->assertFalse($response->isSuccessful(), 'Authorization should fail');
+        $this->assertFalse($response->isRedirect());
+        $this->assertTrue($response->isDecline());
+        $this->assertNotNull($response->getTransactionReference());
+        $this->assertEquals('05', $response->getCode());
+    }
+
+    public function testAuthDecline04()
+    {
+        // Authorize
+        $request = $this->gateway->authorize(array(
+            'amount' => '10.01',
+            'card' => array(
+                'number' => 5454545454545454,
+                'expiryMonth' => 7,
+                'expiryYear' => 2018,
+                'cvv' => 560,
+            ),
+        ));
+        $response = $request->send();
+
+        $this->assertFalse($response->isSuccessful(), 'Authorization should fail');
+        $this->assertFalse($response->isRedirect());
+        $this->assertTrue($response->isDecline());
+        $this->assertNotNull($response->getTransactionReference());
+        $this->assertEquals('04', $response->getCode());
+    }
+
     public function testPurchaseRefund() {
         // Purchase
         $request = $this->gateway->purchase(array(

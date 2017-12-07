@@ -16,7 +16,7 @@ class PurchaseRequestTest extends TestCase
                 'cardReference' => 'supt_5h1EiJ324I5U6hIvCEsc0rGI'
             )
         );
-        $this->request->setSecretApiKey('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ');        
+        $this->request->setSecretApiKey('skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ');
 
     }
 
@@ -35,13 +35,13 @@ class PurchaseRequestTest extends TestCase
     {
         $this->setMockHttpResponse('PurchaseFailure.txt');
         $response = $this->request->send();
-        
+
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('1023529555', $response->getTransactionReference());
-        $this->assertSame('Invalid card data', $response->getMessage());              
+        $this->assertSame('Invalid card data', $response->getMessage());
     }
-    
+
     public function testSendSuccessWithCard()
     {
         $this->setMockHttpResponse('PurchaseSuccess.txt');
@@ -54,66 +54,66 @@ class PurchaseRequestTest extends TestCase
         $this->assertSame('1023524629', $response->getTransactionReference());
         $this->assertSame('Success', $response->getMessage());
     }
-    
+
     public function testGatewayEmptyResponse()
     {
         /*
         $this->setMockHttpResponse('PurchaseEmptyResponse.txt');
         $response = $this->request->send();
-        
+
         $this->assertTrue($response->isSuccessful());
-        $this->assertEmpty($response->getData());           
-         
-        */ 
+        $this->assertEmpty($response->getData());
+
+        */
     }
-    
+
     public function testErrorNoOpenBatch()
     {
         $this->setMockHttpResponse('PurchaseNoOpenBatch.txt');
         $response = $this->request->send();
 
         $this->assertSame($response->getReasonCode(), '8');
-        $this->assertSame('Transaction rejected because the referenced original transaction is invalid', $response->getMessage());                    
+        $this->assertSame('Transaction rejected because the referenced original transaction is invalid', $response->getMessage());
     }
-    
+
     public function testErrorInvalidCPCData()
     {
         $this->setMockHttpResponse('PurchaseInvalidCPCData.txt');
         $response = $this->request->send();
 
         $this->assertSame($response->getReasonCode(), '9');
-        $this->assertSame('Invalid CPC data', $response->getMessage());                    
+        $this->assertSame('Invalid CPC data', $response->getMessage());
     }
-    
+
     public function testErrorInvalidNumber()
     {
         $this->setMockHttpResponse('PurchaseInvalidNumber.txt');
         $response = $this->request->send();
 
         $this->assertSame($response->getReasonCode(), '11');
-        $this->assertSame('The card number is not valid', $response->getMessage());                    
+        $this->assertSame('The card number is not valid', $response->getMessage());
     }
-    
-    
+
+
     public function testGatewayErrorReversal()
     {
         $this->setMockHttpResponse('PurchaseGatewayError.txt');
-        $response = $this->request->send(); 
+        $response = $this->request->send();
 
         $this->assertSame($response->getReasonCode(), '31');
         $this->assertSame($response->getMessage(), 'Gateway timed out');
         $this->assertNotNull($response->reversalDataObject->getData());
     }
-    
-   
+
+
     public function testGatewayTimeoutError()
     {
         $this->setMockHttpResponse('PurchaseGatewayTimeout.txt');
-        $response = $this->request->send();  
-        
+        $response = $this->request->send();
+
         $this->assertSame($response->getReasonCode(), '21');
         $this->assertSame($response->getMessage(), 'The card issuer timed-out.');
         $this->assertNotNull($response->reversalDataObject->getData());
     }
-    
+
 }

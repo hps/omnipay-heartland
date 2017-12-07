@@ -24,6 +24,16 @@ class GatewayTest extends GatewayTestCase
         $this->assertSame('10.00', $request->getAmount());
     }
 
+    public function testAuthorizeWithPaymentMethodReferenceIsRecurringBillingAuth()
+    {
+        $request = $this->gateway->purchase(array(
+            'amount' => '10.00',
+            'paymentMethodReference' => '123456',
+        ));
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\RecurringBillingAuthRequest', $request);
+    }
+
     public function testCapture()
     {
         $request = $this->gateway->capture(array('amount' => '10.00'));
@@ -40,6 +50,15 @@ class GatewayTest extends GatewayTestCase
         $this->assertSame('10.00', $request->getAmount());
     }
 
+    public function testPurchaseWithPaymentMethodReferenceIsRecurringBilling()
+    {
+        $request = $this->gateway->purchase(array(
+            'amount' => '10.00',
+            'paymentMethodReference' => '123456',
+        ));
+
+        $this->assertInstanceOf('Omnipay\Heartland\Message\RecurringBillingRequest', $request);
+    }
 
     public function testRefund()
     {

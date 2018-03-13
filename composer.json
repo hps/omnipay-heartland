@@ -11,7 +11,7 @@
         "heartland"
     ],
     "homepage": "https://github.com/hps/omnipay-heartland",
-    "license": "GPLv2",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Heartland Developer Portal",

@@ -191,8 +191,8 @@ class AchPurchaseRequest extends AbstractPorticoRequest
             );
         }
 
-        $checkName = 
-            isset($consumer['checkName']) 
+        $checkName =
+            isset($consumer['checkName'])
             ? $consumer['checkName']
             : sprintf(
                 '%s %s',

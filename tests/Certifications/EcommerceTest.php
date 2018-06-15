@@ -778,7 +778,7 @@ class EcommerceTest extends TestCase
             ),
         );
 
-        $url = 'https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway.Hpf.v1/api/token?api_key=' . $this->publicKey;
+        $url = 'https://cert.api2-c.heartlandportico.com/Hps.Exchange.PosGateway.Hpf.v1/api/token?api_key=' . $this->publicKey;
 
         $options = array(
             'http' => array(

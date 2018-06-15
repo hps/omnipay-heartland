@@ -45,7 +45,7 @@ use DOMDocument;
  * @see RefundRequest
  * @see Omnipay\Heartland\Gateway
  * @codingStandardsIgnoreStart
- * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditVoid.html
+ * @link https://cert.api2-c.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditVoid.html
  * @codingStandardsIgnoreEnd
  */
 class VoidRequest extends AbstractPorticoRequest

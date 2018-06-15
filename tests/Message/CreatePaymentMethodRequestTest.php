@@ -8,9 +8,9 @@ class CreatePaymentMethodRequestTest extends TestCase
 {
     public function setUp()
     {
-        $this->request = new CreatePaymentMethodRequest($this->getHttpClient(), $this->getHttpRequest());        
+        $this->request = new CreatePaymentMethodRequest($this->getHttpClient(), $this->getHttpRequest());
     }
-    
+
     public function testGetMethodsForCC()
     {
         $ccDetails = array(
@@ -33,20 +33,20 @@ class CreatePaymentMethodRequestTest extends TestCase
             );
         $this->request->initialize($ccDetails);
         $this->request->setSecretApiKey('skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A');
-        
+
         $this->assertSame($this->request->getCustomerReference(), 66770);
         $this->assertSame($this->request->getNameOnAccount(), 'John Doe');
         $this->assertSame($this->request->getAccountNumber(), '5473500000000014');
         $this->assertSame($this->request->getExpirationDate(), '1225');
         $this->assertSame($this->request->getAddressLine1(), '123 Main St.');
         $this->assertSame($this->request->getAddressLine2(), 'Suite 1A');
-        $this->assertSame($this->request->getCity(), 'Anytown');        
+        $this->assertSame($this->request->getCity(), 'Anytown');
         $this->assertSame($this->request->getStateProvince(), 'TX');
         $this->assertSame($this->request->getZipPostalCode(), '75024');
         $this->assertSame($this->request->getCountry(), 'USA');
         $this->assertSame($this->request->getPaymentStatus(), 'Active');
     }
-    
+
     public function testGetMethodsForACH()
     {
         $this->request->initialize(
@@ -82,11 +82,11 @@ class CreatePaymentMethodRequestTest extends TestCase
         $this->assertSame($this->request->getCity(), 'Anytown');
         $this->assertSame($this->request->getStateProvince(), 'TX');
         $this->assertSame($this->request->getZipPostalCode(), '75024');
-    }    
-    
-    
+    }
+
+
     public function testCreatePaymentMethodWithToken()
-    {        
+    {
         $request = $this->request->initialize(array(
             'customerReference' =>    69138,
             'nameOnAccount'  => 'John Doe',
@@ -99,11 +99,11 @@ class CreatePaymentMethodRequestTest extends TestCase
 
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
         $this->assertNotNull($response->getPaymentMethodReference());
-        $this->assertSame('b7981e65-9d06-4c30-a97f-6f220ab7a724', $response->getPaymentMethodReference());        
+        $this->assertSame('b7981e65-9d06-4c30-a97f-6f220ab7a724', $response->getPaymentMethodReference());
     }
-    
+
     public function testCreatePaymentMethodWInvalidAPI()
-    {        
+    {
         $request = $this->request->initialize(array(
             'customerReference' =>    69138,
             'nameOnAccount'  => 'John Doe',
@@ -113,11 +113,11 @@ class CreatePaymentMethodRequestTest extends TestCase
 
         $this->setMockHttpResponse('CreatePaymentMethodFailure.txt');
         $response = $this->request->send();
-        $this->assertSame('Unexpected response', $response->getMessage());        
+        $this->assertSame('Unexpected response', $response->getMessage());
     }
-    
+
     public function testCreatePaymentMethodWInvalidCredentials()
-    {        
+    {
         $request = $this->request->initialize(array(
             'customerReference' =>    69138,
             'nameOnAccount'  => 'John Doe',
@@ -128,11 +128,11 @@ class CreatePaymentMethodRequestTest extends TestCase
             'siteId' => 20904,
             'siteTrace' => "trace0001",
             'username' => "777700004597",
-            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+            'serviceUri' => "https://cert.api2-c.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
         ));
 
         $this->setMockHttpResponse('CreatePaymentMethodFailure.txt');
         $response = $this->request->send();
-        $this->assertSame('Unexpected response', $response->getMessage());        
+        $this->assertSame('Unexpected response', $response->getMessage());
     }
 }

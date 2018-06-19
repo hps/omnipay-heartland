@@ -98,13 +98,13 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
         if ($this->getSecretApiKey() != null && $this->getSecretApiKey() != "") {
             if (strpos($this->getSecretApiKey(), '_cert_') !== false) {
                 $this->setParameter('testMode', true);
-                return "https://cert.api2.heartlandportico.com/Portico.PayPlan.v2";
+                return "https://cert.api2-c.heartlandportico.com/Portico.PayPlan.v2";
             } elseif (strpos($this->getSecretApiKey(), '_uat_') !== false) {
                 $this->setParameter('testMode', true);
                 return "https://api-uat.heartlandportico.com/payplan.v2";
             } else {
                 $this->setParameter('testMode', false);
-                return "https://api.heartlandportico.com/payplan.v2";
+                return "https://api-c.heartlandportico.com/payplan.v2";
             }
         } else {
             return $this->getServiceUri();

@@ -56,7 +56,7 @@ use DOMDocument;
  * @see PurchaseRequest
  * @see \Omnipay\Heartland\Gateway
  * @codingStandardsIgnoreStart
- * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditReturn.html
+ * @link https://cert.api2-c.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditReturn.html
  * @codingStandardsIgnoreEnd
  */
 class RefundRequest extends AbstractPorticoRequest
@@ -73,7 +73,7 @@ class RefundRequest extends AbstractPorticoRequest
     {
         parent::getData();
         $this->validate('amount');
-        
+
         $xml = new DOMDocument();
         $hpsTransaction = $xml->createElement('hps:Transaction');
         $hpsCreditReturn = $xml->createElement('hps:' . $this->getTransactionType());

@@ -36,7 +36,7 @@ use DOMDocument;
  *
  * @see  CaptureRequest
  * @codingStandardsIgnoreStart
- * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAddToBatch.html
+ * @link https://cert.api2-c.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditAddToBatch.html
  * @codingStandardsIgnoreStart
  */
 class CaptureRequest extends AbstractPorticoRequest

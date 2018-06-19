@@ -56,7 +56,7 @@ use DOMDocument;
  * @see PurchaseRequest
  * @see \Omnipay\Heartland\Gateway
  * @codingStandardsIgnoreStart
- * @link https://cert.api2.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditReversal.html
+ * @link https://cert.api2-c.heartlandportico.com/Gateway/PorticoSOAPSchema/build/Default/webframe.html#Portico_xsd~e-PosRequest~e-Ver1.0~e-Transaction~e-CreditReversal.html
  * @codingStandardsIgnoreEnd
  */
 class ReverseRequest extends AbstractPorticoRequest
@@ -88,7 +88,7 @@ class ReverseRequest extends AbstractPorticoRequest
         } else {
             $cardData = $xml->createElement('hps:CardData');
             $tokenRef = ($this->getToken() !== null) ? $this->getToken() : $this->getCardReference();
-            
+
             if ($tokenRef !== null) {
                 $cardData->appendChild($this->hydrateTokenData($xml));
             } else {

@@ -149,13 +149,13 @@ abstract class AbstractPorticoRequest extends AbstractRequest
         if ($this->getSecretApiKey() != null && $this->getSecretApiKey() != "") {
             if (strpos($this->getSecretApiKey(), '_cert_') !== false) {
                 $this->setParameter('testMode', true);
-                return "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx";
+                return "https://cert.api2-c.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx";
             } elseif (strpos($this->getSecretApiKey(), '_uat_') !== false) {
                 $this->setParameter('testMode', true);
                 return "https://posgateway.uat.secureexchange.net/Hps.Exchange.PosGateway/PosGatewayService.asmx";
             } else {
                 $this->setParameter('testMode', false);
-                return "https://api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx";
+                return "https://api2-c.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx";
             }
         } else {
             return $this->getServiceUri();

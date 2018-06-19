@@ -548,6 +548,10 @@ class Gateway extends AbstractGateway
      */
     public function purchase(array $parameters = array())
     {
+        if (isset($parameters['check'])) {
+            return $this->createRequest('\Omnipay\Heartland\Message\AchPurchaseRequest', $parameters);
+        }
+
         if (isset($parameters['paymentMethodReference'])) {
             return $this->recurring($parameters);
         }

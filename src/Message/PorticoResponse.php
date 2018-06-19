@@ -99,7 +99,7 @@ class PorticoResponse extends AbstractResponse
         return $this;
     }
 
-    private function processChargeGatewayResponse()
+    protected function processChargeGatewayResponse()
     {
         $this->transactionId = isset($this->responseData->Header->GatewayTxnId)
             ? (string)$this->responseData->Header->GatewayTxnId
@@ -136,7 +136,7 @@ class PorticoResponse extends AbstractResponse
      * @throws \HpsCreditException
      * @throws null
      */
-    private function processChargeIssuerResponse()
+    protected function processChargeIssuerResponse()
     {
         $expectedType = $this->heartlandTransactionType;
         $item = $this->responseData->Transaction->$expectedType;
@@ -171,7 +171,7 @@ class PorticoResponse extends AbstractResponse
      *
      * @return mixed
      */
-    private function XML2Array($xml)
+    protected function XML2Array($xml)
     {
         if (!empty($xml)) {
             $envelope = simplexml_load_string($xml, "SimpleXMLElement", 0, 'http://schemas.xmlsoap.org/soap/envelope/');
@@ -189,7 +189,7 @@ class PorticoResponse extends AbstractResponse
      *
      * @return string
      */
-    private function XMLFault2String($xml)
+    protected function XMLFault2String($xml)
     {
         $dom = new DOMDocument();
         $dom->loadXML($xml);
@@ -205,7 +205,7 @@ class PorticoResponse extends AbstractResponse
      *
      * @return array
      */
-    private function xmlObj2array($xmlObject, $out = array())
+    protected function xmlObj2array($xmlObject, $out = array())
     {
         foreach ((array) $xmlObject as $index => $node) {
             $out[$index] = (is_object($node)) ? $this->xmlObj2array($node) : $node;
@@ -221,7 +221,7 @@ class PorticoResponse extends AbstractResponse
      *
      * @return array
      */
-    private function mergeResponse($array)
+    protected function mergeResponse($array)
     {
         $return = array();
         foreach ($array as $key => $value) {

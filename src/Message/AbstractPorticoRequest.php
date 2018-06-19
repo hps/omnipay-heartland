@@ -64,6 +64,7 @@ abstract class AbstractPorticoRequest extends AbstractRequest
             'CreditReturn',
             'CreditReversal',
             'CreditCPCEdit',
+            'CheckSale',
         );
         if (in_array($this->getTransactionType(), $cardNotRequired) === false) {
             //check the token value in card reference

@@ -720,7 +720,7 @@ class EcommerceTest extends TestCase
         return array(
             'number' => '372700699251018',
             'expiryMonth' => 12,
-            'expiryYear' => 2017,
+            'expiryYear' => 2025,
             'cvv' => 1234,
         );
     }
@@ -730,7 +730,7 @@ class EcommerceTest extends TestCase
         return array(
             'number' => '6011000990156527',
             'expiryMonth' => 12,
-            'expiryYear' => 2017,
+            'expiryYear' => 2025,
             'cvv' => 123,
         );
     }
@@ -740,7 +740,7 @@ class EcommerceTest extends TestCase
         return array(
             'number' => '3566007770007321',
             'expiryMonth' => 12,
-            'expiryYear' => 2017,
+            'expiryYear' => 2025,
             'cvv' => 123,
         );
     }
@@ -750,7 +750,7 @@ class EcommerceTest extends TestCase
         return array(
             'number' => '5473500000000014',
             'expiryMonth' => 12,
-            'expiryYear' => 2017,
+            'expiryYear' => 2025,
             'cvv' => 123,
         );
     }
@@ -760,7 +760,7 @@ class EcommerceTest extends TestCase
         return array(
             'number' => '4012002000060016',
             'expiryMonth' => 12,
-            'expiryYear' => 2017,
+            'expiryYear' => 2025,
             'cvv' => 123,
         );
     }
@@ -792,7 +792,7 @@ class EcommerceTest extends TestCase
         $response = json_decode(file_get_contents($url, false, $context));
 
         if (!$response || isset($response->error)) {
-            $this->fail('no singl-use token obtained');
+            $this->fail('no single-use token obtained');
         }
 
         return $response->token_value;

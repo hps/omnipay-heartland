@@ -11,7 +11,7 @@
         "heartland"
     ],
     "homepage": "https://github.com/hps/omnipay-heartland",
-    "license": "GPLv2",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Heartland Developer Portal",
@@ -30,10 +30,19 @@
     },
     "scripts": {
         "lint": "phpcs --standard=PSR2 src",
-        "test": "composer lint && phpunit --coverage-text",
-        "test:unit": "composer lint && phpunit --coverage-text --testsuite unit",
-        "test:integration": "composer lint && phpunit --coverage-text --testsuite integration",
+        "test": [
+            "@lint", 
+            "phpunit --coverage-text"
+        ],
+        "test:unit": [
+            "@lint", 
+            "phpunit --coverage-text --testsuite unit"
+        ],
+        "test:integration": [
+            "@lint", 
+            "phpunit --coverage-text --testsuite integration"
+        ],
         "cs-fixer": "php-cs-fixer fix --rules=@PSR2 src",
-		"test-coverage-html": "phpunit --coverage-html coverage_reports"
+        "test-coverage-html": "phpunit --coverage-html coverage_reports"
     }
 }

@@ -104,7 +104,7 @@ abstract class AbstractPayPlanRequest extends AbstractRequest
                 return "https://api-uat.heartlandportico.com/payplan.v2";
             } else {
                 $this->setParameter('testMode', false);
-                return "https://api-c.heartlandportico.com/payplan.v2";
+                return "https://api2-c.heartlandportico.com/payplan.v2";
             }
         } else {
             return $this->getServiceUri();

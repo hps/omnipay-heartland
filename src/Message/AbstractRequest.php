@@ -13,9 +13,10 @@
 namespace Omnipay\Heartland\Message;
 
 use Guzzle\Http\ClientInterface;
-use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Exception\InvalidResponseException;
+use Omnipay\Common\Http\Client as HttpClient;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
@@ -35,10 +36,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /**
      * Create a new Request
      *
-     * @param ClientInterface $httpClient  A Guzzle client to make API calls with
+     * @param HttpClient|ClientInterface $httpClient  A Guzzle client to make API calls with
      * @param HttpRequest     $httpRequest A Symfony HTTP request object
      */
-    public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest)
+    public function __construct($httpClient, HttpRequest $httpRequest)
     {
         parent::__construct($httpClient, $httpRequest);
     }
@@ -109,79 +110,89 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'Content-Length' => (string) strlen($body),
         ), isset($args['headers']) ? $args['headers'] : array());
 
-        try {
-            $config = $this->httpClient->getConfig();
-            $curlOptions = $config->get('curl.options');
-            $curlOptions[CURLOPT_PROTOCOLS] = CURLPROTO_HTTPS;
-            $curlOptions[CURLOPT_CONNECTTIMEOUT] = $this->timeout;
-            $curlOptions[CURLOPT_TIMEOUT] = $this->timeout;
+        // try {
+        // TODO: make 3.0 compatible
+        // $config = $this->httpClient->getConfig();
+        // $curlOptions = $config->get('curl.options');
+        // $curlOptions[CURLOPT_PROTOCOLS] = CURLPROTO_HTTPS;
+        // $curlOptions[CURLOPT_CONNECTTIMEOUT] = $this->timeout;
+        // $curlOptions[CURLOPT_TIMEOUT] = $this->timeout;
 
-            $config->set('curl.options', $curlOptions);
-            $this->httpClient->setConfig($config);
+        // $config->set('curl.options', $curlOptions);
+        // $this->httpClient->setConfig($config);
 
-            // don't throw exceptions for 4xx errorsd
-            $this->httpClient->getEventDispatcher()->addListener(
-                /** @var \Symfony\Component\EventDispatcher\Event $event */
-                'request.error',
-                function ($event) {
-                    if ($event['response']->isClientError()) {
-                        $event->stopPropagation();
-                    }
-                }
-            );
+        // don't throw exceptions for 4xx errors
+        // $this->httpClient->getEventDispatcher()->addListener(
+        //     /** @var \Symfony\Component\EventDispatcher\Event $event */
+        //     'request.error',
+        //     function ($event) {
+        //         if ($event['response']->isClientError()) {
+        //             $event->stopPropagation();
+        //         }
+        //     }
+        // );
 
-            if (!isset($http['verb']) || !method_exists($this->httpClient, strtolower($http['verb']))) {
-                throw new InvalidRequestException("unknown http method/verb");
-            }
+        if (!isset($http['verb'])) {
+            throw new InvalidRequestException("unknown http method/verb");
+        }
 
+        $httpResponse = null;
+        if (method_exists($this->httpClient, 'createRequest')) {
             $httpResponse = $this->httpClient
                 ->createRequest(strtoupper($http['verb']), $url, $headers, $body, $http['options'])
                 ->send();
-
-            $response = new \stdClass();
-            $response->response = (string) $httpResponse->getBody();
-            $response->status = $httpResponse->getStatusCode();
-
-            if ($response->status == 35) { //CURLE_SSL_CONNECT_ERROR
-                $err_msg = 'PHP-SDK cURL TLS 1.2 handshake failed. If you have any questions, please contact '
-                    . 'Heartland\'s Specialty Products Team at 866.802.9753.';
-                if (extension_loaded('openssl') && OPENSSL_VERSION_NUMBER < static::MIN_OPENSSL_VER) {
-                    // then you don't have openSSL 1.0.1c or greater
-                    $err_msg .= 'Your current version of OpenSSL is ' . OPENSSL_VERSION_TEXT . 'You do not '
-                        . 'have the minimum version of OpenSSL 1.0.1c which is required for curl to use TLS '
-                        . '1.2 handshake.';
-                }
-                throw new InvalidResponseException($err_msg);
-            }
-            //process the response
-            $gatewayResponse = new $this->responseType($this, $response, $this->getTransactionType());
-
-            //perform reversal incase of gateway error
-            //CURLE_OPERATION_TIMEOUTED
-            if (in_array($this->getTransactionType(), array('CreditSale', 'CreditAuth')) &&
-                ($response->status == 28 || $gatewayResponse->reversalRequired === true)
-                ) {
-                try {
-                    $reverseRequest = new ReverseRequest($this->httpClient, $this->httpRequest);
-                    $reverseRequest->initialize($this->getParameters());
-                    if ($gatewayResponse->getTransactionReference() != null) {
-                        $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
-                    }
-                    $reverseResponse = $reverseRequest->send();
-                } catch (\Exception $e) {
-                    throw new InvalidResponseException(
-                        'Error occurred while reversing a charge due to HPS issuer timeout. '
-                        . $e->getMessage()
-                    );
-                    return;
-                }
-                $gatewayResponse->reversalDataObject = $reverseResponse;
-            }
-
-            return $gatewayResponse;
-        } catch (\Exception $e) {
-            throw new InvalidRequestException($e->getMessage());
+        } else {
+            $httpResponse = $this->httpClient
+                ->request(strtoupper($http['verb']), $url, array_merge([
+                    'body' => $body,
+                    'headers' => $headers,
+                ], $http['options']));
         }
+
+        $response = new \stdClass();
+        $response->response = (string) $httpResponse->getBody();
+        $response->status = $httpResponse->getStatusCode();
+
+        if ($response->status == 35) { //CURLE_SSL_CONNECT_ERROR
+            $err_msg = 'PHP-SDK cURL TLS 1.2 handshake failed. If you have any questions, please contact '
+                . 'Heartland\'s Specialty Products Team at 866.802.9753.';
+            if (extension_loaded('openssl') && OPENSSL_VERSION_NUMBER < static::MIN_OPENSSL_VER) {
+                // then you don't have openSSL 1.0.1c or greater
+                $err_msg .= 'Your current version of OpenSSL is ' . OPENSSL_VERSION_TEXT . 'You do not '
+                    . 'have the minimum version of OpenSSL 1.0.1c which is required for curl to use TLS '
+                    . '1.2 handshake.';
+            }
+            throw new InvalidResponseException($err_msg);
+        }
+        //process the response
+        $gatewayResponse = new $this->responseType($this, $response, $this->getTransactionType());
+
+        //perform reversal incase of gateway error
+        //CURLE_OPERATION_TIMEOUTED
+        if (in_array($this->getTransactionType(), array('CreditSale', 'CreditAuth')) &&
+            ($response->status == 28 || $gatewayResponse->reversalRequired === true)
+            ) {
+            try {
+                $reverseRequest = new ReverseRequest($this->httpClient, $this->httpRequest);
+                $reverseRequest->initialize($this->getParameters());
+                if ($gatewayResponse->getTransactionReference() != null) {
+                    $reverseRequest->setTransactionReference($gatewayResponse->getTransactionReference());
+                }
+                $reverseResponse = $reverseRequest->send();
+            } catch (\Exception $e) {
+                throw new InvalidResponseException(
+                    'Error occurred while reversing a charge due to HPS issuer timeout. '
+                    . $e->getMessage()
+                );
+                return;
+            }
+            $gatewayResponse->reversalDataObject = $reverseResponse;
+        }
+
+        return $gatewayResponse;
+        // } catch (\Exception $e) {
+        //     throw new InvalidRequestException($e->getMessage());
+        // }
     }
 
     /**

@@ -22,24 +22,24 @@
         "psr-4": { "Omnipay\\Heartland\\" : "src/" }
     },
     "require": {
-        "omnipay/common": "~2.0"
+        "omnipay/common": "~2.0|~3.0"
     },
     "require-dev": {
-        "omnipay/tests": "~2.0",
-        "friendsofphp/php-cs-fixer": "2.2.5"
+        "omnipay/tests": "~2.0|~3.0",
+        "friendsofphp/php-cs-fixer": "~2.12"
     },
     "scripts": {
         "lint": "phpcs --standard=PSR2 src",
         "test": [
-            "@lint", 
+            "@lint",
             "phpunit --coverage-text"
         ],
         "test:unit": [
-            "@lint", 
+            "@lint",
             "phpunit --coverage-text --testsuite unit"
         ],
         "test:integration": [
-            "@lint", 
+            "@lint",
             "phpunit --coverage-text --testsuite integration"
         ],
         "cs-fixer": "php-cs-fixer fix --rules=@PSR2 src",

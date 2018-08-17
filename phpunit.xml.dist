@@ -7,7 +7,7 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false"
+         stopOnFailure="true"
          syntaxCheck="false">
     <php>
         <ini name="memory_limit" value="-1" />
@@ -23,9 +23,6 @@
             <exclude>./tests/Certifications/</exclude>
         </testsuite>
     </testsuites>
-    <listeners>
-        <listener class="Mockery\Adapter\Phpunit\TestListener" file="vendor/mockery/mockery/library/Mockery/Adapter/Phpunit/TestListener.php" />
-    </listeners>
     <filter>
         <whitelist>
             <directory>./src</directory>

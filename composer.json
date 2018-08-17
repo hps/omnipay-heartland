@@ -26,7 +26,8 @@
     },
     "require-dev": {
         "omnipay/tests": "~2.0|~3.0",
-        "friendsofphp/php-cs-fixer": "~2.12"
+        "friendsofphp/php-cs-fixer": "~2.12",
+        "squizlabs/php_codesniffer": "~3.3"
     },
     "scripts": {
         "lint": "phpcs --standard=PSR2 src",

@@ -143,10 +143,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 ->send();
         } else {
             $httpResponse = $this->httpClient
-                ->request(strtoupper($http['verb']), $url, array_merge([
-                    'body' => $body,
-                    'headers' => $headers,
-                ], $http['options']));
+                ->request(strtoupper($http['verb']), $url, $headers, $body);
         }
 
         $response = new \stdClass();

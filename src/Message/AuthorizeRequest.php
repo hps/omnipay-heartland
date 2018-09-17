@@ -147,6 +147,28 @@ class AuthorizeRequest extends AbstractPorticoRequest
 
         $hpsBlock1->appendChild($cardData);
 
+        if ($this->getEcommerceInfo()) {
+            $info = $this->getEcommerceInfo();
+            $mktData = $xml->createElement('hps:DirectMktData');
+            $mktData->appendChild($xml->createElement(
+                'hps:DirectMktInvoiceNbr',
+                isset($info['invoiceNumber']) ? $info['invoiceNumber'] : ''
+            ));
+
+            $tomorrow = (new \DateTime())->add(new \DateInterval('P1D'));
+            $mktData->appendChild($xml->createElement(
+                'hps:DirectMktShipDay',
+                isset($info['shipDay']) ? $info['shipDay'] : $tomorrow->format('d')
+            ));
+            $mktData->appendChild($xml->createElement(
+                'hps:DirectMktShipMonth',
+                isset($info['shipMonth']) ? $info['shipMonth'] : $tomorrow->format('m')
+            ));
+
+            $hpsBlock1->appendChild($mktData);
+        }
+
+
         $hpsCreditAuth->appendChild($hpsBlock1);
         $hpsTransaction->appendChild($hpsCreditAuth);
 
@@ -231,5 +253,15 @@ class AuthorizeRequest extends AbstractPorticoRequest
     public function setRequestCardReference($value)
     {
         return $this->setParameter('requestCardReference', $value);
+    }
+
+    public function getEcommerceInfo()
+    {
+        return $this->getParameter('ecommerceInfo');
+    }
+
+    public function setEcommerceInfo($value)
+    {
+        return $this->setParameter('ecommerceInfo', $value);
     }
 }

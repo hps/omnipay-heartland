@@ -110,7 +110,7 @@ class AuthorizeRequest extends AbstractPorticoRequest
         $hpsCreditAuth = $xml->createElement('hps:' . $this->getTransactionType());
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
-        $hpsBlock1->appendChild($xml->createElement('hps:AllowDup', 'Y'));
+        $hpsBlock1->appendChild($xml->createElement('hps:AllowDup', $this->getAllowDuplicates() ? 'Y' : 'N'));
         //$hpsBlock1->appendChild($xml->createElement('hps:AllowPartialAuth', ($allowPartialAuth ? 'Y' : 'N')));
         $hpsBlock1->appendChild($xml->createElement('hps:Amt', $amount));
 
@@ -263,5 +263,21 @@ class AuthorizeRequest extends AbstractPorticoRequest
     public function setEcommerceInfo($value)
     {
         return $this->setParameter('ecommerceInfo', $value);
+    }
+
+    public function getAllowDuplicates()
+    {
+        $flag = $this->getParameter('allowDuplicates');
+
+        if ($flag === null) {
+            return true;
+        }
+
+        return (bool)$flag;
+    }
+
+    public function setAllowDuplicates($value)
+    {
+        return $this->setParameter('allowDuplicates', $value);
     }
 }

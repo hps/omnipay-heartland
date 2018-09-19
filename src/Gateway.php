@@ -639,6 +639,16 @@ class Gateway extends AbstractGateway
         return $this->createRequest('\Omnipay\Heartland\Message\FetchTransactionRequest', $parameters);
     }
 
+    /**
+     * @param array $parameters
+     *
+     * @return \Omnipay\Heartland\Message\SearchTransactionsRequest
+     */
+    public function searchTransactions(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Heartland\Message\SearchTransactionsRequest', $parameters);
+    }
+
     // Recurring Payments (PayPlan)
 
     /**

@@ -123,11 +123,12 @@ class AuthorizeRequest extends AbstractPorticoRequest
 
         $hpsBlock1->appendChild($this->hydrateCardHolderData($xml));
 
-        if ($this->getTransactionId()) {
+        if ($this->getDescription() || $this->getEcommerceInfo() || $this->getCustomerReference()) {
             $hpsBlock1->appendChild($this->hydrateAdditionalTxnFields($xml));
         }
-        if ($this->getDescription()) {
-            $hpsBlock1->appendChild($xml->createElement('hps:TxnDescriptor', $this->getDescription()));
+
+        if ($this->getDescriptor()) {
+            $hpsBlock1->appendChild($xml->createElement('hps:TxnDescriptor', $this->getDescriptor()));
         }
 
         $cardData = $xml->createElement('hps:CardData');
@@ -148,24 +149,7 @@ class AuthorizeRequest extends AbstractPorticoRequest
         $hpsBlock1->appendChild($cardData);
 
         if ($this->getEcommerceInfo()) {
-            $info = $this->getEcommerceInfo();
-            $mktData = $xml->createElement('hps:DirectMktData');
-            $mktData->appendChild($xml->createElement(
-                'hps:DirectMktInvoiceNbr',
-                isset($info['invoiceNumber']) ? $info['invoiceNumber'] : ''
-            ));
-
-            $tomorrow = (new \DateTime())->add(new \DateInterval('P1D'));
-            $mktData->appendChild($xml->createElement(
-                'hps:DirectMktShipDay',
-                isset($info['shipDay']) ? $info['shipDay'] : $tomorrow->format('d')
-            ));
-            $mktData->appendChild($xml->createElement(
-                'hps:DirectMktShipMonth',
-                isset($info['shipMonth']) ? $info['shipMonth'] : $tomorrow->format('m')
-            ));
-
-            $hpsBlock1->appendChild($mktData);
+            $hpsBlock1->appendChild($this->hydrateDirectMarketData($xml));
         }
 
 
@@ -186,6 +170,16 @@ class AuthorizeRequest extends AbstractPorticoRequest
             $response->setPurchaseCardResponse($cpcEdit->send());
         }
         return $response;
+    }
+
+    public function setDescriptor($value)
+    {
+        return $this->setParameter('descriptor', $value);
+    }
+
+    public function getDescriptor()
+    {
+        return $this->getParameter('descriptor');
     }
 
     public function setCustomerReference($value)

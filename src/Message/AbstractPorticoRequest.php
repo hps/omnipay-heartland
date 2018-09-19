@@ -310,8 +310,16 @@ abstract class AbstractPorticoRequest extends AbstractRequest
     {
         $additionalTxnFields = $xml->createElement('hps:AdditionalTxnFields');
 
-        $additionalTxnFields->appendChild($xml->createElement('hps:Description', $this->getDescription()));
-        $additionalTxnFields->appendChild($xml->createElement('hps:InvoiceNbr', $this->getTransactionId()));
+        if ($this->getDescription() !== null) {
+            $additionalTxnFields->appendChild($xml->createElement('hps:Description', $this->getDescription()));
+        }
+
+        if ($this->getEcommerceInfo() !== null) {
+            $info = $this->getEcommerceInfo();
+            if (isset($info['invoiceNumber'])) {
+                $additionalTxnFields->appendChild($xml->createElement('hps:InvoiceNbr', $info['invoiceNumber']));
+            }
+        }
 
         if ($this->getCustomerReference() !== null) {
             $additionalTxnFields->appendChild($xml->createElement('hps:CustomerID', $this->getCustomerReference()));
@@ -330,12 +338,23 @@ abstract class AbstractPorticoRequest extends AbstractRequest
         date_default_timezone_set("UTC");
         $current = new \DateTime();
 
-        $directMktDataElement = $xml->createElement('hps:DirectMktData');
-        $directMktDataElement->appendChild($xml->createElement('hps:DirectMktInvoiceNbr', $this->getTransactionId()));
-        $directMktDataElement->appendChild($xml->createElement('hps:DirectMktShipMonth', $current->format('m')));
-        $directMktDataElement->appendChild($xml->createElement('hps:DirectMktShipDay', $current->format('d')));
+        $info = $this->getEcommerceInfo();
+        $mktData = $xml->createElement('hps:DirectMktData');
+        $mktData->appendChild($xml->createElement(
+            'hps:DirectMktInvoiceNbr',
+            isset($info['invoiceNumber']) ? $info['invoiceNumber'] : ''
+        ));
 
-        return $directMktDataElement;
+        $mktData->appendChild($xml->createElement(
+            'hps:DirectMktShipDay',
+            isset($info['shipDay']) ? $info['shipDay'] : $current->format('d')
+        ));
+        $mktData->appendChild($xml->createElement(
+            'hps:DirectMktShipMonth',
+            isset($info['shipMonth']) ? $info['shipMonth'] : $current->format('m')
+        ));
+
+        return $mktData;
     }
 
     // endregion

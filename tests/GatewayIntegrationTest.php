@@ -65,6 +65,23 @@ class GatewayIntegrationTest extends TestCase {
         $this->assertTrue($response->isSuccessful(), 'Void should succeed');
     }
 
+    public function testAuthDirectMktData()
+    {
+        // Authorize
+        $request = $this->gateway->authorize(array(
+            'amount' => '42.42',
+            'card' => $this->getValidCard(),
+            'ecommerceInfo' => [
+                'invoiceNumber' => '123456',
+            ],
+        ));
+        $response = $request->send();
+        $responseData = $response->getData();
+
+        $this->assertTrue($response->isSuccessful(), 'Authorization should succeed');
+        $this->assertNotNull($responseData['GatewayTxnId']);
+    }
+
     public function testAuthDecline05()
     {
         // Authorize
@@ -1083,7 +1100,7 @@ class GatewayIntegrationTest extends TestCase {
             'username' => "777700004597",
             'developerId' => "123456",
             'versionNumber' => "1234",
-            'serviceUri' => "https://cert.api2-c.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
         ));
         $response = $request->send();
         $this->assertTrue($response->isSuccessful(), $response->getMessage());
@@ -1104,7 +1121,7 @@ class GatewayIntegrationTest extends TestCase {
             'username' => "111",
             'developerId' => "123456",
             'versionNumber' => "1234",
-            'serviceUri' => "https://cert.api2-c.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
         ));
         $response = $request->send();
         $this->assertFalse($response->isSuccessful());

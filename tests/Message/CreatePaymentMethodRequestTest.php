@@ -128,7 +128,7 @@ class CreatePaymentMethodRequestTest extends TestCase
             'siteId' => 20904,
             'siteTrace' => "trace0001",
             'username' => "777700004597",
-            'serviceUri' => "https://cert.api2-c.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
+            'serviceUri' => "https://cert.api2.heartlandportico.com/Hps.Exchange.PosGateway/PosGatewayService.asmx"
         ));
 
         $this->setMockHttpResponse('CreatePaymentMethodFailure.txt');

@@ -119,7 +119,7 @@ class SearchTransactionsRequest extends AbstractPorticoRequest
         $result = false;
         $params = $this->getParameters();
 
-        foreach ($params as $criteria) {
+        foreach ($params as $criteria => $value) {
             if (in_array($criteria, $this->availableCriteria)) {
                 $result = true;
             }

@@ -73,7 +73,7 @@ class GatewayIntegrationTest extends TestCase {
             'card' => array(
                 'number' => 4111111111111111,
                 'expiryMonth' => 7,
-                'expiryYear' => 2018,
+                'expiryYear' => 2025,
                 'cvv' => 560,
             ),
         ));
@@ -94,7 +94,7 @@ class GatewayIntegrationTest extends TestCase {
             'card' => array(
                 'number' => 5454545454545454,
                 'expiryMonth' => 7,
-                'expiryYear' => 2018,
+                'expiryYear' => 2025,
                 'cvv' => 560,
             ),
         ));

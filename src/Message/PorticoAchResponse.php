@@ -28,6 +28,7 @@ class PorticoAchResponse extends PorticoResponse
                     $item = $this->responseData->Transaction->{$this->request->getTransactionType()};
                     $this->issuerResponseCode = isset($item->RspCode) ? (string)$item->RspCode : null;
                     $this->issuerResponseMessage = isset($item->RspMessage) ? (string)$item->RspMessage : null;
+                    $this->heartlandResponseMessage = $this->issuerResponseMessage;
 
                     if ($this->issuerResponseCode == '1') {
                         $this->setStatusOK(false);

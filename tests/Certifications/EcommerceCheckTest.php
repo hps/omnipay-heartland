@@ -110,4 +110,29 @@ class EcommerceCheckTest extends TestCase
         $this->assertTrue($response->isSuccessful(), 'Purchase should succeed');
         $this->assertNotNull($response->getTransactionReference());
     }
+
+    public function test04FailAtProcessor()
+    {
+        // Authorize
+        $request = $this->gateway->purchase(array(
+            'check' => array(
+                'accountNumber' => '1357902468',
+                'routingNumber' => '122000030',
+                'accountType' => 'checking',
+                'consumer' => array(
+                    'billingFirstName' => 'First',
+                    'billingLastName' => 'Last',
+                ),
+            ),
+            'secCode' => 'WEB',
+            'checkType' => 'personal',
+            'entryMode' => 'manual',
+            'amount' => '1.00',
+        ));
+        $response = $request->send();
+
+        $this->assertFalse($response->isSuccessful(), 'Purchase should fail');
+        $this->assertNotNull($response->getTransactionReference());
+        $this->assertNotEquals($response->getMessage(), 'Success');
+    }
 }

@@ -1,3 +1,5 @@
+## *** This library is no longer maintained! Its functionality is offered in Global Payments’ current library which can be found [here](https://github.com/globalpayments/omnipay-globalpayments). ***
+
 # Omnipay: Heartland
 
 **Heartland driver for the Omnipay PHP payment processing library**
